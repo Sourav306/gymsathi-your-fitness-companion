@@ -57,17 +57,17 @@ function Detail() {
       <div className="grid gap-4 md:grid-cols-2">
         <Card icon={CheckCircle2} title="How to do it" iconClass="text-primary">
           <ol className="list-decimal space-y-2 pl-5 text-sm">
-            {e.steps.map((s, i) => <li key={i}>{s}</li>)}
+            {e.steps.map((s: string, i: number) => <li key={i}>{s}</li>)}
           </ol>
         </Card>
         <Card icon={AlertTriangle} title="Common mistakes" iconClass="text-destructive">
           <ul className="space-y-2 text-sm">
-            {e.mistakes.map((m, i) => <li key={i} className="flex gap-2"><span className="text-destructive">•</span>{m}</li>)}
+            {e.mistakes.map((m: string, i: number) => <li key={i} className="flex gap-2"><span className="text-destructive">•</span>{m}</li>)}
           </ul>
         </Card>
         <Card icon={Lightbulb} title="Beginner tips" iconClass="text-primary">
           <ul className="space-y-2 text-sm">
-            {e.tips.map((t, i) => <li key={i} className="flex gap-2"><span className="text-primary">✓</span>{t}</li>)}
+            {e.tips.map((t: string, i: number) => <li key={i} className="flex gap-2"><span className="text-primary">✓</span>{t}</li>)}
           </ul>
         </Card>
       </div>
