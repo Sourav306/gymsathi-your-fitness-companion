@@ -1,9 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Search, Clock, Flame } from "lucide-react";
-import { RECIPES } from "@/data/recipes";
+import { Clock, Flame, Utensils, ChevronRight } from "lucide-react";
+import { RECIPES, RECIPE_FILTERS, type RecipeTag } from "@/data/recipes";
 import { FavButton } from "@/components/FavButton";
-import { cn } from "@/lib/utils";
+import { FilterChips } from "@/components/FilterChips";
+import { SearchInput } from "@/components/SearchInput";
+import { EmptyState } from "@/components/States";
 
 export const Route = createFileRoute("/recipes/")({
   head: () => ({
@@ -15,74 +17,87 @@ export const Route = createFileRoute("/recipes/")({
   component: Recipes,
 });
 
-const TYPES = ["All", "Veg", "Egg", "Non-Veg"] as const;
-
 function Recipes() {
   const [q, setQ] = useState("");
-  const [type, setType] = useState<(typeof TYPES)[number]>("All");
+  const [tags, setTags] = useState<RecipeTag[]>([]);
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const filtered = useMemo(() => RECIPES.filter((r) =>
-    (type === "All" || r.type === type) &&
+    (tags.length === 0 || tags.every((t) => r.tags.includes(t))) &&
     (q.trim() === "" || r.name.toLowerCase().includes(q.toLowerCase()))
-  ), [q, type]);
+  ), [q, tags]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       <div>
         <h1 className="font-display text-3xl font-bold">High-Protein Recipes</h1>
         <p className="mt-1 text-sm text-muted-foreground">Desi meals built around protein. Easy to prep.</p>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search recipes…"
-          className="h-11 w-full rounded-xl border border-border bg-card pl-10 pr-4 text-sm outline-none focus:ring-2 focus:ring-primary/30" />
+      <div className="sticky top-0 z-30 -mx-4 space-y-3 bg-background/90 px-4 pb-3 pt-1 backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0 md:pt-0 md:backdrop-blur-none">
+        <SearchInput value={q} onChange={setQ} placeholder="Search recipes…" />
+        <FilterChips multi options={RECIPE_FILTERS} value={tags} onChange={setTags} />
       </div>
 
-      <div className="flex gap-2">
-        {TYPES.map((t) => (
-          <button key={t} onClick={() => setType(t)}
-            className={cn("rounded-full border px-4 py-1.5 text-sm font-medium transition",
-              type === t ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card text-muted-foreground hover:text-foreground")}>
-            {t}
-          </button>
-        ))}
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2">
-        {filtered.map((r) => (
-          <details key={r.id} className="group rounded-2xl border border-border bg-card p-5 transition hover:shadow-md">
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-3">
-              <div className="flex gap-4">
-                <div className="grid h-14 w-14 place-items-center rounded-xl bg-accent text-3xl">{r.emoji}</div>
-                <div>
-                  <div className="font-semibold">{r.name}</div>
-                  <div className="mt-1 flex flex-wrap gap-2 text-xs text-muted-foreground">
-                    <span className="font-semibold text-primary">{r.protein}g protein</span>
-                    <span className="inline-flex items-center gap-1"><Flame className="h-3 w-3" /> {r.calories} kcal</span>
-                    <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {r.time} min</span>
+      {filtered.length === 0 ? (
+        <EmptyState icon={Utensils} title="No recipes match"
+          message="Try removing a filter or searching a different keyword."
+          action={
+            <button onClick={() => { setTags([]); setQ(""); }} className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">
+              Reset filters
+            </button>
+          } />
+      ) : (
+        <div className="grid gap-3 md:grid-cols-2">
+          {filtered.map((r) => {
+            const open = openId === r.id;
+            return (
+              <article key={r.id}
+                className="overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-md">
+                <button
+                  type="button"
+                  onClick={() => setOpenId(open ? null : r.id)}
+                  className="flex w-full items-center gap-4 p-4 text-left active:scale-[0.99]"
+                >
+                  <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-accent text-3xl">{r.emoji}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate font-semibold">{r.name}</div>
+                    <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                      <span className="font-semibold text-primary">{r.protein}g protein</span>
+                      <span className="inline-flex items-center gap-1"><Flame className="h-3 w-3" /> {r.calories} kcal</span>
+                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {r.time} min</span>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <FavButton kind="recipe" itemId={r.id} />
-            </summary>
-            <div className="mt-4 grid gap-4 border-t border-border pt-4 sm:grid-cols-2">
-              <div>
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Ingredients</div>
-                <ul className="space-y-1 text-sm">
-                  {r.ingredients.map((i) => <li key={i} className="flex gap-2"><span className="text-primary">•</span>{i}</li>)}
-                </ul>
-              </div>
-              <div>
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Steps</div>
-                <ol className="list-decimal space-y-1 pl-4 text-sm">
-                  {r.steps.map((s, i) => <li key={i}>{s}</li>)}
-                </ol>
-              </div>
-            </div>
-          </details>
-        ))}
-      </div>
+                  <div className="flex items-center gap-1">
+                    <FavButton kind="recipe" itemId={r.id} />
+                    <ChevronRight className={`h-5 w-5 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`} />
+                  </div>
+                </button>
+                {open && (
+                  <div className="grid gap-4 border-t border-border p-4 sm:grid-cols-2">
+                    <div>
+                      <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Ingredients</div>
+                      <ul className="space-y-1 text-sm">
+                        {r.ingredients.map((i) => <li key={i} className="flex gap-2"><span className="text-primary">•</span>{i}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <div className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">Steps</div>
+                      <ol className="list-decimal space-y-1 pl-4 text-sm">
+                        {r.steps.map((s, i) => <li key={i}>{s}</li>)}
+                      </ol>
+                    </div>
+                  </div>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      )}
+
+      <p className="pt-2 text-center text-xs text-muted-foreground">
+        Tip: <Link to="/calculator" className="text-primary hover:underline">calculate your protein target</Link> first.
+      </p>
     </div>
   );
 }
