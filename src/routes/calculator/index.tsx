@@ -102,7 +102,7 @@ function Calc() {
           <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Your daily targets</div>
           <Result icon={Flame} label="Calories" value={`${calories.toLocaleString()} kcal`} />
           <Result icon={Beef} label="Protein" value={`${protein} g`} highlight />
-          <Result icon={Activity} label="Maintenance (TDEE)" value={`${tdee.toLocaleString()} kcal`} />
+          <Result icon={ActivityIcon} label="Maintenance (TDEE)" value={`${tdee.toLocaleString()} kcal`} />
           <p className="pt-2 text-xs text-muted-foreground">
             Estimates use the Mifflin-St Jeor formula. Adjust based on real-world results after 2–3 weeks.
           </p>
