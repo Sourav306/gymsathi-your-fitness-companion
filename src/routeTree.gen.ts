@@ -10,33 +10,128 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
+import { Route as ProfileIndexRouteImport } from './routes/profile/index'
+import { Route as PlansIndexRouteImport } from './routes/plans/index'
+import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
+import { Route as ExercisesIndexRouteImport } from './routes/exercises/index'
+import { Route as CalculatorIndexRouteImport } from './routes/calculator/index'
+import { Route as ExercisesIdRouteImport } from './routes/exercises/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecipesIndexRoute = RecipesIndexRouteImport.update({
+  id: '/recipes/',
+  path: '/recipes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileIndexRoute = ProfileIndexRouteImport.update({
+  id: '/profile/',
+  path: '/profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PlansIndexRoute = PlansIndexRouteImport.update({
+  id: '/plans/',
+  path: '/plans/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoritesIndexRoute = FavoritesIndexRouteImport.update({
+  id: '/favorites/',
+  path: '/favorites/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExercisesIndexRoute = ExercisesIndexRouteImport.update({
+  id: '/exercises/',
+  path: '/exercises/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CalculatorIndexRoute = CalculatorIndexRouteImport.update({
+  id: '/calculator/',
+  path: '/calculator/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ExercisesIdRoute = ExercisesIdRouteImport.update({
+  id: '/exercises/$id',
+  path: '/exercises/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/exercises/$id': typeof ExercisesIdRoute
+  '/calculator/': typeof CalculatorIndexRoute
+  '/exercises/': typeof ExercisesIndexRoute
+  '/favorites/': typeof FavoritesIndexRoute
+  '/plans/': typeof PlansIndexRoute
+  '/profile/': typeof ProfileIndexRoute
+  '/recipes/': typeof RecipesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/exercises/$id': typeof ExercisesIdRoute
+  '/calculator': typeof CalculatorIndexRoute
+  '/exercises': typeof ExercisesIndexRoute
+  '/favorites': typeof FavoritesIndexRoute
+  '/plans': typeof PlansIndexRoute
+  '/profile': typeof ProfileIndexRoute
+  '/recipes': typeof RecipesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/exercises/$id': typeof ExercisesIdRoute
+  '/calculator/': typeof CalculatorIndexRoute
+  '/exercises/': typeof ExercisesIndexRoute
+  '/favorites/': typeof FavoritesIndexRoute
+  '/plans/': typeof PlansIndexRoute
+  '/profile/': typeof ProfileIndexRoute
+  '/recipes/': typeof RecipesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/exercises/$id'
+    | '/calculator/'
+    | '/exercises/'
+    | '/favorites/'
+    | '/plans/'
+    | '/profile/'
+    | '/recipes/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/exercises/$id'
+    | '/calculator'
+    | '/exercises'
+    | '/favorites'
+    | '/plans'
+    | '/profile'
+    | '/recipes'
+  id:
+    | '__root__'
+    | '/'
+    | '/exercises/$id'
+    | '/calculator/'
+    | '/exercises/'
+    | '/favorites/'
+    | '/plans/'
+    | '/profile/'
+    | '/recipes/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ExercisesIdRoute: typeof ExercisesIdRoute
+  CalculatorIndexRoute: typeof CalculatorIndexRoute
+  ExercisesIndexRoute: typeof ExercisesIndexRoute
+  FavoritesIndexRoute: typeof FavoritesIndexRoute
+  PlansIndexRoute: typeof PlansIndexRoute
+  ProfileIndexRoute: typeof ProfileIndexRoute
+  RecipesIndexRoute: typeof RecipesIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +143,68 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/recipes/': {
+      id: '/recipes/'
+      path: '/recipes'
+      fullPath: '/recipes/'
+      preLoaderRoute: typeof RecipesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/': {
+      id: '/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof ProfileIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/plans/': {
+      id: '/plans/'
+      path: '/plans'
+      fullPath: '/plans/'
+      preLoaderRoute: typeof PlansIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favorites/': {
+      id: '/favorites/'
+      path: '/favorites'
+      fullPath: '/favorites/'
+      preLoaderRoute: typeof FavoritesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exercises/': {
+      id: '/exercises/'
+      path: '/exercises'
+      fullPath: '/exercises/'
+      preLoaderRoute: typeof ExercisesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/calculator/': {
+      id: '/calculator/'
+      path: '/calculator'
+      fullPath: '/calculator/'
+      preLoaderRoute: typeof CalculatorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/exercises/$id': {
+      id: '/exercises/$id'
+      path: '/exercises/$id'
+      fullPath: '/exercises/$id'
+      preLoaderRoute: typeof ExercisesIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ExercisesIdRoute: ExercisesIdRoute,
+  CalculatorIndexRoute: CalculatorIndexRoute,
+  ExercisesIndexRoute: ExercisesIndexRoute,
+  FavoritesIndexRoute: FavoritesIndexRoute,
+  PlansIndexRoute: PlansIndexRoute,
+  ProfileIndexRoute: ProfileIndexRoute,
+  RecipesIndexRoute: RecipesIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
