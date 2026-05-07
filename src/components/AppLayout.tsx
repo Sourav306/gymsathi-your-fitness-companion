@@ -40,17 +40,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 pb-24 pt-4 md:px-6 md:pt-8">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 pb-28 pt-4 md:px-6 md:pt-8 md:pb-12">{children}</main>
 
       {/* Mobile bottom nav */}
-      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden">
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden"
+        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+      >
         <div className="grid grid-cols-7">
           {items.map((it) => {
             const active = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
             const Icon = it.icon;
             return (
               <Link key={it.to} to={it.to}
-                className={cn("flex flex-col items-center gap-0.5 py-2 text-[10px] font-medium",
+                className={cn("flex min-h-12 flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium active:bg-secondary",
                   active ? "text-primary" : "text-muted-foreground")}>
                 <Icon className="h-5 w-5" />
                 {it.label}
