@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Flame, Beef, Activity } from "lucide-react";
+import { Flame, Beef, Activity as ActivityIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/calculator/")({
