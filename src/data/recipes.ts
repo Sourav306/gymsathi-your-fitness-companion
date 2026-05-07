@@ -1,3 +1,5 @@
+export type RecipeTag = "vegetarian" | "chicken" | "egg" | "paneer" | "high-protein" | "low-calorie" | "fish" | "soya";
+
 export interface Recipe {
   id: string;
   name: string;
@@ -8,9 +10,11 @@ export interface Recipe {
   ingredients: string[];
   steps: string[];
   emoji: string;
+  tags: RecipeTag[];
 }
 
-export const RECIPES: Recipe[] = [
+// "high-protein" = >=30g, "low-calorie" = <=400 kcal — applied automatically below
+const base: Omit<Recipe, "tags">[] = [
   { id: "paneer-bhurji", name: "High-Protein Paneer Bhurji", type: "Veg", protein: 32, calories: 420, time: 15, emoji: "🧀",
     ingredients: ["200g paneer, crumbled","1 onion, chopped","1 tomato, chopped","1 tsp ginger-garlic paste","1/2 tsp turmeric","1 tsp garam masala","1 tbsp oil","Salt, coriander"],
     steps: ["Heat oil, sauté onions till golden.","Add ginger-garlic, then tomatoes. Cook 3 min.","Add spices and crumbled paneer.","Stir 2–3 min, garnish with coriander."] },
@@ -41,4 +45,33 @@ export const RECIPES: Recipe[] = [
   { id: "protein-smoothie", name: "Banana Peanut Butter Shake", type: "Veg", protein: 30, calories: 410, time: 5, emoji: "🥤",
     ingredients: ["1 banana","1 scoop whey (or 3 tbsp peanut butter)","1 cup milk","Ice"],
     steps: ["Blend everything till smooth.","Serve cold."] },
+];
+
+const manualTags: Record<string, RecipeTag[]> = {
+  "paneer-bhurji": ["vegetarian", "paneer"],
+  "chicken-tikka-bowl": ["chicken"],
+  "egg-bhurji-toast": ["egg"],
+  "rajma-rice": ["vegetarian"],
+  "soya-curry": ["vegetarian", "soya"],
+  "greek-curd-bowl": ["vegetarian"],
+  "fish-curry": ["fish"],
+  "moong-chilla": ["vegetarian"],
+  "chicken-egg-curry": ["egg"],
+  "protein-smoothie": ["vegetarian"],
+};
+
+export const RECIPES: Recipe[] = base.map((r) => {
+  const tags = new Set<RecipeTag>(manualTags[r.id] ?? []);
+  if (r.protein >= 30) tags.add("high-protein");
+  if (r.calories <= 400) tags.add("low-calorie");
+  return { ...r, tags: Array.from(tags) };
+});
+
+export const RECIPE_FILTERS: { key: RecipeTag; label: string }[] = [
+  { key: "vegetarian", label: "Vegetarian" },
+  { key: "chicken", label: "Chicken" },
+  { key: "egg", label: "Egg" },
+  { key: "paneer", label: "Paneer" },
+  { key: "high-protein", label: "High protein" },
+  { key: "low-calorie", label: "Low calorie" },
 ];
