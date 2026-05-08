@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Calendar, Target, TrendingUp, ListChecks } from "lucide-react";
+import { Calendar, Target, TrendingUp, ListChecks, ChevronRight, Info } from "lucide-react";
 import { PLANS } from "@/data/plans";
 import { EXERCISES } from "@/data/exercises";
 import { FavButton } from "@/components/FavButton";
