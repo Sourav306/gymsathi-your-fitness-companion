@@ -15,7 +15,21 @@ export const Route = createFileRoute("/coach/")({
 
 function Coach() {
   const { rec, history, loading, busy, error, refresh, profile, user } = useDailyRec();
-  const { todayLog } = useProgress();
+  const { todayLog, logs } = useProgress();
+  const weekStartISO = useMemo(() => fmtISO(startOfWeek()), []);
+  const weekly = useWeeklyPlan(user?.id, user ? weekStartISO : undefined);
+  const todayIdx = todayWeekdayIndex();
+  const weekStats = useMemo(() => {
+    const startISO = weekStartISO;
+    const endDate = new Date(weekStartISO); endDate.setDate(endDate.getDate() + 6);
+    const endISO = fmtISO(endDate);
+    const inWeek = logs.filter(l => l.log_date >= startISO && l.log_date <= endISO);
+    return {
+      workouts: inWeek.filter(l => l.workout_completed).length,
+      meals: inWeek.filter(l => l.meal_plan_completed).length,
+    };
+  }, [logs, weekStartISO]);
+  const todayPlan = weekly.row?.plan_data?.days?.[todayIdx];
 
   if (loading) return <LoadingState rows={3} />;
   if (!user) return (
