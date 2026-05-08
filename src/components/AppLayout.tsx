@@ -1,10 +1,11 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Dumbbell, Home, ListChecks, Utensils, Calculator, Heart, User, Salad, Sparkles } from "lucide-react";
+import { Dumbbell, Home, ListChecks, Utensils, Calculator, Heart, User, Salad, Sparkles, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
   { to: "/", label: "Home", icon: Home },
   { to: "/coach", label: "Coach", icon: Sparkles },
+  { to: "/progress", label: "Progress", icon: Activity },
   { to: "/exercises", label: "Exercises", icon: Dumbbell },
   { to: "/plans", label: "Plans", icon: ListChecks },
   { to: "/recipes", label: "Meals", icon: Utensils },
@@ -49,7 +50,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="grid grid-cols-9">
+        <div className="grid grid-cols-10">
           {items.map((it) => {
             const active = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
             const Icon = it.icon;

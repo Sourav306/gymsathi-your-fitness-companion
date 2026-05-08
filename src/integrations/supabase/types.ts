@@ -131,6 +131,51 @@ export type Database = {
         }
         Relationships: []
       }
+      progress_logs: {
+        Row: {
+          calories_consumed: number | null
+          created_at: string
+          id: string
+          log_date: string
+          meal_plan_completed: boolean
+          notes: string | null
+          protein_consumed: number | null
+          updated_at: string
+          user_id: string
+          water_liters: number | null
+          weight_kg: number | null
+          workout_completed: boolean
+        }
+        Insert: {
+          calories_consumed?: number | null
+          created_at?: string
+          id?: string
+          log_date: string
+          meal_plan_completed?: boolean
+          notes?: string | null
+          protein_consumed?: number | null
+          updated_at?: string
+          user_id: string
+          water_liters?: number | null
+          weight_kg?: number | null
+          workout_completed?: boolean
+        }
+        Update: {
+          calories_consumed?: number | null
+          created_at?: string
+          id?: string
+          log_date?: string
+          meal_plan_completed?: boolean
+          notes?: string | null
+          protein_consumed?: number | null
+          updated_at?: string
+          user_id?: string
+          water_liters?: number | null
+          weight_kg?: number | null
+          workout_completed?: boolean
+        }
+        Relationships: []
+      }
       user_profiles: {
         Row: {
           activity_level: string | null
