@@ -110,38 +110,38 @@ function ProgressPage() {
         <div className="grid gap-4 md:grid-cols-2">
           <Chart title="Weight trend">
             <LineChart data={sorted}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
               <XAxis dataKey="log_date" tick={{ fontSize: 10 }} />
               <YAxis tick={{ fontSize: 10 }} domain={["auto", "auto"]} />
               <Tooltip />
-              <Line type="monotone" dataKey="weight_kg" stroke="var(--primary)" strokeWidth={2} dot={{ r: 3 }} connectNulls />
+              <Line type="monotone" dataKey="weight_kg" stroke="currentColor" strokeWidth={2} dot={{ r: 3 }} connectNulls />
             </LineChart>
           </Chart>
           <Chart title="Protein intake (g)">
             <LineChart data={sorted}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
               <XAxis dataKey="log_date" tick={{ fontSize: 10 }} />
               <YAxis tick={{ fontSize: 10 }} />
               <Tooltip />
-              <Line type="monotone" dataKey="protein_consumed" stroke="var(--primary)" strokeWidth={2} dot={{ r: 3 }} connectNulls />
+              <Line type="monotone" dataKey="protein_consumed" stroke="currentColor" strokeWidth={2} dot={{ r: 3 }} connectNulls />
             </LineChart>
           </Chart>
           <Chart title="Calories intake">
             <LineChart data={sorted}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
               <XAxis dataKey="log_date" tick={{ fontSize: 10 }} />
               <YAxis tick={{ fontSize: 10 }} />
               <Tooltip />
-              <Line type="monotone" dataKey="calories_consumed" stroke="var(--primary)" strokeWidth={2} dot={{ r: 3 }} connectNulls />
+              <Line type="monotone" dataKey="calories_consumed" stroke="currentColor" strokeWidth={2} dot={{ r: 3 }} connectNulls />
             </LineChart>
           </Chart>
           <Chart title="Workouts last 7 days">
             <BarChart data={last7.map((l) => ({ ...l, w: l.workout_completed ? 1 : 0 }))}>
-              <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+              <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-border" />
               <XAxis dataKey="log_date" tick={{ fontSize: 10 }} />
               <YAxis allowDecimals={false} domain={[0, 1]} ticks={[0, 1]} tick={{ fontSize: 10 }} />
               <Tooltip />
-              <Bar dataKey="w" fill="var(--primary)" />
+              <Bar dataKey="w" fill="currentColor" />
             </BarChart>
           </Chart>
         </div>
@@ -183,7 +183,7 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
 
 function Chart({ title, children }: { title: string; children: React.ReactElement }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="rounded-2xl border border-border bg-card p-4 text-primary">
       <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</div>
       <div className="h-48 w-full">
         <ResponsiveContainer>{children}</ResponsiveContainer>
