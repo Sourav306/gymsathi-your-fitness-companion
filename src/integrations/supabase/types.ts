@@ -14,6 +14,78 @@ export type Database = {
   }
   public: {
     Tables: {
+      ai_meal_plans: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          plan: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          plan: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          plan?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ai_workout_plans: {
+        Row: {
+          created_at: string
+          id: string
+          name: string | null
+          plan: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          plan: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string | null
+          plan?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_recommendations: {
+        Row: {
+          created_at: string
+          for_date: string
+          id: string
+          recommendation: Json
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          for_date: string
+          id?: string
+          recommendation: Json
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          for_date?: string
+          id?: string
+          recommendation?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
       favorites: {
         Row: {
           created_at: string
@@ -56,6 +128,81 @@ export type Database = {
           display_name?: string | null
           id?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_profiles: {
+        Row: {
+          activity_level: string | null
+          age: number | null
+          allergies: string | null
+          cooking_time_min: number | null
+          created_at: string
+          cuisine_preference: string | null
+          diet_preference: string | null
+          disliked_foods: string | null
+          experience: string | null
+          gender: string | null
+          goal: string | null
+          gym_access: string | null
+          height_cm: number | null
+          id: string
+          injuries: string | null
+          meal_prep_days: number | null
+          meals_per_day: number | null
+          target_protein: number | null
+          updated_at: string
+          user_id: string
+          weekly_budget: number | null
+          weight_kg: number | null
+        }
+        Insert: {
+          activity_level?: string | null
+          age?: number | null
+          allergies?: string | null
+          cooking_time_min?: number | null
+          created_at?: string
+          cuisine_preference?: string | null
+          diet_preference?: string | null
+          disliked_foods?: string | null
+          experience?: string | null
+          gender?: string | null
+          goal?: string | null
+          gym_access?: string | null
+          height_cm?: number | null
+          id?: string
+          injuries?: string | null
+          meal_prep_days?: number | null
+          meals_per_day?: number | null
+          target_protein?: number | null
+          updated_at?: string
+          user_id: string
+          weekly_budget?: number | null
+          weight_kg?: number | null
+        }
+        Update: {
+          activity_level?: string | null
+          age?: number | null
+          allergies?: string | null
+          cooking_time_min?: number | null
+          created_at?: string
+          cuisine_preference?: string | null
+          diet_preference?: string | null
+          disliked_foods?: string | null
+          experience?: string | null
+          gender?: string | null
+          goal?: string | null
+          gym_access?: string | null
+          height_cm?: number | null
+          id?: string
+          injuries?: string | null
+          meal_prep_days?: number | null
+          meals_per_day?: number | null
+          target_protein?: number | null
+          updated_at?: string
+          user_id?: string
+          weekly_budget?: number | null
+          weight_kg?: number | null
         }
         Relationships: []
       }
