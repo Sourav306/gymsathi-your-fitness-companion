@@ -1,5 +1,7 @@
-import type { UserProfile, MealPlan, WorkoutPlan, DailyRecommendation } from "./schemas";
+import type { UserProfile, MealPlan, WorkoutPlan, DailyRecommendation, RecentProgress } from "./schemas";
 import { calcTargets } from "./targets";
+
+type RP = RecentProgress | null | undefined;
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -25,7 +27,7 @@ function pickMeals(p: UserProfile) {
   return { protein: protein.filter(s => !blocked(s)), breakfast: breakfast.filter(s => !blocked(s)), snacks: snacks.filter(s => !blocked(s)) };
 }
 
-export function mockMealPlan(p: UserProfile): MealPlan {
+export function mockMealPlan(p: UserProfile, _rp?: RP): MealPlan {
   const { calories, protein } = calcTargets(p);
   const pool = pickMeals(p);
   const perMeal = Math.round(calories / 4);
@@ -63,7 +65,7 @@ export function mockMealPlan(p: UserProfile): MealPlan {
   };
 }
 
-export function mockWorkoutPlan(p: UserProfile): WorkoutPlan {
+export function mockWorkoutPlan(p: UserProfile, _rp?: RP): WorkoutPlan {
   const homeOnly = p.gym_access === "home" || p.gym_access === "no_equipment";
   const beginner = p.experience === "beginner";
   const ex = (name: string, muscle: string, sets = 3, reps = "8-12", rest = "60 sec", tip = "Move with control.", mistake = "Rushing reps.") => ({
@@ -90,9 +92,23 @@ export function mockWorkoutPlan(p: UserProfile): WorkoutPlan {
   };
 }
 
-export function mockDailyRecommendation(p: UserProfile, recipeName: string, recipeId?: string): DailyRecommendation {
+export function mockDailyRecommendation(p: UserProfile, recipeName: string, recipeId?: string, rp?: RP): DailyRecommendation {
   const { calories, protein } = calcTargets(p);
   const today = new Date();
+  let tip = p.goal === "gain_muscle"
+    ? "Hit your protein target every day. Spread it over 3–4 meals."
+    : p.goal === "lose_fat"
+    ? "Stay in a small deficit. Walk 8k steps and prioritise protein."
+    : "Be consistent. Sleep 7+ hours and train 3–4×/week.";
+  if (rp && rp.daysLogged >= 2) {
+    if (rp.avgProtein != null && rp.avgProtein < protein * 0.8) {
+      tip = `You averaged ${rp.avgProtein}g protein. Try adding one extra protein source today to reach ${protein}g.`;
+    } else if (rp.workoutCompletionRate != null && rp.workoutCompletionRate < 0.4) {
+      tip = "Try a short 20-minute session today — small wins build momentum.";
+    } else if (rp.workoutCompletionRate != null && rp.workoutCompletionRate >= 0.7) {
+      tip = "Great consistency this week. Keep the streak going with today's session.";
+    }
+  }
   return {
     date: today.toISOString().slice(0, 10),
     caloriesTarget: calories,
@@ -102,10 +118,6 @@ export function mockDailyRecommendation(p: UserProfile, recipeName: string, reci
     recipeName,
     recipeId,
     groceryNote: "Pick up Greek yogurt, eggs/paneer, oats, and a leafy vegetable to stay on track this week.",
-    tip: p.goal === "gain_muscle"
-      ? "Hit your protein target every day. Spread it over 3–4 meals."
-      : p.goal === "lose_fat"
-      ? "Stay in a small deficit. Walk 8k steps and prioritise protein."
-      : "Be consistent. Sleep 7+ hours and train 3–4×/week.",
+    tip,
   };
 }

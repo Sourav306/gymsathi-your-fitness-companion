@@ -89,3 +89,20 @@ export const DailyRecommendationSchema = z.object({
   tip: z.string(),
 });
 export type DailyRecommendation = z.infer<typeof DailyRecommendationSchema>;
+
+export const RecentProgressSchema = z.object({
+  daysLogged: z.number().int().min(0),
+  avgProtein: z.number().nullable(),
+  avgCalories: z.number().nullable(),
+  workoutCompletionRate: z.number().min(0).max(1).nullable(),
+  mealCompletionRate: z.number().min(0).max(1).nullable(),
+  latestWeightKg: z.number().nullable(),
+  weightTrend: z.enum(["up", "down", "flat", "unknown"]),
+});
+export type RecentProgress = z.infer<typeof RecentProgressSchema>;
+
+export const CoachInputSchema = z.object({
+  profile: UserProfileSchema,
+  recentProgress: RecentProgressSchema.optional().nullable(),
+});
+export type CoachInput = z.infer<typeof CoachInputSchema>;

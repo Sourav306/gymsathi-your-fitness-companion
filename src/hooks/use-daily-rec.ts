@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useProfile } from "./use-profile";
 import { mockDailyRecommendation } from "@/lib/ai/mock";
+import { fetchRecentProgress } from "@/lib/ai/progress-summary";
 import { RECIPES } from "@/data/recipes";
 import type { DailyRecommendation, UserProfile } from "@/lib/ai/schemas";
 
@@ -51,7 +52,8 @@ export function useDailyRec() {
         setRec(data.recommendation as any);
       } else {
         const recipe = pickRecipe(profile);
-        const fresh = mockDailyRecommendation(profile, recipe.name, recipe.id);
+        const rp = await fetchRecentProgress(user.id);
+        const fresh = mockDailyRecommendation(profile, recipe.name, recipe.id, rp);
         const { error: insErr } = await supabase
           .from("daily_recommendations")
           .upsert({ user_id: user.id, for_date: today(), recommendation: fresh as any }, { onConflict: "user_id,for_date" });
@@ -71,7 +73,8 @@ export function useDailyRec() {
     setBusy(true); setError(null);
     try {
       const recipe = pickRecipe(profile, Math.floor(Math.random() * 100));
-      const fresh = mockDailyRecommendation(profile, recipe.name, recipe.id);
+      const rp = await fetchRecentProgress(user.id);
+      const fresh = mockDailyRecommendation(profile, recipe.name, recipe.id, rp);
       const { error } = await supabase
         .from("daily_recommendations")
         .upsert({ user_id: user.id, for_date: today(), recommendation: fresh as any }, { onConflict: "user_id,for_date" });
