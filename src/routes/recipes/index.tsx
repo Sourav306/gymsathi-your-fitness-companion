@@ -54,25 +54,25 @@ function Recipes() {
             return (
               <article key={r.id}
                 className="overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-md">
-                <button
-                  type="button"
-                  onClick={() => setOpenId(open ? null : r.id)}
-                  className="flex w-full items-center gap-4 p-4 text-left active:scale-[0.99]"
-                >
-                  <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-accent text-3xl">{r.emoji}</div>
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate font-semibold">{r.name}</div>
-                    <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
-                      <span className="font-semibold text-primary">{r.protein}g protein</span>
-                      <span className="inline-flex items-center gap-1"><Flame className="h-3 w-3" /> {r.calories} kcal</span>
-                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {r.time} min</span>
+                <div className="flex items-center gap-2 p-4">
+                  <button
+                    type="button"
+                    onClick={() => setOpenId(open ? null : r.id)}
+                    className="flex min-w-0 flex-1 items-center gap-3 text-left active:scale-[0.99]"
+                  >
+                    <div className="grid h-14 w-14 shrink-0 place-items-center rounded-xl bg-accent text-3xl">{r.emoji}</div>
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate font-semibold">{r.name}</div>
+                      <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                        <span className="font-semibold text-primary">{r.protein}g protein</span>
+                        <span className="inline-flex items-center gap-1"><Flame className="h-3 w-3" /> {r.calories} kcal</span>
+                        <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {r.time} min</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex items-center gap-1">
-                    <FavButton kind="recipe" itemId={r.id} />
                     <ChevronRight className={`h-5 w-5 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`} />
-                  </div>
-                </button>
+                  </button>
+                  <FavButton kind="recipe" itemId={r.id} />
+                </div>
                 {open && (
                   <div className="grid gap-4 border-t border-border p-4 sm:grid-cols-2">
                     <div>
