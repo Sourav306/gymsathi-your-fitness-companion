@@ -76,7 +76,7 @@ function Recipes() {
           {filtered.map((r) => {
             const open = openId === r.id;
             return (
-              <article key={r.id}
+              <article key={r.id} id={`recipe-${r.id}`}
                 className="overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-md">
                 <div className="flex items-center gap-2 p-4">
                   <button
