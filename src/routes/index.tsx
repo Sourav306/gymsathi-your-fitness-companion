@@ -29,7 +29,7 @@ function Home() {
             <Sparkles className="h-3.5 w-3.5" /> Built for South Asian beginners
           </span>
           <h1 className="mt-4 text-4xl font-bold leading-tight md:text-5xl">
-            Your gym sathi for <br /> a stronger you.
+            Your gym sathi for <br className="hidden sm:block" /> a stronger you.
           </h1>
           <p className="mt-3 text-base text-primary-foreground/90 md:text-lg">
             Simple workouts, clear video guides, and high-protein desi meal ideas. No gimmicks.
