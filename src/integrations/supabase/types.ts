@@ -251,6 +251,39 @@ export type Database = {
         }
         Relationships: []
       }
+      weekly_plans: {
+        Row: {
+          created_at: string
+          id: string
+          meal_plan_id: string | null
+          plan_data: Json
+          updated_at: string
+          user_id: string
+          week_start: string
+          workout_plan_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          meal_plan_id?: string | null
+          plan_data: Json
+          updated_at?: string
+          user_id: string
+          week_start: string
+          workout_plan_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          meal_plan_id?: string | null
+          plan_data?: Json
+          updated_at?: string
+          user_id?: string
+          week_start?: string
+          workout_plan_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
