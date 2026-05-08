@@ -44,11 +44,6 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
   path: '/profile/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ProgressIndexRoute = ProgressIndexRouteImport.update({
-  id: '/progress/',
-  path: '/progress/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const PlansIndexRoute = PlansIndexRouteImport.update({
   id: '/plans/',
   path: '/plans/',
