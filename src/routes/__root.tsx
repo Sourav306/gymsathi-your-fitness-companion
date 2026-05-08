@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:description", content: "Beginner-friendly gym workouts, exercise videos, and high-protein Indian meal prep ideas." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@GymSathi" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
