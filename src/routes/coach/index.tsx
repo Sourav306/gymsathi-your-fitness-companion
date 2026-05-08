@@ -1,0 +1,127 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { Sparkles, RefreshCw, Utensils, Dumbbell, Target, ShoppingBasket, Lightbulb } from "lucide-react";
+import { useProfile } from "@/hooks/use-profile";
+import { calcTargets } from "@/lib/ai/targets";
+import { mockDailyRecommendation } from "@/lib/ai/mock";
+import { RECIPES } from "@/data/recipes";
+import { LoadingState } from "@/components/States";
+
+export const Route = createFileRoute("/coach/")({
+  head: () => ({ meta: [{ title: "AI Coach — GymSathi" }] }),
+  component: Coach,
+});
+
+function Coach() {
+  const { profile, loading, user } = useProfile();
+  const [seed, setSeed] = useState(0);
+
+  const rec = useMemo(() => {
+    if (!profile) return null;
+    const idx = (new Date().getDate() + seed) % RECIPES.length;
+    const matching = RECIPES.filter(r => {
+      if (profile.diet_preference === "vegetarian" || profile.diet_preference === "vegan") return r.type === "Veg";
+      if (profile.diet_preference === "eggetarian") return r.type !== "Non-Veg";
+      return true;
+    });
+    const list = matching.length ? matching : RECIPES;
+    const recipe = list[idx % list.length];
+    return mockDailyRecommendation(profile, recipe.name, recipe.id);
+  }, [profile, seed]);
+
+  if (loading) return <LoadingState rows={3} />;
+  if (!user) return (
+    <CTA title="Sign in to use AI Coach" body="Create your free account to get personalized meal and workout plans." to="/profile" cta="Sign in" />
+  );
+  if (!profile) return (
+    <CTA title="Let's set up your AI Coach" body="Answer a few quick questions and we'll build your personalized plan." to="/onboarding" cta="Start onboarding" />
+  );
+
+  const targets = calcTargets(profile);
+
+  return (
+    <div className="space-y-6">
+      <header className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+            <Sparkles className="h-3.5 w-3.5" /> AI Coach
+          </span>
+          <h1 className="mt-2 font-display text-3xl font-bold">Today's plan</h1>
+          <p className="text-sm text-muted-foreground">Personalized for your goal: {profile.goal.replace("_", " ")}</p>
+        </div>
+        <button onClick={() => setSeed(s => s + 1)} className="inline-flex items-center gap-2 rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium hover:bg-secondary">
+          <RefreshCw className="h-4 w-4" /> Refresh
+        </button>
+      </header>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Stat icon={Target} label="Calories target" value={`${targets.calories} kcal`} />
+        <Stat icon={Target} label="Protein target" value={`${targets.protein} g`} />
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2">
+        <Card icon={Utensils} title="Today's meal" body={rec!.recipeName} cta={
+          rec?.recipeId ? <Link to="/recipes" className="text-sm font-semibold text-primary hover:underline">View recipe →</Link> : null
+        } />
+        <Card icon={Dumbbell} title="Today's workout" body={rec!.workoutSummary} sub={rec!.workoutFocus} cta={
+          <Link to="/ai-workout" className="text-sm font-semibold text-primary hover:underline">Open workout planner →</Link>
+        } />
+        <Card icon={ShoppingBasket} title="Grocery suggestion" body={rec!.groceryNote} />
+        <Card icon={Lightbulb} title="Quick tip" body={rec!.tip} />
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Link to="/ai-meal" className="rounded-2xl bg-primary p-5 text-primary-foreground shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5">
+          <Utensils className="h-6 w-6" />
+          <div className="mt-3 font-display text-lg font-bold">Generate my meal plan</div>
+          <div className="text-sm opacity-90">7-day plan with grocery list</div>
+        </Link>
+        <Link to="/ai-workout" className="rounded-2xl bg-foreground p-5 text-background shadow-[var(--shadow-soft)] transition hover:-translate-y-0.5">
+          <Dumbbell className="h-6 w-6" />
+          <div className="mt-3 font-display text-lg font-bold">Generate my workout plan</div>
+          <div className="text-sm opacity-90">Built around your gym access</div>
+        </Link>
+      </div>
+
+      <Link to="/onboarding" className="block text-center text-sm text-muted-foreground hover:text-foreground">Edit my profile →</Link>
+
+      <p className="text-center text-xs text-muted-foreground">
+        GymSathi provides general fitness and nutrition guidance only. It is not medical advice. Consult a professional for medical conditions, injuries, or special diets.
+      </p>
+    </div>
+  );
+}
+
+function Stat({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <Icon className="h-3.5 w-3.5" /> {label}
+      </div>
+      <div className="mt-1 font-display text-2xl font-bold">{value}</div>
+    </div>
+  );
+}
+
+function Card({ icon: Icon, title, body, sub, cta }: { icon: any; title: string; body: string; sub?: string; cta?: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-accent-foreground"><Icon className="h-5 w-5" /></div>
+      <div className="mt-3 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</div>
+      {sub && <div className="text-sm font-semibold">{sub}</div>}
+      <p className="mt-1 text-sm">{body}</p>
+      {cta && <div className="mt-3">{cta}</div>}
+    </div>
+  );
+}
+
+function CTA({ title, body, to, cta }: { title: string; body: string; to: "/profile" | "/onboarding"; cta: string }) {
+  return (
+    <div className="mx-auto max-w-md rounded-3xl border border-border bg-card p-8 text-center">
+      <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground"><Sparkles className="h-6 w-6" /></div>
+      <h1 className="mt-4 font-display text-2xl font-bold">{title}</h1>
+      <p className="mt-1 text-sm text-muted-foreground">{body}</p>
+      <Link to={to} className="mt-5 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground">{cta}</Link>
+    </div>
+  );
+}
