@@ -35,11 +35,11 @@ function Home() {
             Simple workouts, clear video guides, and high-protein desi meal ideas. No gimmicks.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link to="/exercises" className="inline-flex items-center gap-2 rounded-xl bg-background px-5 py-3 text-sm font-semibold text-foreground shadow-lg transition hover:scale-[1.02]">
-              Browse exercises <ArrowRight className="h-4 w-4" />
+            <Link to="/coach" className="inline-flex items-center gap-2 rounded-xl bg-background px-5 py-3 text-sm font-semibold text-foreground shadow-lg transition hover:scale-[1.02]">
+              <Sparkles className="h-4 w-4" /> Try AI Coach
             </Link>
-            <Link to="/plans" className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold backdrop-blur transition hover:bg-white/20">
-              Workout plans
+            <Link to="/exercises" className="inline-flex items-center gap-2 rounded-xl border border-white/30 bg-white/10 px-5 py-3 text-sm font-semibold backdrop-blur transition hover:bg-white/20">
+              Browse exercises <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
