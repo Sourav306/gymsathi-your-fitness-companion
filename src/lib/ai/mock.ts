@@ -27,7 +27,7 @@ function pickMeals(p: UserProfile) {
   return { protein: protein.filter(s => !blocked(s)), breakfast: breakfast.filter(s => !blocked(s)), snacks: snacks.filter(s => !blocked(s)) };
 }
 
-export function mockMealPlan(p: UserProfile): MealPlan {
+export function mockMealPlan(p: UserProfile, _rp?: RP): MealPlan {
   const { calories, protein } = calcTargets(p);
   const pool = pickMeals(p);
   const perMeal = Math.round(calories / 4);
@@ -65,7 +65,7 @@ export function mockMealPlan(p: UserProfile): MealPlan {
   };
 }
 
-export function mockWorkoutPlan(p: UserProfile): WorkoutPlan {
+export function mockWorkoutPlan(p: UserProfile, _rp?: RP): WorkoutPlan {
   const homeOnly = p.gym_access === "home" || p.gym_access === "no_equipment";
   const beginner = p.experience === "beginner";
   const ex = (name: string, muscle: string, sets = 3, reps = "8-12", rest = "60 sec", tip = "Move with control.", mistake = "Rushing reps.") => ({
