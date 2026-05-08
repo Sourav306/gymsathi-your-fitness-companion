@@ -50,7 +50,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="grid grid-cols-9">
+        <div className="grid grid-cols-10">
           {items.map((it) => {
             const active = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
             const Icon = it.icon;
