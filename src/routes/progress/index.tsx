@@ -86,17 +86,17 @@ function ProgressPage() {
       <form onSubmit={submit} className="space-y-4 rounded-2xl border border-border bg-card p-5">
         <div className="font-display text-lg font-bold">{todayLog ? "Update today's log" : "Log today"}</div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <Field label="Weight (kg)"><input type="number" step="0.1" inputMode="decimal" value={form.weight_kg ?? ""} onChange={(e) => setForm((f) => ({ ...f, weight_kg: e.target.value as any }))} className="input" /></Field>
-          <Field label="Water (litres)"><input type="number" step="0.1" inputMode="decimal" value={form.water_liters ?? ""} onChange={(e) => setForm((f) => ({ ...f, water_liters: e.target.value as any }))} className="input" /></Field>
-          <Field label="Calories consumed"><input type="number" inputMode="numeric" value={form.calories_consumed ?? ""} onChange={(e) => setForm((f) => ({ ...f, calories_consumed: e.target.value as any }))} className="input" /></Field>
-          <Field label="Protein (g)"><input type="number" inputMode="numeric" value={form.protein_consumed ?? ""} onChange={(e) => setForm((f) => ({ ...f, protein_consumed: e.target.value as any }))} className="input" /></Field>
+          <Field label="Weight (kg)"><input type="number" step="0.1" inputMode="decimal" value={form.weight_kg ?? ""} onChange={(e) => setForm((f) => ({ ...f, weight_kg: e.target.value as any }))} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" /></Field>
+          <Field label="Water (litres)"><input type="number" step="0.1" inputMode="decimal" value={form.water_liters ?? ""} onChange={(e) => setForm((f) => ({ ...f, water_liters: e.target.value as any }))} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" /></Field>
+          <Field label="Calories consumed"><input type="number" inputMode="numeric" value={form.calories_consumed ?? ""} onChange={(e) => setForm((f) => ({ ...f, calories_consumed: e.target.value as any }))} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" /></Field>
+          <Field label="Protein (g)"><input type="number" inputMode="numeric" value={form.protein_consumed ?? ""} onChange={(e) => setForm((f) => ({ ...f, protein_consumed: e.target.value as any }))} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" /></Field>
         </div>
         <div className="flex flex-wrap gap-3">
           <Toggle checked={!!form.workout_completed} onChange={(v) => setForm((f) => ({ ...f, workout_completed: v }))} label="Workout completed" />
           <Toggle checked={!!form.meal_plan_completed} onChange={(v) => setForm((f) => ({ ...f, meal_plan_completed: v }))} label="Meal plan followed" />
         </div>
         <Field label="Notes">
-          <textarea value={form.notes ?? ""} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} rows={2} className="input" />
+          <textarea value={form.notes ?? ""} onChange={(e) => setForm((f) => ({ ...f, notes: e.target.value }))} rows={2} className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
         </Field>
         <button disabled={saving} className="w-full rounded-xl bg-primary px-5 py-3 font-semibold text-primary-foreground disabled:opacity-50 sm:w-auto">
           {saving ? "Saving…" : todayLog ? "Update log" : "Save log"}
