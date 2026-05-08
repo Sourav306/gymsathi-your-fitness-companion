@@ -1,5 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Sparkles, RefreshCw, Utensils, Dumbbell, Target, ShoppingBasket, Lightbulb, Activity, History } from "lucide-react";
+import { Sparkles, RefreshCw, Utensils, Dumbbell, Target, ShoppingBasket, Lightbulb, Activity, History, Calendar } from "lucide-react";
+import { useMemo } from "react";
+import { useWeeklyPlan } from "@/hooks/use-weekly-plan";
+import { useProgress } from "@/hooks/use-progress";
+import { fmtISO, startOfWeek, todayWeekdayIndex } from "@/lib/weekly";
 import { useDailyRec } from "@/hooks/use-daily-rec";
 import { useProgress } from "@/hooks/use-progress";
 import { calcTargets } from "@/lib/ai/targets";
