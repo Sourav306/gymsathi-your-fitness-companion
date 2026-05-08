@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Calendar, Target, TrendingUp, ListChecks } from "lucide-react";
+import { Calendar, Target, TrendingUp, ListChecks, ChevronRight, Info } from "lucide-react";
 import { PLANS } from "@/data/plans";
 import { EXERCISES } from "@/data/exercises";
 import { FavButton } from "@/components/FavButton";
@@ -75,27 +75,41 @@ function Plans() {
                 </div>
               </div>
 
-              <div className="grid gap-3 border-t border-border p-6 md:grid-cols-2 md:p-8">
-                {p.schedule.map((d) => (
-                  <div key={d.day} className="rounded-2xl border border-border bg-background p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="text-sm font-semibold">{d.day}</div>
-                      <div className="text-xs text-muted-foreground">{d.focus}</div>
+              <div className="border-t border-border p-4 md:p-6">
+                <div className="mb-3 flex items-start gap-2 rounded-xl bg-accent/50 p-3 text-xs text-accent-foreground">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0" />
+                  <span>Tap any exercise to watch the video and learn proper form.</span>
+                </div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {p.schedule.map((d) => (
+                    <div key={d.day} className="rounded-2xl border border-border bg-background p-4">
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="text-sm font-semibold">{d.day}</div>
+                        <div className="text-xs text-muted-foreground">{d.focus}</div>
+                      </div>
+                      <ul className="divide-y divide-border">
+                        {d.exercises.map((item, idx) => {
+                          const ex = EXERCISES.find((x) => x.id === item.exerciseId);
+                          if (!ex) return null;
+                          return (
+                            <li key={`${item.exerciseId}-${idx}`}>
+                              <Link to="/exercises/$id" params={{ id: ex.id }}
+                                className="flex min-h-12 items-center justify-between gap-3 py-2.5 -mx-1 px-1 rounded-lg active:bg-secondary">
+                                <div className="min-w-0 flex-1">
+                                  <div className="truncate text-sm font-medium">{ex.name}</div>
+                                  <div className="truncate text-xs text-muted-foreground">
+                                    {item.sets} sets × {item.reps} reps · {item.rest} rest
+                                  </div>
+                                </div>
+                                <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                              </Link>
+                            </li>
+                          );
+                        })}
+                      </ul>
                     </div>
-                    <ul className="mt-3 space-y-1.5 text-sm">
-                      {d.exerciseIds.map((id) => {
-                        const e = EXERCISES.find((x) => x.id === id);
-                        if (!e) return null;
-                        return (
-                          <li key={id} className="flex items-center justify-between gap-2">
-                            <span>{e.name}</span>
-                            <span className="text-xs text-muted-foreground">3 × 8–12</span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </article>
           ))}

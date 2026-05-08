@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Dumbbell, Home, ListChecks, Utensils, Calculator, Heart, User } from "lucide-react";
+import { Dumbbell, Home, ListChecks, Utensils, Calculator, Heart, User, Salad } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const items = [
@@ -7,6 +7,7 @@ const items = [
   { to: "/exercises", label: "Exercises", icon: Dumbbell },
   { to: "/plans", label: "Plans", icon: ListChecks },
   { to: "/recipes", label: "Meals", icon: Utensils },
+  { to: "/meal-plans", label: "Diet", icon: Salad },
   { to: "/calculator", label: "Calc", icon: Calculator },
   { to: "/favorites", label: "Saved", icon: Heart },
   { to: "/profile", label: "Profile", icon: User },
@@ -47,7 +48,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
-        <div className="grid grid-cols-7">
+        <div className="grid grid-cols-8">
           {items.map((it) => {
             const active = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
             const Icon = it.icon;
