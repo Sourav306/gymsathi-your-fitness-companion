@@ -92,9 +92,23 @@ export function mockWorkoutPlan(p: UserProfile, _rp?: RP): WorkoutPlan {
   };
 }
 
-export function mockDailyRecommendation(p: UserProfile, recipeName: string, recipeId?: string): DailyRecommendation {
+export function mockDailyRecommendation(p: UserProfile, recipeName: string, recipeId?: string, rp?: RP): DailyRecommendation {
   const { calories, protein } = calcTargets(p);
   const today = new Date();
+  let tip = p.goal === "gain_muscle"
+    ? "Hit your protein target every day. Spread it over 3–4 meals."
+    : p.goal === "lose_fat"
+    ? "Stay in a small deficit. Walk 8k steps and prioritise protein."
+    : "Be consistent. Sleep 7+ hours and train 3–4×/week.";
+  if (rp && rp.daysLogged >= 2) {
+    if (rp.avgProtein != null && rp.avgProtein < protein * 0.8) {
+      tip = `You averaged ${rp.avgProtein}g protein. Try adding one extra protein source today to reach ${protein}g.`;
+    } else if (rp.workoutCompletionRate != null && rp.workoutCompletionRate < 0.4) {
+      tip = "Try a short 20-minute session today — small wins build momentum.";
+    } else if (rp.workoutCompletionRate != null && rp.workoutCompletionRate >= 0.7) {
+      tip = "Great consistency this week. Keep the streak going with today's session.";
+    }
+  }
   return {
     date: today.toISOString().slice(0, 10),
     caloriesTarget: calories,
@@ -104,10 +118,6 @@ export function mockDailyRecommendation(p: UserProfile, recipeName: string, reci
     recipeName,
     recipeId,
     groceryNote: "Pick up Greek yogurt, eggs/paneer, oats, and a leafy vegetable to stay on track this week.",
-    tip: p.goal === "gain_muscle"
-      ? "Hit your protein target every day. Spread it over 3–4 meals."
-      : p.goal === "lose_fat"
-      ? "Stay in a small deficit. Walk 8k steps and prioritise protein."
-      : "Be consistent. Sleep 7+ hours and train 3–4×/week.",
+    tip,
   };
 }
