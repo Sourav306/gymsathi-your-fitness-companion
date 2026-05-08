@@ -1,8 +1,22 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Dumbbell, Home, ListChecks, Utensils, Calculator, Heart, User, Salad, Sparkles, Activity } from "lucide-react";
+import { Dumbbell, Home, ListChecks, Utensils, Calculator, Heart, User, Salad, Sparkles, Activity, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const items = [
+const desktopItems = [
+  { to: "/", label: "Home", icon: Home },
+  { to: "/coach", label: "Coach", icon: Sparkles },
+  { to: "/weekly-planner", label: "Week", icon: Calendar },
+  { to: "/progress", label: "Progress", icon: Activity },
+  { to: "/exercises", label: "Exercises", icon: Dumbbell },
+  { to: "/plans", label: "Plans", icon: ListChecks },
+  { to: "/recipes", label: "Meals", icon: Utensils },
+  { to: "/meal-plans", label: "Diet", icon: Salad },
+  { to: "/calculator", label: "Calc", icon: Calculator },
+  { to: "/favorites", label: "Saved", icon: Heart },
+  { to: "/profile", label: "Profile", icon: User },
+] as const;
+
+const mobileItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/coach", label: "Coach", icon: Sparkles },
   { to: "/progress", label: "Progress", icon: Activity },
