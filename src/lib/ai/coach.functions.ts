@@ -2,6 +2,8 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { UserProfileSchema, MealPlanSchema, WorkoutPlanSchema, type MealPlan, type WorkoutPlan, type UserProfile } from "./schemas";
 import { mockMealPlan, mockWorkoutPlan } from "./mock";
+import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { attachSupabaseAuth } from "@/integrations/supabase/client-auth-middleware";
 
 const MODEL = "google/gemini-3-flash-preview";
 
@@ -34,6 +36,7 @@ async function callGateway(systemPrompt: string, userPrompt: string): Promise<st
 }
 
 export const generateMealPlan = createServerFn({ method: "POST" })
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .inputValidator((input: unknown) => UserProfileSchema.parse(input))
   .handler(async ({ data }): Promise<{ plan: MealPlan; source: "ai" | "mock" }> => {
     const profile = data as UserProfile;
@@ -57,6 +60,7 @@ Rules: 7 days. Respect dietary preference, allergies, disliked foods. Indian-fri
   });
 
 export const generateWorkoutPlan = createServerFn({ method: "POST" })
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .inputValidator((input: unknown) => UserProfileSchema.parse(input))
   .handler(async ({ data }): Promise<{ plan: WorkoutPlan; source: "ai" | "mock" }> => {
     const profile = data as UserProfile;
