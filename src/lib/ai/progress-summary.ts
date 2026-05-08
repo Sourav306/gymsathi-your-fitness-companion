@@ -1,16 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import { z } from "zod";
-
-export const RecentProgressSchema = z.object({
-  daysLogged: z.number().int().min(0),
-  avgProtein: z.number().nullable(),
-  avgCalories: z.number().nullable(),
-  workoutCompletionRate: z.number().min(0).max(1).nullable(),
-  mealCompletionRate: z.number().min(0).max(1).nullable(),
-  latestWeightKg: z.number().nullable(),
-  weightTrend: z.enum(["up", "down", "flat", "unknown"]),
-});
-export type RecentProgress = z.infer<typeof RecentProgressSchema>;
+import type { RecentProgress } from "./schemas";
 
 interface LogRow {
   log_date: string;
@@ -40,7 +29,7 @@ export function summarizeProgress(logs: LogRow[]): RecentProgress {
   const sorted = [...logs].sort((a, b) => a.log_date.localeCompare(b.log_date));
   const weights = sorted.map((l) => l.weight_kg).filter((v): v is number => typeof v === "number");
   let trend: RecentProgress["weightTrend"] = "unknown";
-  let latestWeight: number | null = weights.length ? weights[weights.length - 1] : null;
+  const latestWeight: number | null = weights.length ? weights[weights.length - 1] : null;
   if (weights.length >= 3) {
     const diff = weights[weights.length - 1] - weights[0];
     trend = diff > 0.3 ? "up" : diff < -0.3 ? "down" : "flat";
