@@ -183,7 +183,7 @@ function Toggle({ checked, onChange, label }: { checked: boolean; onChange: (v: 
 
 function Chart({ title, children }: { title: string; children: React.ReactElement }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="rounded-2xl border border-border bg-card p-4 text-primary">
       <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{title}</div>
       <div className="h-48 w-full">
         <ResponsiveContainer>{children}</ResponsiveContainer>
