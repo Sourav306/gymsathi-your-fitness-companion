@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as PlansIndexRouteImport } from './routes/plans/index'
+import { Route as MealPlansIndexRouteImport } from './routes/meal-plans/index'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as ExercisesIndexRouteImport } from './routes/exercises/index'
 import { Route as CalculatorIndexRouteImport } from './routes/calculator/index'
@@ -36,6 +37,11 @@ const ProfileIndexRoute = ProfileIndexRouteImport.update({
 const PlansIndexRoute = PlansIndexRouteImport.update({
   id: '/plans/',
   path: '/plans/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MealPlansIndexRoute = MealPlansIndexRouteImport.update({
+  id: '/meal-plans/',
+  path: '/meal-plans/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FavoritesIndexRoute = FavoritesIndexRouteImport.update({
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/calculator/': typeof CalculatorIndexRoute
   '/exercises/': typeof ExercisesIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
+  '/meal-plans/': typeof MealPlansIndexRoute
   '/plans/': typeof PlansIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/recipes/': typeof RecipesIndexRoute
@@ -75,6 +82,7 @@ export interface FileRoutesByTo {
   '/calculator': typeof CalculatorIndexRoute
   '/exercises': typeof ExercisesIndexRoute
   '/favorites': typeof FavoritesIndexRoute
+  '/meal-plans': typeof MealPlansIndexRoute
   '/plans': typeof PlansIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/recipes': typeof RecipesIndexRoute
@@ -86,6 +94,7 @@ export interface FileRoutesById {
   '/calculator/': typeof CalculatorIndexRoute
   '/exercises/': typeof ExercisesIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
+  '/meal-plans/': typeof MealPlansIndexRoute
   '/plans/': typeof PlansIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/recipes/': typeof RecipesIndexRoute
@@ -98,6 +107,7 @@ export interface FileRouteTypes {
     | '/calculator/'
     | '/exercises/'
     | '/favorites/'
+    | '/meal-plans/'
     | '/plans/'
     | '/profile/'
     | '/recipes/'
@@ -108,6 +118,7 @@ export interface FileRouteTypes {
     | '/calculator'
     | '/exercises'
     | '/favorites'
+    | '/meal-plans'
     | '/plans'
     | '/profile'
     | '/recipes'
@@ -118,6 +129,7 @@ export interface FileRouteTypes {
     | '/calculator/'
     | '/exercises/'
     | '/favorites/'
+    | '/meal-plans/'
     | '/plans/'
     | '/profile/'
     | '/recipes/'
@@ -129,6 +141,7 @@ export interface RootRouteChildren {
   CalculatorIndexRoute: typeof CalculatorIndexRoute
   ExercisesIndexRoute: typeof ExercisesIndexRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
+  MealPlansIndexRoute: typeof MealPlansIndexRoute
   PlansIndexRoute: typeof PlansIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   RecipesIndexRoute: typeof RecipesIndexRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/plans'
       fullPath: '/plans/'
       preLoaderRoute: typeof PlansIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/meal-plans/': {
+      id: '/meal-plans/'
+      path: '/meal-plans'
+      fullPath: '/meal-plans/'
+      preLoaderRoute: typeof MealPlansIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favorites/': {
@@ -201,6 +221,7 @@ const rootRouteChildren: RootRouteChildren = {
   CalculatorIndexRoute: CalculatorIndexRoute,
   ExercisesIndexRoute: ExercisesIndexRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
+  MealPlansIndexRoute: MealPlansIndexRoute,
   PlansIndexRoute: PlansIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   RecipesIndexRoute: RecipesIndexRoute,
@@ -208,3 +229,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
