@@ -82,6 +82,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@GymSathi" },
+      { name: "twitter:title", content: "GymSathi — Simple gym workouts & high-protein meals" },
+      { name: "twitter:description", content: "Beginner-friendly gym workouts, exercise videos, and high-protein Indian meal prep ideas." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/633afd0e-4a52-4211-accf-eac7db0ffe5d" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/633afd0e-4a52-4211-accf-eac7db0ffe5d" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
