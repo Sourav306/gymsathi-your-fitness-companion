@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as WeeklyPlannerIndexRouteImport } from './routes/weekly-planner/index'
 import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
 import { Route as ProgressIndexRouteImport } from './routes/progress/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
@@ -27,6 +28,11 @@ import { Route as ExercisesIdRouteImport } from './routes/exercises/$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WeeklyPlannerIndexRoute = WeeklyPlannerIndexRouteImport.update({
+  id: '/weekly-planner/',
+  path: '/weekly-planner/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RecipesIndexRoute = RecipesIndexRouteImport.update({
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/profile/': typeof ProfileIndexRoute
   '/progress/': typeof ProgressIndexRoute
   '/recipes/': typeof RecipesIndexRoute
+  '/weekly-planner/': typeof WeeklyPlannerIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileIndexRoute
   '/progress': typeof ProgressIndexRoute
   '/recipes': typeof RecipesIndexRoute
+  '/weekly-planner': typeof WeeklyPlannerIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +151,7 @@ export interface FileRoutesById {
   '/profile/': typeof ProfileIndexRoute
   '/progress/': typeof ProgressIndexRoute
   '/recipes/': typeof RecipesIndexRoute
+  '/weekly-planner/': typeof WeeklyPlannerIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +170,7 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/progress/'
     | '/recipes/'
+    | '/weekly-planner/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -177,6 +187,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/progress'
     | '/recipes'
+    | '/weekly-planner'
   id:
     | '__root__'
     | '/'
@@ -193,6 +204,7 @@ export interface FileRouteTypes {
     | '/profile/'
     | '/progress/'
     | '/recipes/'
+    | '/weekly-planner/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -210,6 +222,7 @@ export interface RootRouteChildren {
   ProfileIndexRoute: typeof ProfileIndexRoute
   ProgressIndexRoute: typeof ProgressIndexRoute
   RecipesIndexRoute: typeof RecipesIndexRoute
+  WeeklyPlannerIndexRoute: typeof WeeklyPlannerIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -219,6 +232,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/weekly-planner/': {
+      id: '/weekly-planner/'
+      path: '/weekly-planner'
+      fullPath: '/weekly-planner/'
+      preLoaderRoute: typeof WeeklyPlannerIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/recipes/': {
@@ -330,7 +350,18 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileIndexRoute: ProfileIndexRoute,
   ProgressIndexRoute: ProgressIndexRoute,
   RecipesIndexRoute: RecipesIndexRoute,
+  WeeklyPlannerIndexRoute: WeeklyPlannerIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
