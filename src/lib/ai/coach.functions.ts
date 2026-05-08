@@ -36,7 +36,7 @@ async function callGateway(systemPrompt: string, userPrompt: string): Promise<st
 }
 
 export const generateMealPlan = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .inputValidator((input: unknown) => UserProfileSchema.parse(input))
   .handler(async ({ data }): Promise<{ plan: MealPlan; source: "ai" | "mock" }> => {
     const profile = data as UserProfile;
@@ -60,7 +60,7 @@ Rules: 7 days. Respect dietary preference, allergies, disliked foods. Indian-fri
   });
 
 export const generateWorkoutPlan = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
+  .middleware([attachSupabaseAuth, requireSupabaseAuth])
   .inputValidator((input: unknown) => UserProfileSchema.parse(input))
   .handler(async ({ data }): Promise<{ plan: WorkoutPlan; source: "ai" | "mock" }> => {
     const profile = data as UserProfile;
