@@ -8,6 +8,7 @@ import { generateWorkoutPlan } from "@/lib/ai/coach.functions";
 import type { WorkoutPlan } from "@/lib/ai/schemas";
 import { ErrorState, LoadingState } from "@/components/States";
 import { supabase } from "@/integrations/supabase/client";
+import { fetchRecentProgress } from "@/lib/ai/progress-summary";
 
 export const Route = createFileRoute("/ai-workout/")({
   head: () => ({ meta: [{ title: "AI Workout Planner — GymSathi" }] }),
@@ -29,7 +30,8 @@ function Page() {
   const run = async () => {
     setBusy(true); setErr(null);
     try {
-      const res = await gen({ data: profile });
+      const recentProgress = await fetchRecentProgress(user.id);
+      const res = await gen({ data: { profile, recentProgress } });
       setPlan(res.plan); setSource(res.source);
       await supabase.from("ai_workout_plans").insert({ user_id: user.id, name: res.plan.name, plan: res.plan as any });
       toast.success(res.source === "ai" ? "AI workout plan ready!" : "Generated using demo data");
