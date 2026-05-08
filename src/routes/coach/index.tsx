@@ -1,5 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Sparkles, RefreshCw, Utensils, Dumbbell, Target, ShoppingBasket, Lightbulb, Activity, History } from "lucide-react";
+import { Sparkles, RefreshCw, Utensils, Dumbbell, Target, ShoppingBasket, Lightbulb, Activity, History, Calendar } from "lucide-react";
+import { useMemo } from "react";
+import { useWeeklyPlan } from "@/hooks/use-weekly-plan";
+import { fmtISO, startOfWeek, todayWeekdayIndex } from "@/lib/weekly";
 import { useDailyRec } from "@/hooks/use-daily-rec";
 import { useProgress } from "@/hooks/use-progress";
 import { calcTargets } from "@/lib/ai/targets";
@@ -12,7 +15,21 @@ export const Route = createFileRoute("/coach/")({
 
 function Coach() {
   const { rec, history, loading, busy, error, refresh, profile, user } = useDailyRec();
-  const { todayLog } = useProgress();
+  const { todayLog, logs } = useProgress();
+  const weekStartISO = useMemo(() => fmtISO(startOfWeek()), []);
+  const weekly = useWeeklyPlan(user?.id, user ? weekStartISO : undefined);
+  const todayIdx = todayWeekdayIndex();
+  const weekStats = useMemo(() => {
+    const startISO = weekStartISO;
+    const endDate = new Date(weekStartISO); endDate.setDate(endDate.getDate() + 6);
+    const endISO = fmtISO(endDate);
+    const inWeek = logs.filter(l => l.log_date >= startISO && l.log_date <= endISO);
+    return {
+      workouts: inWeek.filter(l => l.workout_completed).length,
+      meals: inWeek.filter(l => l.meal_plan_completed).length,
+    };
+  }, [logs, weekStartISO]);
+  const todayPlan = weekly.row?.plan_data?.days?.[todayIdx];
 
   if (loading) return <LoadingState rows={3} />;
   if (!user) return (
@@ -59,6 +76,37 @@ function Coach() {
           <Mini label="Calories" value={todayLog?.calories_consumed ? `${todayLog.calories_consumed}` : "—"} />
           <Mini label="Workout" value={todayLog?.workout_completed ? "✓ Done" : "—"} />
         </div>
+      </div>
+
+      {/* This Week */}
+      <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <Calendar className="h-3.5 w-3.5" /> This week
+          </div>
+          <Link to="/weekly-planner" className="text-sm font-semibold text-primary hover:underline">Open Weekly Planner →</Link>
+        </div>
+        {weekly.row ? (
+          <>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
+              <Mini label="Workouts done" value={String(weekStats.workouts)} />
+              <Mini label="Meal days done" value={String(weekStats.meals)} />
+              <Mini label="Today workout" value={todayPlan?.workout?.focus || "—"} />
+              <Mini label="Today meals" value={String(todayPlan?.meals.length ?? 0)} />
+            </div>
+            {todayPlan && (
+              <div className="mt-3 text-xs text-muted-foreground">
+                {todayPlan.workout ? `Today: ${todayPlan.workout.focus} · ~${todayPlan.workout.durationMin} min` : "Today: rest day"}
+                {todayPlan.meals[0] ? ` · First meal: ${todayPlan.meals[0].name}` : ""}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="mt-3">
+            <p className="text-sm text-muted-foreground">No weekly plan yet.</p>
+            <Link to="/weekly-planner" className="mt-2 inline-block rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Build your weekly plan</Link>
+          </div>
+        )}
       </div>
 
       {rec && (

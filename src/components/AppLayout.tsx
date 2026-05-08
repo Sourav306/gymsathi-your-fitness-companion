@@ -1,8 +1,22 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Dumbbell, Home, ListChecks, Utensils, Calculator, Heart, User, Salad, Sparkles, Activity } from "lucide-react";
+import { Dumbbell, Home, ListChecks, Utensils, Calculator, Heart, User, Salad, Sparkles, Activity, Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const items = [
+const desktopItems = [
+  { to: "/", label: "Home", icon: Home },
+  { to: "/coach", label: "Coach", icon: Sparkles },
+  { to: "/weekly-planner", label: "Week", icon: Calendar },
+  { to: "/progress", label: "Progress", icon: Activity },
+  { to: "/exercises", label: "Exercises", icon: Dumbbell },
+  { to: "/plans", label: "Plans", icon: ListChecks },
+  { to: "/recipes", label: "Meals", icon: Utensils },
+  { to: "/meal-plans", label: "Diet", icon: Salad },
+  { to: "/calculator", label: "Calc", icon: Calculator },
+  { to: "/favorites", label: "Saved", icon: Heart },
+  { to: "/profile", label: "Profile", icon: User },
+] as const;
+
+const mobileItems = [
   { to: "/", label: "Home", icon: Home },
   { to: "/coach", label: "Coach", icon: Sparkles },
   { to: "/progress", label: "Progress", icon: Activity },
@@ -29,7 +43,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="font-display text-xl font-bold">GymSathi</span>
           </Link>
           <nav className="flex items-center gap-1">
-            {items.map((it) => {
+            {desktopItems.map((it) => {
               const active = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
               return (
                 <Link key={it.to} to={it.to}
@@ -51,7 +65,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="grid grid-cols-10">
-          {items.map((it) => {
+          {mobileItems.map((it) => {
             const active = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
             const Icon = it.icon;
             return (
