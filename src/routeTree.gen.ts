@@ -13,10 +13,14 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as PlansIndexRouteImport } from './routes/plans/index'
+import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as MealPlansIndexRouteImport } from './routes/meal-plans/index'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as ExercisesIndexRouteImport } from './routes/exercises/index'
+import { Route as CoachIndexRouteImport } from './routes/coach/index'
 import { Route as CalculatorIndexRouteImport } from './routes/calculator/index'
+import { Route as AiWorkoutIndexRouteImport } from './routes/ai-workout/index'
+import { Route as AiMealIndexRouteImport } from './routes/ai-meal/index'
 import { Route as ExercisesIdRouteImport } from './routes/exercises/$id'
 
 const IndexRoute = IndexRouteImport.update({
@@ -39,6 +43,11 @@ const PlansIndexRoute = PlansIndexRouteImport.update({
   path: '/plans/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
+  id: '/onboarding/',
+  path: '/onboarding/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MealPlansIndexRoute = MealPlansIndexRouteImport.update({
   id: '/meal-plans/',
   path: '/meal-plans/',
@@ -54,9 +63,24 @@ const ExercisesIndexRoute = ExercisesIndexRouteImport.update({
   path: '/exercises/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CoachIndexRoute = CoachIndexRouteImport.update({
+  id: '/coach/',
+  path: '/coach/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CalculatorIndexRoute = CalculatorIndexRouteImport.update({
   id: '/calculator/',
   path: '/calculator/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiWorkoutIndexRoute = AiWorkoutIndexRouteImport.update({
+  id: '/ai-workout/',
+  path: '/ai-workout/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiMealIndexRoute = AiMealIndexRouteImport.update({
+  id: '/ai-meal/',
+  path: '/ai-meal/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExercisesIdRoute = ExercisesIdRouteImport.update({
@@ -68,10 +92,14 @@ const ExercisesIdRoute = ExercisesIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/exercises/$id': typeof ExercisesIdRoute
+  '/ai-meal/': typeof AiMealIndexRoute
+  '/ai-workout/': typeof AiWorkoutIndexRoute
   '/calculator/': typeof CalculatorIndexRoute
+  '/coach/': typeof CoachIndexRoute
   '/exercises/': typeof ExercisesIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/meal-plans/': typeof MealPlansIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
   '/plans/': typeof PlansIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/recipes/': typeof RecipesIndexRoute
@@ -79,10 +107,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/exercises/$id': typeof ExercisesIdRoute
+  '/ai-meal': typeof AiMealIndexRoute
+  '/ai-workout': typeof AiWorkoutIndexRoute
   '/calculator': typeof CalculatorIndexRoute
+  '/coach': typeof CoachIndexRoute
   '/exercises': typeof ExercisesIndexRoute
   '/favorites': typeof FavoritesIndexRoute
   '/meal-plans': typeof MealPlansIndexRoute
+  '/onboarding': typeof OnboardingIndexRoute
   '/plans': typeof PlansIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/recipes': typeof RecipesIndexRoute
@@ -91,10 +123,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/exercises/$id': typeof ExercisesIdRoute
+  '/ai-meal/': typeof AiMealIndexRoute
+  '/ai-workout/': typeof AiWorkoutIndexRoute
   '/calculator/': typeof CalculatorIndexRoute
+  '/coach/': typeof CoachIndexRoute
   '/exercises/': typeof ExercisesIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/meal-plans/': typeof MealPlansIndexRoute
+  '/onboarding/': typeof OnboardingIndexRoute
   '/plans/': typeof PlansIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/recipes/': typeof RecipesIndexRoute
@@ -104,10 +140,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/exercises/$id'
+    | '/ai-meal/'
+    | '/ai-workout/'
     | '/calculator/'
+    | '/coach/'
     | '/exercises/'
     | '/favorites/'
     | '/meal-plans/'
+    | '/onboarding/'
     | '/plans/'
     | '/profile/'
     | '/recipes/'
@@ -115,10 +155,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/exercises/$id'
+    | '/ai-meal'
+    | '/ai-workout'
     | '/calculator'
+    | '/coach'
     | '/exercises'
     | '/favorites'
     | '/meal-plans'
+    | '/onboarding'
     | '/plans'
     | '/profile'
     | '/recipes'
@@ -126,10 +170,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/exercises/$id'
+    | '/ai-meal/'
+    | '/ai-workout/'
     | '/calculator/'
+    | '/coach/'
     | '/exercises/'
     | '/favorites/'
     | '/meal-plans/'
+    | '/onboarding/'
     | '/plans/'
     | '/profile/'
     | '/recipes/'
@@ -138,10 +186,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ExercisesIdRoute: typeof ExercisesIdRoute
+  AiMealIndexRoute: typeof AiMealIndexRoute
+  AiWorkoutIndexRoute: typeof AiWorkoutIndexRoute
   CalculatorIndexRoute: typeof CalculatorIndexRoute
+  CoachIndexRoute: typeof CoachIndexRoute
   ExercisesIndexRoute: typeof ExercisesIndexRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
   MealPlansIndexRoute: typeof MealPlansIndexRoute
+  OnboardingIndexRoute: typeof OnboardingIndexRoute
   PlansIndexRoute: typeof PlansIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   RecipesIndexRoute: typeof RecipesIndexRoute
@@ -177,6 +229,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlansIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/onboarding/': {
+      id: '/onboarding/'
+      path: '/onboarding'
+      fullPath: '/onboarding/'
+      preLoaderRoute: typeof OnboardingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/meal-plans/': {
       id: '/meal-plans/'
       path: '/meal-plans'
@@ -198,11 +257,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExercisesIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/coach/': {
+      id: '/coach/'
+      path: '/coach'
+      fullPath: '/coach/'
+      preLoaderRoute: typeof CoachIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/calculator/': {
       id: '/calculator/'
       path: '/calculator'
       fullPath: '/calculator/'
       preLoaderRoute: typeof CalculatorIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-workout/': {
+      id: '/ai-workout/'
+      path: '/ai-workout'
+      fullPath: '/ai-workout/'
+      preLoaderRoute: typeof AiWorkoutIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-meal/': {
+      id: '/ai-meal/'
+      path: '/ai-meal'
+      fullPath: '/ai-meal/'
+      preLoaderRoute: typeof AiMealIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/exercises/$id': {
@@ -218,10 +298,14 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ExercisesIdRoute: ExercisesIdRoute,
+  AiMealIndexRoute: AiMealIndexRoute,
+  AiWorkoutIndexRoute: AiWorkoutIndexRoute,
   CalculatorIndexRoute: CalculatorIndexRoute,
+  CoachIndexRoute: CoachIndexRoute,
   ExercisesIndexRoute: ExercisesIndexRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
   MealPlansIndexRoute: MealPlansIndexRoute,
+  OnboardingIndexRoute: OnboardingIndexRoute,
   PlansIndexRoute: PlansIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   RecipesIndexRoute: RecipesIndexRoute,
