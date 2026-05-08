@@ -78,6 +78,37 @@ function Coach() {
         </div>
       </div>
 
+      {/* This Week */}
+      <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <Calendar className="h-3.5 w-3.5" /> This week
+          </div>
+          <Link to="/weekly-planner" className="text-sm font-semibold text-primary hover:underline">Open Weekly Planner →</Link>
+        </div>
+        {weekly.row ? (
+          <>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-center sm:grid-cols-4">
+              <Mini label="Workouts done" value={String(weekStats.workouts)} />
+              <Mini label="Meal days done" value={String(weekStats.meals)} />
+              <Mini label="Today workout" value={todayPlan?.workout?.focus || "—"} />
+              <Mini label="Today meals" value={String(todayPlan?.meals.length ?? 0)} />
+            </div>
+            {todayPlan && (
+              <div className="mt-3 text-xs text-muted-foreground">
+                {todayPlan.workout ? `Today: ${todayPlan.workout.focus} · ~${todayPlan.workout.durationMin} min` : "Today: rest day"}
+                {todayPlan.meals[0] ? ` · First meal: ${todayPlan.meals[0].name}` : ""}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="mt-3">
+            <p className="text-sm text-muted-foreground">No weekly plan yet.</p>
+            <Link to="/weekly-planner" className="mt-2 inline-block rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Build your weekly plan</Link>
+          </div>
+        )}
+      </div>
+
       {rec && (
         <div className="grid gap-4 md:grid-cols-2">
           <Card icon={Utensils} title="Today's meal" body={rec.recipeName} cta={
