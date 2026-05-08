@@ -13,7 +13,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
 import { Route as ProgressIndexRouteImport } from './routes/progress/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
-import { Route as ProgressIndexRouteImport } from './routes/progress/index'
 import { Route as PlansIndexRouteImport } from './routes/plans/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as MealPlansIndexRouteImport } from './routes/meal-plans/index'
@@ -43,6 +42,11 @@ const ProgressIndexRoute = ProgressIndexRouteImport.update({
 const ProfileIndexRoute = ProfileIndexRouteImport.update({
   id: '/profile/',
   path: '/profile/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgressIndexRoute = ProgressIndexRouteImport.update({
+  id: '/progress/',
+  path: '/progress/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlansIndexRoute = PlansIndexRouteImport.update({
