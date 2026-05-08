@@ -103,10 +103,23 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: React.ReactNode }) {
+  const fontsHref =
+    "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap";
   return (
     <html lang="en">
       <head>
         <HeadContent />
+        {/* Load Google Fonts CSS asynchronously to avoid render-blocking */}
+        <link
+          rel="stylesheet"
+          href={fontsHref}
+          media="print"
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          {...({ onLoad: "this.media='all'" } as any)}
+        />
+        <noscript>
+          <link rel="stylesheet" href={fontsHref} />
+        </noscript>
       </head>
       <body>
         {children}
