@@ -1,20 +1,34 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
-import { Sparkles, ChefHat, ShoppingBasket, Trash2, BookOpen } from "lucide-react";
+import { Sparkles, ChefHat, ShoppingBasket, Trash2, BookOpen, ExternalLink, RefreshCw, ClipboardCopy, Save, CheckCircle2 } from "lucide-react";
 import { useProfile } from "@/hooks/use-profile";
 import { generateMealPlan } from "@/lib/ai/coach.functions";
-import type { MealPlan } from "@/lib/ai/schemas";
+import type { MealPlan, Meal } from "@/lib/ai/schemas";
 import { ErrorState, LoadingState } from "@/components/States";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchRecentProgress } from "@/lib/ai/progress-summary";
 import { useSavedMealPlans } from "@/hooks/use-saved-plans";
+import { matchRecipe, suggestRecipeAlternatives } from "@/lib/match/recipes";
+import { SwapDrawer, type SwapOption } from "@/components/SwapDrawer";
+import { copyText, flattenGrocery, flattenPrep } from "@/lib/grocery";
+import { RECIPES } from "@/data/recipes";
 
 export const Route = createFileRoute("/ai-meal/")({
   head: () => ({ meta: [{ title: "AI Meal Planner — GymSathi" }] }),
   component: Page,
 });
+
+function recomputeDayTotals(meals: Meal[]) {
+  const totalCalories = meals.reduce((s, m) => s + (m.calories || 0), 0);
+  const totalProtein = meals.reduce((s, m) => s + (m.protein || 0), 0);
+  return { totalCalories, totalProtein };
+}
+
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
 
 function Page() {
   const { profile, loading, user } = useProfile();
@@ -24,6 +38,9 @@ function Page() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const [source, setSource] = useState<"ai" | "mock" | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [dirty, setDirty] = useState(false);
+  const [completed, setCompleted] = useState<Set<string>>(new Set());
+  const [swap, setSwap] = useState<{ dayIdx: number; mealIdx: number } | null>(null);
   const saved = useSavedMealPlans(user?.id);
 
   if (loading) return <LoadingState rows={3} />;
@@ -35,29 +52,22 @@ function Page() {
     try {
       const recentProgress = await fetchRecentProgress(user.id);
       const res = await gen({ data: { profile, recentProgress } });
-      setPlan(res.plan); setSource(res.source);
+      setPlan(res.plan); setSource(res.source); setDirty(false); setCompleted(new Set());
       toast.success(res.source === "ai" ? "AI meal plan ready!" : "Generated using demo data");
-      // Persist
       setSaving(true);
       const { error: saveErr } = await supabase.from("ai_meal_plans").insert({
-        user_id: user.id,
-        name: res.plan.name,
-        plan: res.plan as any,
+        user_id: user.id, name: res.plan.name, plan: res.plan as any,
       });
       setSaving(false);
-      if (saveErr) {
-        toast.error("Couldn't save plan — it's still visible below.");
-      } else {
-        toast.success("Plan saved");
-        saved.refresh();
-      }
+      if (saveErr) toast.error("Couldn't save plan — it's still visible below.");
+      else { toast.success("Plan saved"); saved.refresh(); }
     } catch (e: any) {
       setErr(e?.message || "Failed to generate plan");
     } finally { setBusy(false); }
   };
 
   const openSaved = (p: MealPlan) => {
-    setPlan(p); setSource("ai"); setErr(null);
+    setPlan(p); setSource("ai"); setErr(null); setDirty(false); setCompleted(new Set());
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -65,6 +75,87 @@ function Page() {
     const ok = await saved.remove(id);
     if (ok) toast.success("Deleted"); else toast.error("Could not delete");
   };
+
+  const swapMeal = (recipeId: string) => {
+    if (!plan || !swap) return;
+    const r = RECIPES.find(x => x.id === recipeId);
+    if (!r) return;
+    const { dayIdx, mealIdx } = swap;
+    const old = plan.days[dayIdx].meals[mealIdx];
+    const newMeal: Meal = {
+      name: r.name,
+      type: old.type,
+      calories: r.calories,
+      protein: r.protein,
+      ingredients: r.ingredients,
+      prep: r.steps.join(" "),
+    };
+    const newMeals = [...plan.days[dayIdx].meals];
+    newMeals[mealIdx] = newMeal;
+    const totals = recomputeDayTotals(newMeals);
+    const newDays = [...plan.days];
+    newDays[dayIdx] = { ...newDays[dayIdx], meals: newMeals, ...totals };
+    setPlan({ ...plan, days: newDays });
+    setSwap(null);
+    setDirty(true);
+    toast.success("Meal swapped");
+  };
+
+  const saveChanges = async () => {
+    if (!plan) return;
+    setSaving(true);
+    const { error } = await supabase.from("ai_meal_plans").insert({
+      user_id: user.id, name: `${plan.name} (edited)`, plan: plan as any,
+    });
+    setSaving(false);
+    if (error) toast.error("Could not save"); else { toast.success("Saved"); setDirty(false); saved.refresh(); }
+  };
+
+  const onCopyGrocery = async () => {
+    if (!plan) return;
+    const ok = await copyText(flattenGrocery(plan));
+    ok ? toast.success("Grocery list copied") : toast.error("Couldn't copy");
+  };
+  const onCopyPrep = async () => {
+    if (!plan) return;
+    const ok = await copyText(flattenPrep(plan));
+    ok ? toast.success("Prep instructions copied") : toast.error("Couldn't copy");
+  };
+
+  const markMealDone = async (dayIdx: number, mealIdx: number) => {
+    if (!plan) return;
+    const key = `${dayIdx}:${mealIdx}`;
+    const next = new Set(completed);
+    next.has(key) ? next.delete(key) : next.add(key);
+    setCompleted(next);
+    // If this is "today" (first day) and >= half completed, mark progress
+    const todayMeals = plan.days[0]?.meals.length ?? 0;
+    if (dayIdx === 0 && todayMeals > 0) {
+      const doneToday = Array.from(next).filter(k => k.startsWith("0:")).length;
+      if (doneToday >= Math.ceil(todayMeals / 2)) {
+        await supabase.from("progress_logs").upsert(
+          { user_id: user.id, log_date: todayISO(), meal_plan_completed: true },
+          { onConflict: "user_id,log_date" }
+        );
+      }
+    }
+  };
+
+  const swapMeta = useMemo(() => {
+    if (!plan || !swap) return { title: "", options: [] as SwapOption[] };
+    const m = plan.days[swap.dayIdx].meals[swap.mealIdx];
+    const matched = matchRecipe(m);
+    const alts = suggestRecipeAlternatives(m, profile, matched?.id);
+    return {
+      title: `Swap "${m.name}"`,
+      options: alts.map(r => ({
+        id: r.id,
+        title: `${r.emoji} ${r.name}`,
+        subtitle: `${r.calories} kcal · ${r.protein}g protein · ${r.time} min`,
+        meta: r.tags.slice(0, 3).join(" · "),
+      })),
+    };
+  }, [plan, swap, profile]);
 
   return (
     <div className="space-y-6">
@@ -96,7 +187,13 @@ function Page() {
             <div className="mt-3 flex flex-wrap gap-2 text-xs">
               <span className="rounded-full bg-accent px-2 py-1 text-accent-foreground">{source === "ai" ? "Generated by AI" : "Demo plan"}</span>
               {saving && <span className="rounded-full bg-secondary px-2 py-1">Saving…</span>}
+              {dirty && <span className="rounded-full bg-secondary px-2 py-1">Unsaved changes</span>}
               <button onClick={run} disabled={busy} className="rounded-full border border-border px-2 py-1 hover:bg-secondary">{busy ? "…" : "Regenerate"}</button>
+              {dirty && (
+                <button onClick={saveChanges} disabled={saving} className="inline-flex items-center gap-1 rounded-full bg-primary px-2 py-1 text-primary-foreground disabled:opacity-50">
+                  <Save className="h-3 w-3" /> Save changes
+                </button>
+              )}
             </div>
           </div>
 
@@ -109,23 +206,51 @@ function Page() {
                   <span className="text-xs text-muted-foreground">{d.totalCalories} kcal · {d.totalProtein}g protein</span>
                 </summary>
                 <div className="space-y-2 border-t border-border px-4 py-3">
-                  {d.meals.map((m, j) => (
-                    <div key={j} className="rounded-xl bg-secondary/50 p-3">
-                      <div className="flex items-center justify-between text-sm">
-                        <span className="font-semibold capitalize">{m.type}</span>
-                        <span className="text-xs text-muted-foreground">{m.calories} kcal · {m.protein}g</span>
+                  {d.meals.map((m, j) => {
+                    const matched = matchRecipe(m);
+                    const key = `${i}:${j}`;
+                    const isDone = completed.has(key);
+                    return (
+                      <div key={j} className={`rounded-xl p-3 ${isDone ? "bg-primary/10" : "bg-secondary/50"}`}>
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-semibold capitalize">{m.type}</span>
+                          <span className="text-xs text-muted-foreground">{m.calories} kcal · {m.protein}g</span>
+                        </div>
+                        <div className="mt-1 text-sm">{m.name}</div>
+                        {m.prep && <div className="mt-1 line-clamp-2 text-xs text-muted-foreground">{m.prep}</div>}
+                        <div className="mt-2 flex flex-wrap gap-2 text-xs">
+                          {matched && (
+                            <Link to="/recipes" search={{ open: matched.id }} className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1 hover:bg-accent/40">
+                              <ExternalLink className="h-3 w-3" /> View Recipe
+                            </Link>
+                          )}
+                          <button onClick={() => setSwap({ dayIdx: i, mealIdx: j })} className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1 hover:bg-accent/40">
+                            <RefreshCw className="h-3 w-3" /> Swap
+                          </button>
+                          <button onClick={() => markMealDone(i, j)} className={`inline-flex items-center gap-1 rounded-full px-2 py-1 ${isDone ? "bg-primary text-primary-foreground" : "border border-border hover:bg-accent/40"}`}>
+                            <CheckCircle2 className="h-3 w-3" /> {isDone ? "Completed" : "Mark completed"}
+                          </button>
+                        </div>
                       </div>
-                      <div className="mt-1 text-sm">{m.name}</div>
-                      {m.prep && <div className="mt-1 text-xs text-muted-foreground">{m.prep}</div>}
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </details>
             ))}
           </section>
 
           <section>
-            <h2 className="mb-2 flex items-center gap-2 font-display text-xl font-bold"><ShoppingBasket className="h-5 w-5" /> Grocery list</h2>
+            <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="flex items-center gap-2 font-display text-xl font-bold"><ShoppingBasket className="h-5 w-5" /> Grocery list</h2>
+              <div className="flex gap-2">
+                <button onClick={onCopyGrocery} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs hover:bg-accent/40">
+                  <ClipboardCopy className="h-3 w-3" /> Copy Grocery List
+                </button>
+                <button onClick={onCopyPrep} className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1 text-xs hover:bg-accent/40">
+                  <ClipboardCopy className="h-3 w-3" /> Copy Prep
+                </button>
+              </div>
+            </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {plan.grocery.map((g, i) => (
                 <div key={i} className="rounded-2xl border border-border bg-card p-4">
@@ -179,6 +304,15 @@ function Page() {
       </section>
 
       <p className="text-center text-xs text-muted-foreground">General nutrition guidance only. Not medical advice.</p>
+
+      <SwapDrawer
+        open={!!swap}
+        onOpenChange={(v) => !v && setSwap(null)}
+        title={swapMeta.title}
+        description="Pick an alternative from your recipe library."
+        options={swapMeta.options}
+        onPick={swapMeal}
+      />
     </div>
   );
 }
