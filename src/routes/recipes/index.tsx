@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Clock, Flame, Utensils, ChevronRight } from "lucide-react";
 import { RECIPES, RECIPE_FILTERS, type RecipeTag } from "@/data/recipes";
 import { FavButton } from "@/components/FavButton";
@@ -8,6 +8,9 @@ import { SearchInput } from "@/components/SearchInput";
 import { EmptyState } from "@/components/States";
 
 export const Route = createFileRoute("/recipes/")({
+  validateSearch: (s: Record<string, unknown>): { open?: string } => ({
+    open: typeof s.open === "string" ? s.open : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "High-Protein Indian Recipes — GymSathi" },
@@ -18,9 +21,22 @@ export const Route = createFileRoute("/recipes/")({
 });
 
 function Recipes() {
+  const search = Route.useSearch();
   const [q, setQ] = useState("");
   const [tags, setTags] = useState<RecipeTag[]>([]);
-  const [openId, setOpenId] = useState<string | null>(null);
+  const [openId, setOpenId] = useState<string | null>(search.open ?? null);
+
+  useEffect(() => {
+    if (search.open) {
+      setOpenId(search.open);
+      if (typeof window !== "undefined") {
+        setTimeout(() => {
+          const el = document.getElementById(`recipe-${search.open}`);
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 50);
+      }
+    }
+  }, [search.open]);
 
   const filtered = useMemo(() => RECIPES.filter((r) =>
     (tags.length === 0 || tags.every((t) => r.tags.includes(t))) &&
@@ -60,7 +76,7 @@ function Recipes() {
           {filtered.map((r) => {
             const open = openId === r.id;
             return (
-              <article key={r.id}
+              <article key={r.id} id={`recipe-${r.id}`}
                 className="overflow-hidden rounded-2xl border border-border bg-card transition hover:shadow-md">
                 <div className="flex items-center gap-2 p-4">
                   <button
