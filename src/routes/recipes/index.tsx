@@ -34,6 +34,14 @@ function Recipes() {
         <p className="mt-1 text-sm text-muted-foreground">Desi meals built around protein. Easy to prep.</p>
       </div>
 
+      <Link to="/meal-plans" className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-accent/40 p-4 text-sm transition active:scale-[0.99] hover:bg-accent/60">
+        <div>
+          <div className="font-semibold">Need a full plan?</div>
+          <div className="text-xs text-muted-foreground">Check 7-day Meal Plans</div>
+        </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground" />
+      </Link>
+
       <div className="sticky top-0 z-30 -mx-4 space-y-3 bg-background/90 px-4 pb-3 pt-1 backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0 md:pt-0 md:backdrop-blur-none">
         <SearchInput value={q} onChange={setQ} placeholder="Search recipes…" />
         <FilterChips multi options={RECIPE_FILTERS} value={tags} onChange={setTags} />
