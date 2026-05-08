@@ -43,7 +43,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="font-display text-xl font-bold">GymSathi</span>
           </Link>
           <nav className="flex items-center gap-1">
-            {items.map((it) => {
+            {desktopItems.map((it) => {
               const active = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
               return (
                 <Link key={it.to} to={it.to}
@@ -65,7 +65,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       >
         <div className="grid grid-cols-10">
-          {items.map((it) => {
+          {mobileItems.map((it) => {
             const active = location.pathname === it.to || (it.to !== "/" && location.pathname.startsWith(it.to));
             const Icon = it.icon;
             return (
