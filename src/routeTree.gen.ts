@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as RecipesIndexRouteImport } from './routes/recipes/index'
+import { Route as ProgressIndexRouteImport } from './routes/progress/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as PlansIndexRouteImport } from './routes/plans/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 const RecipesIndexRoute = RecipesIndexRouteImport.update({
   id: '/recipes/',
   path: '/recipes/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProgressIndexRoute = ProgressIndexRouteImport.update({
+  id: '/progress/',
+  path: '/progress/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileIndexRoute = ProfileIndexRouteImport.update({
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/onboarding/': typeof OnboardingIndexRoute
   '/plans/': typeof PlansIndexRoute
   '/profile/': typeof ProfileIndexRoute
+  '/progress/': typeof ProgressIndexRoute
   '/recipes/': typeof RecipesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingIndexRoute
   '/plans': typeof PlansIndexRoute
   '/profile': typeof ProfileIndexRoute
+  '/progress': typeof ProgressIndexRoute
   '/recipes': typeof RecipesIndexRoute
 }
 export interface FileRoutesById {
@@ -133,6 +141,7 @@ export interface FileRoutesById {
   '/onboarding/': typeof OnboardingIndexRoute
   '/plans/': typeof PlansIndexRoute
   '/profile/': typeof ProfileIndexRoute
+  '/progress/': typeof ProgressIndexRoute
   '/recipes/': typeof RecipesIndexRoute
 }
 export interface FileRouteTypes {
@@ -150,6 +159,7 @@ export interface FileRouteTypes {
     | '/onboarding/'
     | '/plans/'
     | '/profile/'
+    | '/progress/'
     | '/recipes/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -165,6 +175,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/plans'
     | '/profile'
+    | '/progress'
     | '/recipes'
   id:
     | '__root__'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/onboarding/'
     | '/plans/'
     | '/profile/'
+    | '/progress/'
     | '/recipes/'
   fileRoutesById: FileRoutesById
 }
@@ -196,6 +208,7 @@ export interface RootRouteChildren {
   OnboardingIndexRoute: typeof OnboardingIndexRoute
   PlansIndexRoute: typeof PlansIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
+  ProgressIndexRoute: typeof ProgressIndexRoute
   RecipesIndexRoute: typeof RecipesIndexRoute
 }
 
@@ -213,6 +226,13 @@ declare module '@tanstack/react-router' {
       path: '/recipes'
       fullPath: '/recipes/'
       preLoaderRoute: typeof RecipesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/progress/': {
+      id: '/progress/'
+      path: '/progress'
+      fullPath: '/progress/'
+      preLoaderRoute: typeof ProgressIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile/': {
@@ -308,6 +328,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingIndexRoute: OnboardingIndexRoute,
   PlansIndexRoute: PlansIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
+  ProgressIndexRoute: ProgressIndexRoute,
   RecipesIndexRoute: RecipesIndexRoute,
 }
 export const routeTree = rootRouteImport
