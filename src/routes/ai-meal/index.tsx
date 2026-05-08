@@ -195,6 +195,7 @@ function Page() {
                 </button>
               )}
             </div>
+            {dirty && <p className="mt-2 text-xs text-muted-foreground">Saving creates a new entry in your saved plans — the original is kept.</p>}
           </div>
 
           <section className="space-y-3">
