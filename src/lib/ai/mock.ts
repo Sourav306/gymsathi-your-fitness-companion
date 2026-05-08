@@ -1,5 +1,7 @@
-import type { UserProfile, MealPlan, WorkoutPlan, DailyRecommendation } from "./schemas";
+import type { UserProfile, MealPlan, WorkoutPlan, DailyRecommendation, RecentProgress } from "./schemas";
 import { calcTargets } from "./targets";
+
+type RP = RecentProgress | null | undefined;
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
