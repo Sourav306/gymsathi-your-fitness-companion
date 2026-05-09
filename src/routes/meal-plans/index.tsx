@@ -5,6 +5,7 @@ import { MEAL_PLANS, MEAL_PLAN_FILTERS, type MealPlanTag } from "@/data/mealPlan
 import { FavButton } from "@/components/FavButton";
 import { FilterChips } from "@/components/FilterChips";
 import { EmptyState } from "@/components/States";
+import { SectionTabs, NUTRITION_TABS } from "@/components/SectionTabs";
 
 export const Route = createFileRoute("/meal-plans/")({
   head: () => ({
@@ -28,9 +29,10 @@ function MealPlansPage() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-display text-3xl font-bold">Meal Plans</h1>
+        <h1 className="font-display text-3xl font-bold">Nutrition</h1>
         <p className="mt-1 text-sm text-muted-foreground">7-day Indian meal plans for every goal.</p>
       </div>
+      <SectionTabs tabs={NUTRITION_TABS} ariaLabel="Nutrition sections" />
 
       <FilterChips multi options={MEAL_PLAN_FILTERS} value={tags} onChange={setTags} />
 
