@@ -6,6 +6,7 @@ import { EXERCISES } from "@/data/exercises";
 import { FavButton } from "@/components/FavButton";
 import { FilterChips } from "@/components/FilterChips";
 import { EmptyState } from "@/components/States";
+import { SectionTabs, WORKOUT_TABS } from "@/components/SectionTabs";
 
 type GoalKey = "beginner" | "muscle" | "fatloss";
 
@@ -38,9 +39,10 @@ function Plans() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-display text-3xl font-bold">Workout Plans</h1>
+        <h1 className="font-display text-3xl font-bold">Workout</h1>
         <p className="mt-1 text-sm text-muted-foreground">Pick a plan that matches your goal.</p>
       </div>
+      <SectionTabs tabs={WORKOUT_TABS} ariaLabel="Workout sections" />
 
       <FilterChips multi
         options={[
