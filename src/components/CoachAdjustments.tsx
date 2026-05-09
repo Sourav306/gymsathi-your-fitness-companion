@@ -6,8 +6,18 @@ import type { AdaptiveInsight } from "@/lib/coach/adaptive";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
-export function CoachAdjustments({ compact = false }: { compact?: boolean }) {
-  const { active, busy, refresh, apply, dismiss } = useAdaptiveCoach();
+type Coach = ReturnType<typeof useAdaptiveCoach>;
+
+export function CoachAdjustments({
+  compact = false,
+  coach,
+}: {
+  compact?: boolean;
+  coach?: Coach;
+}) {
+  const own = useAdaptiveCoach();
+  const c = coach ?? own;
+  const { active, busy, refresh, apply, dismiss } = c;
 
   if (active.length === 0) return null;
   const items = compact ? active.slice(0, 2) : active;
