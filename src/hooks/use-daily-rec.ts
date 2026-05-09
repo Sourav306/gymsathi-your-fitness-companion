@@ -34,7 +34,7 @@ export function useDailyRec() {
       .eq("user_id", user.id)
       .order("for_date", { ascending: false })
       .limit(7);
-    setHistory((data || []) as any);
+    setHistory((data || []) as { for_date: string; recommendation: DailyRecommendation }[]);
   }, [user]);
 
   const load = useCallback(async () => {
@@ -49,7 +49,7 @@ export function useDailyRec() {
         .maybeSingle();
       if (error) throw error;
       if (data) {
-        setRec(data.recommendation as any);
+        setRec(data.recommendation as DailyRecommendation);
       } else {
         const recipe = pickRecipe(profile);
         const rp = await fetchRecentProgress(user.id);
