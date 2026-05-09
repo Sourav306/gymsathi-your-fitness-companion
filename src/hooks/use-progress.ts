@@ -17,7 +17,7 @@ export interface ProgressLog {
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-export function useProgress() {
+export function useProgress(limit: number = 60) {
   const { user, loading: authLoading } = useAuth();
   const [logs, setLogs] = useState<ProgressLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,11 +36,11 @@ export function useProgress() {
       .select("*")
       .eq("user_id", user.id)
       .order("log_date", { ascending: false })
-      .limit(60);
+      .limit(limit);
     if (error) setError(error.message);
     setLogs((data || []) as ProgressLog[]);
     setLoading(false);
-  }, [user]);
+  }, [user, limit]);
 
   useEffect(() => {
     if (!authLoading) load();
