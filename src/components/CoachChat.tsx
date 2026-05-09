@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { Send, Trash2, Loader2, MessageSquare, Check, X } from "lucide-react";
+import { Send, Trash2, MessageSquare, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { useCoachChat, type ChatMessage } from "@/hooks/use-coach-chat";
 
