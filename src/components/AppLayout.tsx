@@ -1,3 +1,4 @@
+import React from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { Dumbbell, Home, Utensils, User, Sparkles, Activity } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -137,7 +138,7 @@ function NavTab({
   item,
   active,
 }: {
-  item: { to: string; label: string; icon: any };
+  item: { to: string; label: string; icon: React.ComponentType<{ className?: string }> };
   active: boolean;
 }) {
   const Icon = item.icon;

@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState, useEffect, type ComponentType, type ReactNode } from "react";
 import {
   LineChart,
   Line,
@@ -70,24 +70,16 @@ function ProgressPage() {
     try {
       await upsert({
         ...form,
-        weight_kg:
-          form.weight_kg != null && form.weight_kg !== ("" as any) ? Number(form.weight_kg) : null,
+        weight_kg: form.weight_kg != null ? Number(form.weight_kg) || null : null,
         calories_consumed:
-          form.calories_consumed != null && form.calories_consumed !== ("" as any)
-            ? Number(form.calories_consumed)
-            : null,
+          form.calories_consumed != null ? Number(form.calories_consumed) || null : null,
         protein_consumed:
-          form.protein_consumed != null && form.protein_consumed !== ("" as any)
-            ? Number(form.protein_consumed)
-            : null,
-        water_liters:
-          form.water_liters != null && form.water_liters !== ("" as any)
-            ? Number(form.water_liters)
-            : null,
+          form.protein_consumed != null ? Number(form.protein_consumed) || null : null,
+        water_liters: form.water_liters != null ? Number(form.water_liters) || null : null,
       });
       toast.success("Progress saved");
-    } catch (e: any) {
-      toast.error(e?.message || "Failed to save");
+    } catch (e) {
+      toast.error((e as Error)?.message || "Failed to save");
     } finally {
       setSaving(false);
     }
@@ -152,7 +144,12 @@ function ProgressPage() {
               step="0.1"
               inputMode="decimal"
               value={form.weight_kg ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, weight_kg: e.target.value as any }))}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  weight_kg: e.target.value !== "" ? Number(e.target.value) : null,
+                }))
+              }
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </Field>
@@ -162,7 +159,12 @@ function ProgressPage() {
               step="0.1"
               inputMode="decimal"
               value={form.water_liters ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, water_liters: e.target.value as any }))}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  water_liters: e.target.value !== "" ? Number(e.target.value) : null,
+                }))
+              }
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </Field>
@@ -171,7 +173,12 @@ function ProgressPage() {
               type="number"
               inputMode="numeric"
               value={form.calories_consumed ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, calories_consumed: e.target.value as any }))}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  calories_consumed: e.target.value !== "" ? Number(e.target.value) : null,
+                }))
+              }
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </Field>
@@ -180,7 +187,12 @@ function ProgressPage() {
               type="number"
               inputMode="numeric"
               value={form.protein_consumed ?? ""}
-              onChange={(e) => setForm((f) => ({ ...f, protein_consumed: e.target.value as any }))}
+              onChange={(e) =>
+                setForm((f) => ({
+                  ...f,
+                  protein_consumed: e.target.value !== "" ? Number(e.target.value) : null,
+                }))
+              }
               className="w-full rounded-xl border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
             />
           </Field>
@@ -290,7 +302,15 @@ function ProgressPage() {
   );
 }
 
-function Stat({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function Stat({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="rounded-2xl border border-border bg-card p-3">
       <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
@@ -301,7 +321,7 @@ function Stat({ icon: Icon, label, value }: { icon: any; label: string; value: s
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="block text-sm">
       <span className="mb-1 block font-medium text-muted-foreground">{label}</span>

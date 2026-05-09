@@ -61,18 +61,17 @@ export function useDailyRec() {
         const recipe = pickRecipe(profile);
         const rp = await fetchRecentProgress(user.id);
         const fresh = mockDailyRecommendation(profile, recipe.name, recipe.id, rp);
-        const { error: insErr } = await supabase
-          .from("daily_recommendations")
-          .upsert(
-            { user_id: user.id, for_date: today(), recommendation: fresh as any },
-            { onConflict: "user_id,for_date" },
-          );
+        const { error: insErr } = await supabase.from("daily_recommendations").upsert(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          { user_id: user.id, for_date: today(), recommendation: fresh as any },
+          { onConflict: "user_id,for_date" },
+        );
         if (insErr) throw insErr;
         setRec(fresh);
       }
       await loadHistory();
-    } catch (e: any) {
-      setError(e?.message || "Failed to load recommendation");
+    } catch (e) {
+      setError((e as Error)?.message || "Failed to load recommendation");
     } finally {
       setLoading(false);
     }
@@ -90,17 +89,16 @@ export function useDailyRec() {
       const recipe = pickRecipe(profile, Math.floor(Math.random() * 100));
       const rp = await fetchRecentProgress(user.id);
       const fresh = mockDailyRecommendation(profile, recipe.name, recipe.id, rp);
-      const { error } = await supabase
-        .from("daily_recommendations")
-        .upsert(
-          { user_id: user.id, for_date: today(), recommendation: fresh as any },
-          { onConflict: "user_id,for_date" },
-        );
+      const { error } = await supabase.from("daily_recommendations").upsert(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        { user_id: user.id, for_date: today(), recommendation: fresh as any },
+        { onConflict: "user_id,for_date" },
+      );
       if (error) throw error;
       setRec(fresh);
       await loadHistory();
-    } catch (e: any) {
-      setError(e?.message || "Failed to refresh");
+    } catch (e) {
+      setError((e as Error)?.message || "Failed to refresh");
     } finally {
       setBusy(false);
     }

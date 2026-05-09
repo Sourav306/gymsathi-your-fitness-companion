@@ -38,7 +38,7 @@ export function useProgress() {
       .order("log_date", { ascending: false })
       .limit(60);
     if (error) setError(error.message);
-    setLogs((data || []) as any);
+    setLogs((data || []) as ProgressLog[]);
     setLoading(false);
   }, [user]);
 

@@ -54,6 +54,23 @@ function Page() {
   const [swap, setSwap] = useState<{ dayIdx: number; mealIdx: number } | null>(null);
   const saved = useSavedMealPlans(user?.id);
 
+  // Must be before early returns — hooks cannot be called conditionally
+  const swapMeta = useMemo(() => {
+    if (!plan || !swap || !profile) return { title: "", options: [] as SwapOption[] };
+    const m = plan.days[swap.dayIdx].meals[swap.mealIdx];
+    const matched = matchRecipe(m);
+    const alts = suggestRecipeAlternatives(m, profile, matched?.id);
+    return {
+      title: `Swap "${m.name}"`,
+      options: alts.map((r) => ({
+        id: r.id,
+        title: `${r.emoji} ${r.name}`,
+        subtitle: `${r.calories} kcal · ${r.protein}g protein · ${r.time} min`,
+        meta: r.tags.slice(0, 3).join(" · "),
+      })),
+    };
+  }, [plan, swap, profile]);
+
   if (loading) return <LoadingState rows={3} />;
   if (!user)
     return <Redirect msg="Sign in to use the AI meal planner." to="/profile" cta="Sign in" />;
@@ -75,6 +92,7 @@ function Page() {
       const { error: saveErr } = await supabase.from("ai_meal_plans").insert({
         user_id: user.id,
         name: res.plan.name,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         plan: res.plan as any,
       });
       setSaving(false);
@@ -83,8 +101,8 @@ function Page() {
         toast.success("Plan saved");
         saved.refresh();
       }
-    } catch (e: any) {
-      setErr(e?.message || "Failed to generate plan");
+    } catch (e) {
+      setErr((e as Error)?.message || "Failed to generate plan");
     } finally {
       setBusy(false);
     }
@@ -136,6 +154,7 @@ function Page() {
     const { error } = await supabase.from("ai_meal_plans").insert({
       user_id: user.id,
       name: `${plan.name} (edited)`,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       plan: plan as any,
     });
     setSaving(false);
@@ -150,19 +169,31 @@ function Page() {
   const onCopyGrocery = async () => {
     if (!plan) return;
     const ok = await copyText(flattenGrocery(plan));
-    ok ? toast.success("Grocery list copied") : toast.error("Couldn't copy");
+    if (ok) {
+      toast.success("Grocery list copied");
+    } else {
+      toast.error("Couldn't copy");
+    }
   };
   const onCopyPrep = async () => {
     if (!plan) return;
     const ok = await copyText(flattenPrep(plan));
-    ok ? toast.success("Prep instructions copied") : toast.error("Couldn't copy");
+    if (ok) {
+      toast.success("Prep instructions copied");
+    } else {
+      toast.error("Couldn't copy");
+    }
   };
 
   const markMealDone = async (dayIdx: number, mealIdx: number) => {
     if (!plan) return;
     const key = `${dayIdx}:${mealIdx}`;
     const next = new Set(completed);
-    next.has(key) ? next.delete(key) : next.add(key);
+    if (next.has(key)) {
+      next.delete(key);
+    } else {
+      next.add(key);
+    }
     setCompleted(next);
     // If this is "today" (first day) and >= half completed, mark progress
     const todayMeals = plan.days[0]?.meals.length ?? 0;
@@ -178,22 +209,6 @@ function Page() {
       }
     }
   };
-
-  const swapMeta = useMemo(() => {
-    if (!plan || !swap) return { title: "", options: [] as SwapOption[] };
-    const m = plan.days[swap.dayIdx].meals[swap.mealIdx];
-    const matched = matchRecipe(m);
-    const alts = suggestRecipeAlternatives(m, profile, matched?.id);
-    return {
-      title: `Swap "${m.name}"`,
-      options: alts.map((r) => ({
-        id: r.id,
-        title: `${r.emoji} ${r.name}`,
-        subtitle: `${r.calories} kcal · ${r.protein}g protein · ${r.time} min`,
-        meta: r.tags.slice(0, 3).join(" · "),
-      })),
-    };
-  }, [plan, swap, profile]);
 
   return (
     <div className="space-y-6">

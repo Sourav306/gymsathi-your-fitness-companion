@@ -68,8 +68,8 @@ function Onboarding() {
       await save(parsed);
       toast.success("Profile saved!");
       navigate({ to: "/coach" });
-    } catch (err: any) {
-      toast.error(err?.message || "Please check your inputs");
+    } catch (err) {
+      toast.error((err as Error)?.message || "Please check your inputs");
     } finally {
       setBusy(false);
     }
@@ -100,7 +100,7 @@ function Onboarding() {
             <Select
               label="Gender"
               value={form.gender}
-              onChange={(v) => set("gender", v as any)}
+              onChange={(v) => set("gender", v as UserProfile["gender"])}
               options={[
                 ["male", "Male"],
                 ["female", "Female"],
@@ -126,7 +126,7 @@ function Onboarding() {
           <Select
             label="Primary goal"
             value={form.goal}
-            onChange={(v) => set("goal", v as any)}
+            onChange={(v) => set("goal", v as UserProfile["goal"])}
             options={[
               ["lose_fat", "Lose fat"],
               ["gain_muscle", "Gain muscle"],
@@ -137,7 +137,7 @@ function Onboarding() {
           <Select
             label="Activity level"
             value={form.activity_level}
-            onChange={(v) => set("activity_level", v as any)}
+            onChange={(v) => set("activity_level", v as UserProfile["activity_level"])}
             options={[
               ["sedentary", "Sedentary"],
               ["light", "Lightly active"],
@@ -152,7 +152,7 @@ function Onboarding() {
           <Select
             label="Gym access"
             value={form.gym_access}
-            onChange={(v) => set("gym_access", v as any)}
+            onChange={(v) => set("gym_access", v as UserProfile["gym_access"])}
             options={[
               ["full_gym", "Full gym"],
               ["home", "Home equipment"],
@@ -162,7 +162,7 @@ function Onboarding() {
           <Select
             label="Experience"
             value={form.experience}
-            onChange={(v) => set("experience", v as any)}
+            onChange={(v) => set("experience", v as UserProfile["experience"])}
             options={[
               ["beginner", "Beginner"],
               ["intermediate", "Intermediate"],
@@ -181,7 +181,7 @@ function Onboarding() {
           <Select
             label="Diet"
             value={form.diet_preference}
-            onChange={(v) => set("diet_preference", v as any)}
+            onChange={(v) => set("diet_preference", v as UserProfile["diet_preference"])}
             options={[
               ["vegetarian", "Vegetarian"],
               ["non_vegetarian", "Non-vegetarian"],
@@ -192,7 +192,7 @@ function Onboarding() {
           <Select
             label="Cuisine"
             value={form.cuisine_preference}
-            onChange={(v) => set("cuisine_preference", v as any)}
+            onChange={(v) => set("cuisine_preference", v as UserProfile["cuisine_preference"])}
             options={[
               ["indian", "Indian"],
               ["punjabi", "Punjabi"],

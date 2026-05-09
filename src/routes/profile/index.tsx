@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useState, type ComponentType } from "react";
 import {
   LogOut,
   User as UserIcon,
@@ -89,8 +89,8 @@ function Profile() {
         if (error) throw error;
         toast.success("Welcome back!");
       }
-    } catch (err: any) {
-      toast.error(err.message || "Something went wrong");
+    } catch (err) {
+      toast.error((err as Error)?.message || "Something went wrong");
     } finally {
       setBusy(false);
     }
@@ -229,7 +229,7 @@ function Row({
   last,
 }: {
   to: "/onboarding" | "/progress" | "/favorites" | "/plans" | "/meal-plans";
-  icon: any;
+  icon: ComponentType<{ className?: string }>;
   label: string;
   last?: boolean;
 }) {
