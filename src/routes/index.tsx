@@ -321,7 +321,7 @@ function Home() {
           <button
             onClick={onAnalyze}
             disabled={evalBusy}
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-sm font-semibold text-background disabled:opacity-50"
+            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary to-primary-glow px-4 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] press disabled:opacity-50"
           >
             {evalBusy ? (
               <Loader2 className="h-4 w-4 animate-spin" />
