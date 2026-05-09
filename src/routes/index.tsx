@@ -471,25 +471,31 @@ function TaskRow({
         onClick={handle}
         disabled={pending}
         className={cn(
-          "flex w-full items-center gap-3 rounded-2xl border bg-card p-3 text-left transition active:scale-[0.99]",
-          task.is_completed ? "border-primary/40 bg-accent/30" : "border-border",
+          "flex w-full items-center gap-3 rounded-2xl border p-3 text-left press hover-lift",
+          task.is_completed
+            ? "border-primary/40 bg-gradient-to-r from-primary/15 to-primary-glow/10"
+            : "glass-card",
         )}
       >
         <span
           className={cn(
-            "grid h-9 w-9 shrink-0 place-items-center rounded-xl",
+            "grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-all duration-300",
             task.is_completed
-              ? "bg-primary text-primary-foreground"
+              ? "bg-gradient-to-br from-primary to-primary-glow text-primary-foreground scale-105"
               : "bg-secondary text-muted-foreground",
           )}
         >
-          {task.is_completed ? <CheckCircle2 className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
+          {task.is_completed ? (
+            <CheckCircle2 className="h-5 w-5 anim-scale-in" />
+          ) : (
+            <Icon className="h-5 w-5" />
+          )}
         </span>
         <span className="min-w-0 flex-1">
           <span
             className={cn(
-              "block truncate text-sm font-semibold",
-              task.is_completed && "line-through opacity-70",
+              "block truncate text-sm font-semibold transition-all duration-300",
+              task.is_completed && "line-through opacity-60",
             )}
           >
             {task.title}
