@@ -239,11 +239,11 @@ function Home() {
 
       {/* AI message / Today score */}
       {evaluation?.ai_feedback_message ? (
-        <section className="rounded-3xl border border-primary/20 bg-accent/40 p-4">
-          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary">
-            <Sparkles className="h-3.5 w-3.5" /> AI Coach feedback
+        <section className="glass-card rounded-3xl p-4 anim-fade-up">
+          <div className="inline-flex items-center gap-1.5 rounded-full glass px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary">
+            <Sparkles className="h-3 w-3" /> AI Feedback
           </div>
-          <p className="mt-2 text-sm">{evaluation.ai_feedback_message}</p>
+          <p className="mt-2.5 text-sm leading-snug text-foreground/90">{evaluation.ai_feedback_message}</p>
           {Array.isArray(evaluation.improvement_suggestions) &&
             evaluation.improvement_suggestions.length > 0 && (
               <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">
