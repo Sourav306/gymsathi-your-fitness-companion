@@ -28,7 +28,10 @@ export const UserProfileSchema = z.object({
   step_goal: z.number().int().min(1000).max(40000).optional().nullable(),
   sleep_goal_hours: z.number().min(4).max(12).optional().nullable(),
   budget_level: z.enum(["low", "medium", "high"]).optional().nullable(),
-  meal_prep_style: z.enum(["fresh_daily", "batch_2x_week", "batch_weekly", "mixed"]).optional().nullable(),
+  meal_prep_style: z
+    .enum(["fresh_daily", "batch_2x_week", "batch_weekly", "mixed"])
+    .optional()
+    .nullable(),
   onboarding_completed: z.boolean().optional().nullable(),
 });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
@@ -50,10 +53,12 @@ export const MealDaySchema = z.object({
   totalProtein: z.number(),
 });
 
-export const GroceryListSchema = z.array(z.object({
-  category: z.string(),
-  items: z.array(z.string()),
-}));
+export const GroceryListSchema = z.array(
+  z.object({
+    category: z.string(),
+    items: z.array(z.string()),
+  }),
+);
 
 export const MealPlanSchema = z.object({
   name: z.string(),

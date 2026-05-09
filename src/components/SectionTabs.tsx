@@ -6,11 +6,14 @@ type TabItem = { to: string; label: string; matches?: string[] };
 export function SectionTabs({ tabs, ariaLabel }: { tabs: TabItem[]; ariaLabel: string }) {
   const { pathname } = useLocation();
   return (
-    <div role="tablist" aria-label={ariaLabel} className="flex gap-1 rounded-2xl bg-secondary/60 p-1">
+    <div
+      role="tablist"
+      aria-label={ariaLabel}
+      className="flex gap-1 rounded-2xl bg-secondary/60 p-1"
+    >
       {tabs.map((t) => {
         const active =
-          pathname === t.to ||
-          (t.matches?.some((m) => pathname.startsWith(m)) ?? false);
+          pathname === t.to || (t.matches?.some((m) => pathname.startsWith(m)) ?? false);
         return (
           <Link
             key={t.to}
@@ -19,7 +22,9 @@ export function SectionTabs({ tabs, ariaLabel }: { tabs: TabItem[]; ariaLabel: s
             aria-selected={active}
             className={cn(
               "flex-1 rounded-xl px-3 py-2 text-center text-sm font-semibold transition-colors",
-              active ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              active
+                ? "bg-background text-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             {t.label}

@@ -50,7 +50,9 @@ export async function fetchRecentProgress(userId: string): Promise<RecentProgres
   since.setDate(since.getDate() - 7);
   const { data } = await supabase
     .from("progress_logs")
-    .select("log_date, weight_kg, calories_consumed, protein_consumed, workout_completed, meal_plan_completed")
+    .select(
+      "log_date, weight_kg, calories_consumed, protein_consumed, workout_completed, meal_plan_completed",
+    )
     .eq("user_id", userId)
     .gte("log_date", since.toISOString().slice(0, 10))
     .order("log_date", { ascending: false })

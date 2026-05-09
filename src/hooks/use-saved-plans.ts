@@ -3,14 +3,22 @@ import { supabase } from "@/integrations/supabase/client";
 import type { MealPlan, WorkoutPlan } from "@/lib/ai/schemas";
 
 export type SavedMealPlan = { id: string; name: string | null; created_at: string; plan: MealPlan };
-export type SavedWorkoutPlan = { id: string; name: string | null; created_at: string; plan: WorkoutPlan };
+export type SavedWorkoutPlan = {
+  id: string;
+  name: string | null;
+  created_at: string;
+  plan: WorkoutPlan;
+};
 
 export function useSavedMealPlans(userId: string | undefined) {
   const [items, setItems] = useState<SavedMealPlan[]>([]);
   const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(async () => {
-    if (!userId) { setItems([]); return; }
+    if (!userId) {
+      setItems([]);
+      return;
+    }
     setLoading(true);
     const { data, error } = await supabase
       .from("ai_meal_plans")
@@ -21,7 +29,9 @@ export function useSavedMealPlans(userId: string | undefined) {
     setLoading(false);
   }, [userId]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   const remove = async (id: string) => {
     const { error } = await supabase.from("ai_meal_plans").delete().eq("id", id);
@@ -37,7 +47,10 @@ export function useSavedWorkoutPlans(userId: string | undefined) {
   const [loading, setLoading] = useState(false);
 
   const refresh = useCallback(async () => {
-    if (!userId) { setItems([]); return; }
+    if (!userId) {
+      setItems([]);
+      return;
+    }
     setLoading(true);
     const { data, error } = await supabase
       .from("ai_workout_plans")
@@ -48,7 +61,9 @@ export function useSavedWorkoutPlans(userId: string | undefined) {
     setLoading(false);
   }, [userId]);
 
-  useEffect(() => { refresh(); }, [refresh]);
+  useEffect(() => {
+    refresh();
+  }, [refresh]);
 
   const remove = async (id: string) => {
     const { error } = await supabase.from("ai_workout_plans").delete().eq("id", id);

@@ -14,7 +14,10 @@ export const Route = createFileRoute("/plans/")({
   head: () => ({
     meta: [
       { title: "Workout Plans — GymSathi" },
-      { name: "description", content: "Beginner and intermediate workout plans for strength, muscle, and fat loss." },
+      {
+        name: "description",
+        content: "Beginner and intermediate workout plans for strength, muscle, and fat loss.",
+      },
     ],
   }),
   component: Plans,
@@ -24,7 +27,8 @@ function planMatches(planId: string, planGoal: string, planLevel: string, key: G
   const g = planGoal.toLowerCase();
   if (key === "beginner") return planLevel === "Beginner";
   if (key === "muscle") return g.includes("muscle") || g.includes("strength");
-  if (key === "fatloss") return g.includes("fat") || g.includes("lose") || planId.includes("fatloss");
+  if (key === "fatloss")
+    return g.includes("fat") || g.includes("lose") || planId.includes("fatloss");
   return true;
 }
 
@@ -32,7 +36,10 @@ function Plans() {
   const [goals, setGoals] = useState<GoalKey[]>([]);
 
   const filtered = useMemo(
-    () => PLANS.filter((p) => goals.length === 0 || goals.some((g) => planMatches(p.id, p.goal, p.level, g))),
+    () =>
+      PLANS.filter(
+        (p) => goals.length === 0 || goals.some((g) => planMatches(p.id, p.goal, p.level, g)),
+      ),
     [goals],
   );
 
@@ -44,27 +51,44 @@ function Plans() {
       </div>
       <SectionTabs tabs={WORKOUT_TABS} ariaLabel="Workout sections" />
 
-      <FilterChips multi
+      <FilterChips
+        multi
         options={[
           { key: "beginner", label: "Beginner" },
           { key: "muscle", label: "Muscle gain" },
           { key: "fatloss", label: "Fat loss" },
         ]}
-        value={goals} onChange={setGoals}
+        value={goals}
+        onChange={setGoals}
       />
 
       {filtered.length === 0 ? (
-        <EmptyState icon={ListChecks} title="No plans match"
+        <EmptyState
+          icon={ListChecks}
+          title="No plans match"
           message="Try clearing the filters to see all plans."
-          action={<button onClick={() => setGoals([])} className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Show all plans</button>} />
+          action={
+            <button
+              onClick={() => setGoals([])}
+              className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+            >
+              Show all plans
+            </button>
+          }
+        />
       ) : (
         <div className="space-y-6">
           {filtered.map((p) => (
-            <article key={p.id} className="overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]">
+            <article
+              key={p.id}
+              className="overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]"
+            >
               <div className="relative p-6 md:p-8" style={{ background: "var(--gradient-card)" }}>
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <span className="inline-flex rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">{p.level}</span>
+                    <span className="inline-flex rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
+                      {p.level}
+                    </span>
                     <h2 className="mt-3 font-display text-2xl font-bold md:text-3xl">{p.name}</h2>
                     <p className="mt-2 max-w-xl text-sm text-muted-foreground">{p.description}</p>
                   </div>
@@ -95,8 +119,11 @@ function Plans() {
                           if (!ex) return null;
                           return (
                             <li key={`${item.exerciseId}-${idx}`}>
-                              <Link to="/exercises/$id" params={{ id: ex.id }}
-                                className="flex min-h-12 items-center justify-between gap-3 py-2.5 -mx-1 px-1 rounded-lg active:bg-secondary">
+                              <Link
+                                to="/exercises/$id"
+                                params={{ id: ex.id }}
+                                className="flex min-h-12 items-center justify-between gap-3 py-2.5 -mx-1 px-1 rounded-lg active:bg-secondary"
+                              >
                                 <div className="min-w-0 flex-1">
                                   <div className="truncate text-sm font-medium">{ex.name}</div>
                                   <div className="truncate text-xs text-muted-foreground">
