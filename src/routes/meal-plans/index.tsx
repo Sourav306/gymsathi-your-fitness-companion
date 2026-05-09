@@ -11,7 +11,11 @@ export const Route = createFileRoute("/meal-plans/")({
   head: () => ({
     meta: [
       { title: "Meal Plans — GymSathi" },
-      { name: "description", content: "7-day Indian meal plans for muscle gain, fat loss, vegetarian, non-veg, and budget." },
+      {
+        name: "description",
+        content:
+          "7-day Indian meal plans for muscle gain, fat loss, vegetarian, non-veg, and budget.",
+      },
     ],
   }),
   component: MealPlansPage,
@@ -30,27 +34,47 @@ function MealPlansPage() {
     <div className="space-y-5">
       <div>
         <h1 className="font-display text-3xl font-bold">Nutrition</h1>
-        <p className="mt-1 text-sm text-muted-foreground">7-day Indian meal plans for every goal.</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          7-day Indian meal plans for every goal.
+        </p>
       </div>
       <SectionTabs tabs={NUTRITION_TABS} ariaLabel="Nutrition sections" />
 
       <FilterChips multi options={MEAL_PLAN_FILTERS} value={tags} onChange={setTags} />
 
       {filtered.length === 0 ? (
-        <EmptyState icon={Utensils} title="No meal plans match"
+        <EmptyState
+          icon={Utensils}
+          title="No meal plans match"
           message="Try clearing the filters."
-          action={<button onClick={() => setTags([])} className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground">Show all</button>} />
+          action={
+            <button
+              onClick={() => setTags([])}
+              className="rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground"
+            >
+              Show all
+            </button>
+          }
+        />
       ) : (
         <div className="space-y-4">
           {filtered.map((p) => {
             const open = openId === p.id;
             return (
-              <article key={p.id} className="overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]">
+              <article
+                key={p.id}
+                className="overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-soft)]"
+              >
                 <div className="flex items-start gap-3 p-5 md:p-6">
-                  <button type="button" onClick={() => setOpenId(open ? null : p.id)}
-                    className="flex min-w-0 flex-1 items-start gap-3 text-left active:scale-[0.99]">
+                  <button
+                    type="button"
+                    onClick={() => setOpenId(open ? null : p.id)}
+                    className="flex min-w-0 flex-1 items-start gap-3 text-left active:scale-[0.99]"
+                  >
                     <div className="min-w-0 flex-1">
-                      <span className="inline-flex rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-semibold text-accent-foreground">{p.dietType}</span>
+                      <span className="inline-flex rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-semibold text-accent-foreground">
+                        {p.dietType}
+                      </span>
                       <h2 className="mt-2 font-display text-xl font-bold md:text-2xl">{p.name}</h2>
                       <p className="mt-1 text-sm text-muted-foreground">{p.description}</p>
                       <div className="mt-3 flex flex-wrap gap-2 text-xs">
@@ -62,7 +86,9 @@ function MealPlansPage() {
                         </span>
                       </div>
                     </div>
-                    <ChevronRight className={`mt-1 h-5 w-5 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`} />
+                    <ChevronRight
+                      className={`mt-1 h-5 w-5 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-90" : ""}`}
+                    />
                   </button>
                   <FavButton kind="recipe" itemId={p.id} />
                 </div>
@@ -70,10 +96,15 @@ function MealPlansPage() {
                 {open && (
                   <div className="grid gap-3 border-t border-border p-4 md:grid-cols-2 md:p-6">
                     {p.days.map((d) => (
-                      <div key={d.day} className="rounded-2xl border border-border bg-background p-4">
+                      <div
+                        key={d.day}
+                        className="rounded-2xl border border-border bg-background p-4"
+                      >
                         <div className="mb-2 flex items-center justify-between">
                           <div className="text-sm font-semibold">{d.day}</div>
-                          <div className="text-xs text-muted-foreground">{d.totalCalories} kcal · {d.totalProtein}g</div>
+                          <div className="text-xs text-muted-foreground">
+                            {d.totalCalories} kcal · {d.totalProtein}g
+                          </div>
                         </div>
                         <dl className="space-y-1.5 text-sm">
                           <Row label="Breakfast" value={d.breakfast} />
@@ -92,7 +123,10 @@ function MealPlansPage() {
       )}
 
       <p className="pt-2 text-center text-xs text-muted-foreground">
-        Looking for single recipes? <Link to="/recipes" className="text-primary hover:underline">Browse recipes</Link>
+        Looking for single recipes?{" "}
+        <Link to="/recipes" className="text-primary hover:underline">
+          Browse recipes
+        </Link>
       </p>
     </div>
   );
@@ -101,7 +135,9 @@ function MealPlansPage() {
 function Row({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex gap-2">
-      <dt className="w-20 shrink-0 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{label}</dt>
+      <dt className="w-20 shrink-0 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+        {label}
+      </dt>
       <dd className="flex-1">{value}</dd>
     </div>
   );

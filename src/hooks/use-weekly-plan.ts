@@ -19,8 +19,12 @@ export function useWeeklyPlan(userId: string | undefined, weekStart: string | un
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    if (!userId || !weekStart) { setRow(null); return; }
-    setLoading(true); setError(null);
+    if (!userId || !weekStart) {
+      setRow(null);
+      return;
+    }
+    setLoading(true);
+    setError(null);
     const { data, error } = await supabase
       .from("weekly_plans")
       .select("*")
@@ -32,20 +36,31 @@ export function useWeeklyPlan(userId: string | undefined, weekStart: string | un
     setLoading(false);
   }, [userId, weekStart]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
-  const save = useCallback(async (data: WeeklyPlanData, refs: { meal_plan_id?: string | null; workout_plan_id?: string | null }) => {
-    if (!userId || !weekStart) throw new Error("Not signed in");
-    const { error } = await supabase.from("weekly_plans").upsert({
-      user_id: userId,
-      week_start: weekStart,
-      meal_plan_id: refs.meal_plan_id ?? null,
-      workout_plan_id: refs.workout_plan_id ?? null,
-      plan_data: data as any,
-    }, { onConflict: "user_id,week_start" });
-    if (error) throw error;
-    await load();
-  }, [userId, weekStart, load]);
+  const save = useCallback(
+    async (
+      data: WeeklyPlanData,
+      refs: { meal_plan_id?: string | null; workout_plan_id?: string | null },
+    ) => {
+      if (!userId || !weekStart) throw new Error("Not signed in");
+      const { error } = await supabase.from("weekly_plans").upsert(
+        {
+          user_id: userId,
+          week_start: weekStart,
+          meal_plan_id: refs.meal_plan_id ?? null,
+          workout_plan_id: refs.workout_plan_id ?? null,
+          plan_data: data as any,
+        },
+        { onConflict: "user_id,week_start" },
+      );
+      if (error) throw error;
+      await load();
+    },
+    [userId, weekStart, load],
+  );
 
   return { row, loading, error, save, reload: load };
 }

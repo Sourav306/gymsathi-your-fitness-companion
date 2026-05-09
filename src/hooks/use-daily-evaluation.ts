@@ -47,7 +47,11 @@ export function useDailyEvaluation() {
   const evaluate = useServerFn(evaluateDailyPerformance);
 
   const load = useCallback(async () => {
-    if (!user) { setEvaluation(null); setLoading(false); return; }
+    if (!user) {
+      setEvaluation(null);
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     const { data } = await supabase
       .from("daily_evaluations")
@@ -59,11 +63,14 @@ export function useDailyEvaluation() {
     setLoading(false);
   }, [user]);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    load();
+  }, [load]);
 
   const analyze = useCallback(async () => {
     if (!user) throw new Error("Not signed in");
-    setBusy(true); setError(null);
+    setBusy(true);
+    setError(null);
     try {
       // yesterday tasks
       const { data: yTasks } = await supabase
@@ -83,19 +90,26 @@ export function useDailyEvaluation() {
       const byDate = new Map<string, { total: number; completed: number }>();
       (weekTasks || []).forEach((t: any) => {
         const cur = byDate.get(t.task_date) || { total: 0, completed: 0 };
-        cur.total += 1; if (t.is_completed) cur.completed += 1;
+        cur.total += 1;
+        if (t.is_completed) cur.completed += 1;
         byDate.set(t.task_date, cur);
       });
       const last7 = Array.from(byDate.entries()).map(([date, v]) => ({ date, ...v }));
 
-      const targets: { calories: number | null; protein: number | null } = profile ? calcTargets(profile) : { calories: null, protein: null };
+      const targets: { calories: number | null; protein: number | null } = profile
+        ? calcTargets(profile)
+        : { calories: null, protein: null };
       const waterTarget = profile?.water_goal_liters ?? 3;
       const stepsTarget = profile?.step_goal ?? 8000;
 
       const stripTask = (t: DailyTask | any) => ({
-        title: t.title, category: t.category,
-        target_value: t.target_value, completed_value: t.completed_value,
-        unit: t.unit, is_completed: t.is_completed, points: t.points,
+        title: t.title,
+        category: t.category,
+        target_value: t.target_value,
+        completed_value: t.completed_value,
+        unit: t.unit,
+        is_completed: t.is_completed,
+        points: t.points,
       });
 
       const { feedback } = await evaluate({
@@ -113,7 +127,10 @@ export function useDailyEvaluation() {
             waterActual: todayLog?.water_liters != null ? Number(todayLog.water_liters) : null,
             stepsTarget,
             stepsActual: null,
-            workoutDone: todayLog?.workout_completed ?? (tasks.find((t) => t.category === "workout")?.is_completed ?? null),
+            workoutDone:
+              todayLog?.workout_completed ??
+              tasks.find((t) => t.category === "workout")?.is_completed ??
+              null,
           },
           profile: { name: profile?.name ?? null, goal: profile?.goal ?? null },
         },

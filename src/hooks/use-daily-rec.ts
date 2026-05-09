@@ -10,7 +10,8 @@ const today = () => new Date().toISOString().slice(0, 10);
 
 function pickRecipe(p: UserProfile, seed = 0) {
   const matching = RECIPES.filter((r) => {
-    if (p.diet_preference === "vegetarian" || p.diet_preference === "vegan") return r.type === "Veg";
+    if (p.diet_preference === "vegetarian" || p.diet_preference === "vegan")
+      return r.type === "Veg";
     if (p.diet_preference === "eggetarian") return r.type !== "Non-Veg";
     return true;
   });
@@ -21,7 +22,9 @@ function pickRecipe(p: UserProfile, seed = 0) {
 export function useDailyRec() {
   const { profile, user, loading: profileLoading } = useProfile();
   const [rec, setRec] = useState<DailyRecommendation | null>(null);
-  const [history, setHistory] = useState<{ for_date: string; recommendation: DailyRecommendation }[]>([]);
+  const [history, setHistory] = useState<
+    { for_date: string; recommendation: DailyRecommendation }[]
+  >([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,8 +41,12 @@ export function useDailyRec() {
   }, [user]);
 
   const load = useCallback(async () => {
-    if (!user || !profile) { setLoading(false); return; }
-    setLoading(true); setError(null);
+    if (!user || !profile) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError(null);
     try {
       const { data, error } = await supabase
         .from("daily_recommendations")
@@ -56,35 +63,58 @@ export function useDailyRec() {
         const fresh = mockDailyRecommendation(profile, recipe.name, recipe.id, rp);
         const { error: insErr } = await supabase
           .from("daily_recommendations")
-          .upsert({ user_id: user.id, for_date: today(), recommendation: fresh as any }, { onConflict: "user_id,for_date" });
+          .upsert(
+            { user_id: user.id, for_date: today(), recommendation: fresh as any },
+            { onConflict: "user_id,for_date" },
+          );
         if (insErr) throw insErr;
         setRec(fresh);
       }
       await loadHistory();
     } catch (e: any) {
       setError(e?.message || "Failed to load recommendation");
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }, [user, profile, loadHistory]);
 
-  useEffect(() => { if (!profileLoading) load(); }, [profileLoading, load]);
+  useEffect(() => {
+    if (!profileLoading) load();
+  }, [profileLoading, load]);
 
   const refresh = useCallback(async () => {
     if (!user || !profile) return;
-    setBusy(true); setError(null);
+    setBusy(true);
+    setError(null);
     try {
       const recipe = pickRecipe(profile, Math.floor(Math.random() * 100));
       const rp = await fetchRecentProgress(user.id);
       const fresh = mockDailyRecommendation(profile, recipe.name, recipe.id, rp);
       const { error } = await supabase
         .from("daily_recommendations")
-        .upsert({ user_id: user.id, for_date: today(), recommendation: fresh as any }, { onConflict: "user_id,for_date" });
+        .upsert(
+          { user_id: user.id, for_date: today(), recommendation: fresh as any },
+          { onConflict: "user_id,for_date" },
+        );
       if (error) throw error;
       setRec(fresh);
       await loadHistory();
     } catch (e: any) {
       setError(e?.message || "Failed to refresh");
-    } finally { setBusy(false); }
+    } finally {
+      setBusy(false);
+    }
   }, [user, profile, loadHistory]);
 
-  return { rec, history, loading: profileLoading || loading, busy, error, refresh, reload: load, profile, user };
+  return {
+    rec,
+    history,
+    loading: profileLoading || loading,
+    busy,
+    error,
+    refresh,
+    reload: load,
+    profile,
+    user,
+  };
 }

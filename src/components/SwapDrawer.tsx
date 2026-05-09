@@ -1,4 +1,10 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 export interface SwapOption {
   id: string;
@@ -31,7 +37,9 @@ export function SwapDrawer({
         </DialogHeader>
         <div className="space-y-2">
           {options.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No good alternatives in your library yet.</p>
+            <p className="text-sm text-muted-foreground">
+              No good alternatives in your library yet.
+            </p>
           ) : (
             options.map((o) => (
               <button

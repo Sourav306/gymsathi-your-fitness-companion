@@ -31,8 +31,13 @@ export function useDailyTasks(date?: string) {
   const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    if (!user) { setTasks([]); setLoading(false); return; }
-    setLoading(true); setError(null);
+    if (!user) {
+      setTasks([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    setError(null);
     const { data, error } = await supabase
       .from("daily_tasks")
       .select("*")
@@ -44,7 +49,9 @@ export function useDailyTasks(date?: string) {
     setLoading(false);
   }, [user, taskDate]);
 
-  useEffect(() => { if (!authLoading) load(); }, [authLoading, load]);
+  useEffect(() => {
+    if (!authLoading) load();
+  }, [authLoading, load]);
 
   const generateTodayTasks = useCallback(async () => {
     if (!user) throw new Error("Not signed in");
@@ -55,7 +62,10 @@ export function useDailyTasks(date?: string) {
       .eq("user_id", user.id)
       .eq("task_date", taskDate)
       .limit(1);
-    if (existing && existing.length > 0) { await load(); return; }
+    if (existing && existing.length > 0) {
+      await load();
+      return;
+    }
     const defs = buildDefaultTasks(profile);
     const rows = defs.map((d) => ({ ...d, user_id: user.id, task_date: taskDate }));
     const { error } = await supabase.from("daily_tasks").insert(rows);
@@ -63,36 +73,59 @@ export function useDailyTasks(date?: string) {
     await load();
   }, [user, profile, taskDate, load]);
 
-  const toggleComplete = useCallback(async (id: string, isCompleted: boolean) => {
-    const t = tasks.find((x: DailyTask) => x.id === id);
-    const completed_value = isCompleted ? (t?.target_value ?? 1) : 0;
-    const { error } = await supabase
-      .from("daily_tasks")
-      .update({ is_completed: isCompleted, completed_value })
-      .eq("id", id);
-    if (error) throw error;
-    setTasks((prev: DailyTask[]) => prev.map((x: DailyTask) => (x.id === id ? { ...x, is_completed: isCompleted, completed_value } : x)));
-  }, [tasks]);
+  const toggleComplete = useCallback(
+    async (id: string, isCompleted: boolean) => {
+      const t = tasks.find((x: DailyTask) => x.id === id);
+      const completed_value = isCompleted ? (t?.target_value ?? 1) : 0;
+      const { error } = await supabase
+        .from("daily_tasks")
+        .update({ is_completed: isCompleted, completed_value })
+        .eq("id", id);
+      if (error) throw error;
+      setTasks((prev: DailyTask[]) =>
+        prev.map((x: DailyTask) =>
+          x.id === id ? { ...x, is_completed: isCompleted, completed_value } : x,
+        ),
+      );
+    },
+    [tasks],
+  );
 
-  const updateProgress = useCallback(async (id: string, value: number) => {
-    const t = tasks.find((x: DailyTask) => x.id === id);
-    const target = t?.target_value ?? 0;
-    const is_completed = target > 0 ? value >= target : value > 0;
-    const { error } = await supabase
-      .from("daily_tasks")
-      .update({ completed_value: value, is_completed })
-      .eq("id", id);
-    if (error) throw error;
-    setTasks((prev: DailyTask[]) => prev.map((x: DailyTask) => (x.id === id ? { ...x, completed_value: value, is_completed } : x)));
-  }, [tasks]);
+  const updateProgress = useCallback(
+    async (id: string, value: number) => {
+      const t = tasks.find((x: DailyTask) => x.id === id);
+      const target = t?.target_value ?? 0;
+      const is_completed = target > 0 ? value >= target : value > 0;
+      const { error } = await supabase
+        .from("daily_tasks")
+        .update({ completed_value: value, is_completed })
+        .eq("id", id);
+      if (error) throw error;
+      setTasks((prev: DailyTask[]) =>
+        prev.map((x: DailyTask) =>
+          x.id === id ? { ...x, completed_value: value, is_completed } : x,
+        ),
+      );
+    },
+    [tasks],
+  );
 
   const tasksTotal = tasks.length;
   const tasksCompleted = tasks.filter((t: DailyTask) => t.is_completed).length;
   const completionPct = tasksTotal > 0 ? Math.round((tasksCompleted / tasksTotal) * 100) : 0;
 
   return {
-    user, profile, tasks, loading: authLoading || loading, error,
-    tasksTotal, tasksCompleted, completionPct,
-    generateTodayTasks, toggleComplete, updateProgress, reload: load,
+    user,
+    profile,
+    tasks,
+    loading: authLoading || loading,
+    error,
+    tasksTotal,
+    tasksCompleted,
+    completionPct,
+    generateTodayTasks,
+    toggleComplete,
+    updateProgress,
+    reload: load,
   };
 }
