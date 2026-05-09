@@ -152,7 +152,7 @@ export function useCoachChat() {
           role: msg.role,
           content: msg.content,
           intent: msg.intent ?? null,
-          action_json: msg.actions ? { actions: msg.actions } : null,
+          action_json: msg.actions ? ({ actions: msg.actions } as unknown as never) : null,
         })
         .select("id,role,content,intent,action_json,created_at")
         .single();
@@ -215,7 +215,7 @@ export function useCoachChat() {
       const next = target.actions.map((a, i) => (i === idx ? { ...a, status } : a));
       await supabase
         .from("coach_chat_messages")
-        .update({ action_json: { actions: next } })
+        .update({ action_json: { actions: next } as unknown as never })
         .eq("id", messageId);
     },
     [messages],
