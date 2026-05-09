@@ -30,6 +30,7 @@ function Coach() {
   const { rec, history, loading, busy, error, refresh, profile, user } = useDailyRec();
   const { todayLog, logs } = useProgress();
   const weekStartISO = useMemo(() => fmtISO(startOfWeek()), []);
+  const adaptive = useAdaptiveCoach();
   const weekly = useWeeklyPlan(user?.id, user ? weekStartISO : undefined);
   const todayIdx = todayWeekdayIndex();
   const weekStats = useMemo(() => {
