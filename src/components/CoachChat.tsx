@@ -70,8 +70,13 @@ export function CoachChat() {
           ))
         )}
         {chat.sending && (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" /> Coach is thinking…
+          <div className="flex items-center gap-2 text-sm text-muted-foreground anim-fade-in">
+            <span className="inline-flex items-center gap-1">
+              <span className="typing-dot" />
+              <span className="typing-dot" />
+              <span className="typing-dot" />
+            </span>
+            Coach is thinking…
           </div>
         )}
         {chat.error && (
