@@ -6,6 +6,7 @@ import { FavButton } from "@/components/FavButton";
 import { FilterChips } from "@/components/FilterChips";
 import { SearchInput } from "@/components/SearchInput";
 import { EmptyState } from "@/components/States";
+import { SectionTabs, NUTRITION_TABS } from "@/components/SectionTabs";
 
 export const Route = createFileRoute("/recipes/")({
   validateSearch: (s: Record<string, unknown>): { open?: string } => ({
@@ -46,17 +47,10 @@ function Recipes() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-display text-3xl font-bold">High-Protein Recipes</h1>
-        <p className="mt-1 text-sm text-muted-foreground">Desi meals built around protein. Easy to prep.</p>
+        <h1 className="font-display text-3xl font-bold">Nutrition</h1>
+        <p className="mt-1 text-sm text-muted-foreground">Desi high-protein meals, full diet plans, and your calorie targets.</p>
       </div>
-
-      <Link to="/meal-plans" className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-accent/40 p-4 text-sm transition active:scale-[0.99] hover:bg-accent/60">
-        <div>
-          <div className="font-semibold">Need a full plan?</div>
-          <div className="text-xs text-muted-foreground">Check 7-day Meal Plans</div>
-        </div>
-        <ChevronRight className="h-5 w-5 text-muted-foreground" />
-      </Link>
+      <SectionTabs tabs={NUTRITION_TABS} ariaLabel="Nutrition sections" />
 
       <div className="sticky top-0 z-30 -mx-4 space-y-3 bg-background/90 px-4 pb-3 pt-1 backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0 md:pt-0 md:backdrop-blur-none">
         <SearchInput value={q} onChange={setQ} placeholder="Search recipes…" />
