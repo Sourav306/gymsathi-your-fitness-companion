@@ -18,6 +18,8 @@ import { useDailyRec } from "@/hooks/use-daily-rec";
 import { useProgress } from "@/hooks/use-progress";
 import { calcTargets } from "@/lib/ai/targets";
 import { LoadingState, ErrorState } from "@/components/States";
+import { CoachAdjustments } from "@/components/CoachAdjustments";
+import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
 
 export const Route = createFileRoute("/coach/")({
   head: () => ({ meta: [{ title: "AI Coach — GymSathi" }] }),
@@ -28,6 +30,7 @@ function Coach() {
   const { rec, history, loading, busy, error, refresh, profile, user } = useDailyRec();
   const { todayLog, logs } = useProgress();
   const weekStartISO = useMemo(() => fmtISO(startOfWeek()), []);
+  const adaptive = useAdaptiveCoach();
   const weekly = useWeeklyPlan(user?.id, user ? weekStartISO : undefined);
   const todayIdx = todayWeekdayIndex();
   const weekStats = useMemo(() => {
@@ -88,6 +91,8 @@ function Coach() {
       </header>
 
       {error && <ErrorState message={error} onRetry={refresh} />}
+
+      <CoachAdjustments coach={adaptive} />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <Stat

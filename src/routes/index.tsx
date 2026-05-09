@@ -25,6 +25,8 @@ import { fmtISO, startOfWeek, todayWeekdayIndex } from "@/lib/weekly";
 import { calcTargets } from "@/lib/ai/targets";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { CoachAdjustments } from "@/components/CoachAdjustments";
+import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -139,9 +141,11 @@ function Home() {
     }
   };
 
+  const adaptive = useAdaptiveCoach();
   const onAnalyze = async () => {
     try {
       await analyze();
+      adaptive.refresh().catch(() => {});
       toast.success("Analysis ready");
     } catch (e) {
       toast.error((e as Error)?.message || "Analysis failed");
@@ -329,7 +333,9 @@ function Home() {
         )}
       </section>
 
-      {/* Today's workout & meals from weekly plan */}
+      {/* Adaptive coach insights */}
+      {showSecondary && <CoachAdjustments compact coach={adaptive} />}
+
       {showSecondary && todayPlan && (
         <section>
           <h2 className="mb-3 font-display text-lg font-bold">From your weekly plan</h2>

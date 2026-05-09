@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      adaptive_insights: {
+        Row: {
+          created_at: string
+          id: string
+          insight_date: string
+          metadata: Json | null
+          priority: number
+          reason: string
+          status: string
+          suggested_action: string
+          title: string
+          type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          insight_date?: string
+          metadata?: Json | null
+          priority?: number
+          reason: string
+          status?: string
+          suggested_action: string
+          title: string
+          type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          insight_date?: string
+          metadata?: Json | null
+          priority?: number
+          reason?: string
+          status?: string
+          suggested_action?: string
+          title?: string
+          type?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ai_meal_plans: {
         Row: {
           created_at: string
