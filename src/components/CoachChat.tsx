@@ -56,8 +56,8 @@ export function CoachChat() {
           <div className="text-sm text-muted-foreground">Loading…</div>
         ) : chat.messages.length === 0 ? (
           <div className="rounded-xl bg-secondary/40 p-4 text-sm text-muted-foreground">
-            Hi! I'm your AI Coach. Ask me anything about your workouts, meals, or progress —
-            or pick a quick prompt below.
+            Hi! I'm your AI Coach. Ask me anything about your workouts, meals, or progress — or pick
+            a quick prompt below.
           </div>
         ) : (
           chat.messages.map((m) => (
@@ -144,9 +144,7 @@ function MessageBubble({
       <div className={`max-w-[85%] space-y-2 ${isUser ? "items-end" : "items-start"}`}>
         <div
           className={`rounded-2xl px-3.5 py-2 text-sm ${
-            isUser
-              ? "bg-primary text-primary-foreground"
-              : "bg-secondary/60 text-foreground"
+            isUser ? "bg-primary text-primary-foreground" : "bg-secondary/60 text-foreground"
           }`}
         >
           {message.content}
@@ -187,9 +185,7 @@ function ActionCard({
       <div className="mt-1 text-sm font-semibold">{a.title}</div>
       {a.description && <div className="text-xs text-muted-foreground">{a.description}</div>}
       {a.target_date && (
-        <div className="mt-1 text-[10px] uppercase text-muted-foreground">
-          For {a.target_date}
-        </div>
+        <div className="mt-1 text-[10px] uppercase text-muted-foreground">For {a.target_date}</div>
       )}
       {isPending ? (
         <div className="mt-2 flex flex-wrap items-center gap-2">
@@ -206,10 +202,7 @@ function ActionCard({
             <X className="h-3 w-3" /> Cancel
           </button>
           {a.type === "open_link" && a.link && (
-            <Link
-              to={a.link}
-              className="text-xs font-semibold text-primary hover:underline"
-            >
+            <Link to={a.link} className="text-xs font-semibold text-primary hover:underline">
               Open →
             </Link>
           )}

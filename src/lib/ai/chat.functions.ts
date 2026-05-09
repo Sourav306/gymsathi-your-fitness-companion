@@ -16,9 +16,7 @@ const ActionSchema = z.object({
   title: z.string(),
   description: z.string().optional().default(""),
   // create_task
-  category: z
-    .enum(["workout", "nutrition", "hydration", "steps", "sleep", "habit"])
-    .optional(),
+  category: z.enum(["workout", "nutrition", "hydration", "steps", "sleep", "habit"]).optional(),
   target_date: z.enum(["today", "tomorrow"]).optional(),
   target_value: z.number().nullable().optional(),
   unit: z.string().nullable().optional(),
@@ -27,9 +25,7 @@ const ActionSchema = z.object({
   // add_*_food
   food: z.string().optional(),
   // open_link
-  link: z
-    .enum(["/ai-meal", "/ai-workout", "/weekly-planner", "/progress", "/coach"])
-    .optional(),
+  link: z.enum(["/ai-meal", "/ai-workout", "/weekly-planner", "/progress", "/coach"]).optional(),
   requires_confirmation: z.boolean().optional().default(true),
 });
 export type CoachAction = z.infer<typeof ActionSchema>;
@@ -94,7 +90,11 @@ function deterministicReply(input: Input): CoachResponse {
 
   const dontLike = msg.match(/(?:don'?t like|hate|avoid|allergic to)\s+([a-z\s]+)/i);
   if (dontLike) {
-    const food = dontLike[1].trim().split(/[.,!?]/)[0].trim().slice(0, 40);
+    const food = dontLike[1]
+      .trim()
+      .split(/[.,!?]/)[0]
+      .trim()
+      .slice(0, 40);
     return {
       reply: `Got it — I'll keep ${food} out of future meal suggestions.`,
       intent: "food_dislike",
@@ -157,7 +157,8 @@ function deterministicReply(input: Input): CoachResponse {
 
   if (/easier|too hard|overwhelm|simplif/.test(msg)) {
     return {
-      reply: "Let's keep it simple. I can add an easier workout for tomorrow to help you stay consistent.",
+      reply:
+        "Let's keep it simple. I can add an easier workout for tomorrow to help you stay consistent.",
       intent: "make_plan_easier",
       suggested_actions: [
         {
