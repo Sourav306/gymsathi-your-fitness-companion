@@ -16,6 +16,7 @@ import { Route as ProgressIndexRouteImport } from './routes/progress/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as PlansIndexRouteImport } from './routes/plans/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
+import { Route as OnboardingChatIndexRouteImport } from './routes/onboarding-chat/index'
 import { Route as MealPlansIndexRouteImport } from './routes/meal-plans/index'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as ExercisesIndexRouteImport } from './routes/exercises/index'
@@ -58,6 +59,11 @@ const PlansIndexRoute = PlansIndexRouteImport.update({
 const OnboardingIndexRoute = OnboardingIndexRouteImport.update({
   id: '/onboarding/',
   path: '/onboarding/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingChatIndexRoute = OnboardingChatIndexRouteImport.update({
+  id: '/onboarding-chat/',
+  path: '/onboarding-chat/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MealPlansIndexRoute = MealPlansIndexRouteImport.update({
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/exercises/': typeof ExercisesIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/meal-plans/': typeof MealPlansIndexRoute
+  '/onboarding-chat/': typeof OnboardingChatIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/plans/': typeof PlansIndexRoute
   '/profile/': typeof ProfileIndexRoute
@@ -128,6 +135,7 @@ export interface FileRoutesByTo {
   '/exercises': typeof ExercisesIndexRoute
   '/favorites': typeof FavoritesIndexRoute
   '/meal-plans': typeof MealPlansIndexRoute
+  '/onboarding-chat': typeof OnboardingChatIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
   '/plans': typeof PlansIndexRoute
   '/profile': typeof ProfileIndexRoute
@@ -146,6 +154,7 @@ export interface FileRoutesById {
   '/exercises/': typeof ExercisesIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
   '/meal-plans/': typeof MealPlansIndexRoute
+  '/onboarding-chat/': typeof OnboardingChatIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/plans/': typeof PlansIndexRoute
   '/profile/': typeof ProfileIndexRoute
@@ -165,6 +174,7 @@ export interface FileRouteTypes {
     | '/exercises/'
     | '/favorites/'
     | '/meal-plans/'
+    | '/onboarding-chat/'
     | '/onboarding/'
     | '/plans/'
     | '/profile/'
@@ -182,6 +192,7 @@ export interface FileRouteTypes {
     | '/exercises'
     | '/favorites'
     | '/meal-plans'
+    | '/onboarding-chat'
     | '/onboarding'
     | '/plans'
     | '/profile'
@@ -199,6 +210,7 @@ export interface FileRouteTypes {
     | '/exercises/'
     | '/favorites/'
     | '/meal-plans/'
+    | '/onboarding-chat/'
     | '/onboarding/'
     | '/plans/'
     | '/profile/'
@@ -217,6 +229,7 @@ export interface RootRouteChildren {
   ExercisesIndexRoute: typeof ExercisesIndexRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
   MealPlansIndexRoute: typeof MealPlansIndexRoute
+  OnboardingChatIndexRoute: typeof OnboardingChatIndexRoute
   OnboardingIndexRoute: typeof OnboardingIndexRoute
   PlansIndexRoute: typeof PlansIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
@@ -274,6 +287,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding/'
       preLoaderRoute: typeof OnboardingIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding-chat/': {
+      id: '/onboarding-chat/'
+      path: '/onboarding-chat'
+      fullPath: '/onboarding-chat/'
+      preLoaderRoute: typeof OnboardingChatIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/meal-plans/': {
@@ -345,6 +365,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExercisesIndexRoute: ExercisesIndexRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
   MealPlansIndexRoute: MealPlansIndexRoute,
+  OnboardingChatIndexRoute: OnboardingChatIndexRoute,
   OnboardingIndexRoute: OnboardingIndexRoute,
   PlansIndexRoute: PlansIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
