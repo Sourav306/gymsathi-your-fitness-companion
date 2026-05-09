@@ -3,8 +3,8 @@ import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "./use-auth";
 import { useProfile } from "./use-profile";
-import { useDailyTasks, type DailyTask } from "./use-daily-tasks";
-import { useProgress, type ProgressLog } from "./use-progress";
+import { type DailyTask } from "./use-daily-tasks";
+import { type ProgressLog } from "./use-progress";
 import { calcTargets } from "@/lib/ai/targets";
 import { evaluateDailyPerformance } from "@/lib/ai/evaluate.functions";
 
@@ -35,31 +35,18 @@ const isoDaysAgo = (n: number) => {
   return d.toISOString().slice(0, 10);
 };
 
-export interface DailyEvaluationOptions {
-  tasks?: DailyTask[];
-  tasksTotal?: number;
-  tasksCompleted?: number;
-  completionPct?: number;
-  todayLog?: ProgressLog | null;
+export interface DailyEvaluationInput {
+  tasks: DailyTask[];
+  todayLog: ProgressLog | null;
 }
 
-export function useDailyEvaluation(opts: DailyEvaluationOptions = {}) {
+export function useDailyEvaluation(input: DailyEvaluationInput) {
   const { user } = useAuth();
   const { profile } = useProfile();
-  const externalTasks = opts.tasks !== undefined;
-  const externalProgress = opts.todayLog !== undefined;
-  const tasksFallback = useDailyTasks(externalTasks ? "__skip__" : undefined);
-  const progressFallback = useProgress(externalProgress ? 0 : 14);
-  const tasks = externalTasks ? (opts.tasks as DailyTask[]) : tasksFallback.tasks;
-  const tasksTotal = externalTasks ? (opts.tasksTotal ?? tasks.length) : tasksFallback.tasksTotal;
-  const tasksCompleted = externalTasks
-    ? (opts.tasksCompleted ?? tasks.filter((t) => t.is_completed).length)
-    : tasksFallback.tasksCompleted;
-  const completionPct = externalTasks
-    ? (opts.completionPct ??
-      (tasksTotal > 0 ? Math.round((tasksCompleted / tasksTotal) * 100) : 0))
-    : tasksFallback.completionPct;
-  const todayLog = externalProgress ? (opts.todayLog ?? null) : progressFallback.todayLog;
+  const { tasks, todayLog } = input;
+  const tasksTotal = tasks.length;
+  const tasksCompleted = tasks.filter((t) => t.is_completed).length;
+  const completionPct = tasksTotal > 0 ? Math.round((tasksCompleted / tasksTotal) * 100) : 0;
   const [evaluation, setEvaluation] = useState<DailyEvaluation | null>(null);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
