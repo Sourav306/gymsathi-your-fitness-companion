@@ -52,12 +52,42 @@ const CAT_ICON: Record<string, ComponentType<{ className?: string }>> = {
 function Home() {
   const { user } = useAuth();
   const { profile } = useProfile();
-  const { logs, todayLog } = useProgress();
+  const { logs, todayLog } = useProgress(14);
   const tasksHook = useDailyTasks();
-  const { evaluation, busy: evalBusy, analyze } = useDailyEvaluation();
+  const {
+    evaluation,
+    busy: evalBusy,
+    analyze,
+  } = useDailyEvaluation({
+    tasks: tasksHook.tasks,
+    todayLog,
+  });
+
+  // Defer non-critical sections (streak, weekly plan) until after first paint
+  const [showSecondary, setShowSecondary] = useState(false);
+  useEffect(() => {
+    const w =
+      typeof window !== "undefined"
+        ? (window as Window & { requestIdleCallback?: (cb: () => void) => number })
+        : null;
+    const ric = w?.requestIdleCallback;
+    if (ric) {
+      const id = ric(() => setShowSecondary(true));
+      return () => {
+        const cancel = (window as Window & { cancelIdleCallback?: (id: number) => void })
+          .cancelIdleCallback;
+        if (cancel) cancel(id);
+      };
+    }
+    const t = setTimeout(() => setShowSecondary(true), 200);
+    return () => clearTimeout(t);
+  }, []);
 
   const weekStartISO = useMemo(() => fmtISO(startOfWeek()), []);
-  const weekly = useWeeklyPlan(user?.id, user ? weekStartISO : undefined);
+  const weekly = useWeeklyPlan(
+    showSecondary ? user?.id : undefined,
+    showSecondary && user ? weekStartISO : undefined,
+  );
   const todayIdx = todayWeekdayIndex();
   const todayPlan = weekly.row?.plan_data?.days?.[todayIdx];
 
@@ -300,7 +330,7 @@ function Home() {
       </section>
 
       {/* Today's workout & meals from weekly plan */}
-      {todayPlan && (
+      {showSecondary && todayPlan && (
         <section>
           <h2 className="mb-3 font-display text-lg font-bold">From your weekly plan</h2>
           <div className="grid gap-3 sm:grid-cols-2">
@@ -369,41 +399,43 @@ function Home() {
       </section>
 
       {/* Streak */}
-      <section className="rounded-2xl border border-border bg-card p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl" aria-hidden>
-              🔥
-            </span>
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Current Streak
-              </div>
-              <div className="font-display text-lg font-bold">
-                {streakDays} {streakDays === 1 ? "day" : "days"}
-              </div>
-            </div>
-          </div>
-          <Link
-            to="/weekly-planner"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
-          >
-            <Calendar className="h-3.5 w-3.5" /> Weekly plan
-          </Link>
-        </div>
-        <div className="mt-3 grid grid-cols-7 gap-1">
-          {weekChecks.map((done, i) => (
-            <div key={i} className="flex flex-col items-center gap-1">
-              <span className="text-[10px] text-muted-foreground">{WEEKDAYS[i]}</span>
-              <span
-                className={`grid h-6 w-6 place-items-center rounded-full text-[10px] ${done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-              >
-                {done ? "✓" : ""}
+      {showSecondary && (
+        <section className="rounded-2xl border border-border bg-card p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xl" aria-hidden>
+                🔥
               </span>
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Current Streak
+                </div>
+                <div className="font-display text-lg font-bold">
+                  {streakDays} {streakDays === 1 ? "day" : "days"}
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+            <Link
+              to="/weekly-planner"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
+            >
+              <Calendar className="h-3.5 w-3.5" /> Weekly plan
+            </Link>
+          </div>
+          <div className="mt-3 grid grid-cols-7 gap-1">
+            {weekChecks.map((done, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <span className="text-[10px] text-muted-foreground">{WEEKDAYS[i]}</span>
+                <span
+                  className={`grid h-6 w-6 place-items-center rounded-full text-[10px] ${done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+                >
+                  {done ? "✓" : ""}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
