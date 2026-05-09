@@ -13,11 +13,9 @@ export function CoachAdjustments({
   coach,
 }: {
   compact?: boolean;
-  coach?: Coach;
+  coach: Coach;
 }) {
-  const own = useAdaptiveCoach();
-  const c = coach ?? own;
-  const { active, busy, refresh, apply, dismiss } = c;
+  const { active, busy, refresh, apply, dismiss } = coach;
 
   if (active.length === 0) return null;
   const items = compact ? active.slice(0, 2) : active;
