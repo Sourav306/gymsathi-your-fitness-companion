@@ -18,6 +18,8 @@ import { useDailyRec } from "@/hooks/use-daily-rec";
 import { useProgress } from "@/hooks/use-progress";
 import { calcTargets } from "@/lib/ai/targets";
 import { LoadingState, ErrorState } from "@/components/States";
+import { CoachAdjustments } from "@/components/CoachAdjustments";
+import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
 
 export const Route = createFileRoute("/coach/")({
   head: () => ({ meta: [{ title: "AI Coach — GymSathi" }] }),
