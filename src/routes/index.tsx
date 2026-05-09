@@ -141,9 +141,11 @@ function Home() {
     }
   };
 
+  const adaptive = useAdaptiveCoach();
   const onAnalyze = async () => {
     try {
       await analyze();
+      adaptive.refresh().catch(() => {});
       toast.success("Analysis ready");
     } catch (e) {
       toast.error((e as Error)?.message || "Analysis failed");
