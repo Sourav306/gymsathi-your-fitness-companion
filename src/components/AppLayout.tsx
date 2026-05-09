@@ -99,18 +99,18 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </main>
 
-      {/* Mobile bottom nav with floating AI Coach */}
+      {/* Mobile bottom nav — floating glass pill */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 glass-strong border-t md:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 md:hidden w-[calc(100%-1.25rem)] max-w-md rounded-[28px] glass-strong shadow-[var(--shadow-elegant)]"
+        style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         aria-label="Primary"
       >
-        <div className="relative mx-auto grid max-w-md grid-cols-5 items-end px-2 pt-1">
+        <div className="relative grid grid-cols-5 items-end px-2 pt-1.5 pb-1">
           <NavTab item={NAV.home} active={isActive(location.pathname, "home")} />
           <NavTab item={NAV.workout} active={isActive(location.pathname, "workout")} />
 
           {/* spacer for floating button */}
-          <div aria-hidden className="h-14" />
+          <div aria-hidden className="h-12" />
 
           <NavTab item={NAV.nutrition} active={isActive(location.pathname, "nutrition")} />
           <NavTab item={NAV.profile} active={isActive(location.pathname, "profile")} />
@@ -120,17 +120,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             to="/coach"
             aria-label="AI Coach"
             className={cn(
-              "absolute left-1/2 -translate-x-1/2 -top-6 grid h-16 w-16 place-items-center rounded-full ring-4 ring-background press glow-pulse text-primary-foreground",
-              "bg-gradient-to-br from-[oklch(0.62_0.18_255)] to-[oklch(0.6_0.2_295)]",
+              "absolute left-1/2 -translate-x-1/2 -top-7 grid h-14 w-14 place-items-center rounded-full ring-4 ring-background press glow-pulse text-primary-foreground",
+              "bg-gradient-to-br from-[oklch(0.74_0.21_50)] to-[oklch(0.62_0.22_28)]",
               coachActive && "scale-105",
             )}
           >
-            <Sparkles className="h-7 w-7" />
+            <Sparkles className="h-6 w-6" />
             <span className="sr-only">AI Coach</span>
           </Link>
-          <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 -bottom-0.5 text-[10px] font-semibold text-primary">
-            AI Coach
-          </span>
         </div>
       </nav>
     </div>
