@@ -92,6 +92,8 @@ function Coach() {
 
       {error && <ErrorState message={error} onRetry={refresh} />}
 
+      <CoachAdjustments coach={adaptive} />
+
       <div className="grid gap-3 sm:grid-cols-2">
         <Stat
           icon={Target}
