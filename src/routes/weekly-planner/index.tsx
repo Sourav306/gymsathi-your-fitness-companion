@@ -61,6 +61,31 @@ function Page() {
     }
   }, [weekly.row]);
 
+  // Must be before early returns — hooks cannot be called conditionally
+  const weekStats = useMemo(() => {
+    if (!data)
+      return {
+        workouts: 0,
+        meals: 0,
+        avgProtein: null as number | null,
+        avgCalories: null as number | null,
+      };
+    const inWeek = logs.filter(
+      (l) => l.log_date >= data.days[0].date && l.log_date <= data.days[6].date,
+    );
+    const workouts = inWeek.filter((l) => l.workout_completed).length;
+    const meals = inWeek.filter((l) => l.meal_plan_completed).length;
+    const prots = inWeek
+      .map((l) => l.protein_consumed)
+      .filter((n): n is number => typeof n === "number");
+    const cals = inWeek
+      .map((l) => l.calories_consumed)
+      .filter((n): n is number => typeof n === "number");
+    const avg = (xs: number[]) =>
+      xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null;
+    return { workouts, meals, avgProtein: avg(prots), avgCalories: avg(cals) };
+  }, [logs, data]);
+
   if (profLoading) return <LoadingState rows={3} />;
   if (!user) {
     return (
@@ -101,8 +126,8 @@ function Page() {
     try {
       await weekly.save(built, { meal_plan_id: latestMealId, workout_plan_id: latestWorkoutId });
       toast.success("Week saved");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not save");
+    } catch (e) {
+      toast.error((e as Error)?.message || "Could not save");
     } finally {
       setSaving(false);
     }
@@ -118,8 +143,8 @@ function Page() {
       });
       setDirty(false);
       toast.success("Week updated");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not save");
+    } catch (e) {
+      toast.error((e as Error)?.message || "Could not save");
     } finally {
       setSaving(false);
     }
@@ -139,8 +164,8 @@ function Page() {
     try {
       await upsert({ log_date: day.date, meal_plan_completed: doneToday });
       toast.success(doneToday ? "Meal day marked complete" : "Updated");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not update progress");
+    } catch (e) {
+      toast.error((e as Error)?.message || "Could not update progress");
     }
   };
 
@@ -154,8 +179,8 @@ function Page() {
     try {
       await upsert({ log_date: day.date, workout_completed: true });
       toast.success("Workout marked complete");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not update progress");
+    } catch (e) {
+      toast.error((e as Error)?.message || "Could not update progress");
     }
   };
 
@@ -200,7 +225,11 @@ function Page() {
       storage: data.storage,
       budgetTips: data.budgetTips,
     });
-    (await copyText(text)) ? toast.success("Grocery list copied") : toast.error("Couldn't copy");
+    if (await copyText(text)) {
+      toast.success("Grocery list copied");
+    } else {
+      toast.error("Couldn't copy");
+    }
   };
 
   const onCopyPrep = async () => {
@@ -226,28 +255,12 @@ function Page() {
       lines.push("## Budget tips");
       for (const t of data.budgetTips) lines.push(`- ${t}`);
     }
-    (await copyText(lines.join("\n").trim()))
-      ? toast.success("Prep plan copied")
-      : toast.error("Couldn't copy");
+    if (await copyText(lines.join("\n").trim())) {
+      toast.success("Prep plan copied");
+    } else {
+      toast.error("Couldn't copy");
+    }
   };
-
-  // Weekly progress stats from progress_logs
-  const weekStats = useMemo(() => {
-    const inWeek =
-      logs.filter((l) => l.log_date >= data?.days[0].date! && l.log_date <= data?.days[6].date!) ||
-      [];
-    const workouts = inWeek.filter((l) => l.workout_completed).length;
-    const meals = inWeek.filter((l) => l.meal_plan_completed).length;
-    const prots = inWeek
-      .map((l) => l.protein_consumed)
-      .filter((n): n is number => typeof n === "number");
-    const cals = inWeek
-      .map((l) => l.calories_consumed)
-      .filter((n): n is number => typeof n === "number");
-    const avg = (xs: number[]) =>
-      xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : null;
-    return { workouts, meals, avgProtein: avg(prots), avgCalories: avg(cals) };
-  }, [logs, data]);
 
   return (
     <div className="space-y-6">

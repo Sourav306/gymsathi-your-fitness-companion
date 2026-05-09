@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ComponentType } from "react";
 import {
   Sparkles,
   Dumbbell,
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/")({
 });
 
 const WEEKDAYS = ["M", "T", "W", "T", "F", "S", "S"];
-const CAT_ICON: Record<string, any> = {
+const CAT_ICON: Record<string, ComponentType<{ className?: string }>> = {
   workout: Dumbbell,
   nutrition: Utensils,
   hydration: Droplet,
@@ -104,8 +104,8 @@ function Home() {
     try {
       await tasksHook.generateTodayTasks();
       toast.success("Today's tasks ready");
-    } catch (e: any) {
-      toast.error(e?.message || "Could not create tasks");
+    } catch (e) {
+      toast.error((e as Error)?.message || "Could not create tasks");
     }
   };
 
@@ -113,8 +113,8 @@ function Home() {
     try {
       await analyze();
       toast.success("Analysis ready");
-    } catch (e: any) {
-      toast.error(e?.message || "Analysis failed");
+    } catch (e) {
+      toast.error((e as Error)?.message || "Analysis failed");
     }
   };
 
@@ -421,8 +421,8 @@ function TaskRow({
     setPending(true);
     try {
       await onToggle(task.id, !task.is_completed);
-    } catch (e: any) {
-      toast.error(e?.message || "Could not update task");
+    } catch (e) {
+      toast.error((e as Error)?.message || "Could not update task");
     } finally {
       setPending(false);
     }
@@ -483,7 +483,7 @@ function Metric({
   target,
   unit,
 }: {
-  icon: any;
+  icon: ComponentType<{ className?: string }>;
   label: string;
   value: number;
   target: number;

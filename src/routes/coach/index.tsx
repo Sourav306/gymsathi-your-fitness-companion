@@ -11,7 +11,7 @@ import {
   History,
   Calendar,
 } from "lucide-react";
-import { useMemo } from "react";
+import { useMemo, type ComponentType, type ReactNode } from "react";
 import { useWeeklyPlan } from "@/hooks/use-weekly-plan";
 import { fmtISO, startOfWeek, todayWeekdayIndex } from "@/lib/weekly";
 import { useDailyRec } from "@/hooks/use-daily-rec";
@@ -258,7 +258,15 @@ function Coach() {
   );
 }
 
-function Stat({ icon: Icon, label, value }: { icon: any; label: string; value: string }) {
+function Stat({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="rounded-2xl border border-border bg-card p-4">
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
@@ -287,11 +295,11 @@ function Card({
   sub,
   cta,
 }: {
-  icon: any;
+  icon: ComponentType<{ className?: string }>;
   title: string;
   body: string;
   sub?: string;
-  cta?: React.ReactNode;
+  cta?: ReactNode;
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">

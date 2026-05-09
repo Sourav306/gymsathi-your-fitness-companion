@@ -52,6 +52,7 @@ export function useWeeklyPlan(userId: string | undefined, weekStart: string | un
           week_start: weekStart,
           meal_plan_id: refs.meal_plan_id ?? null,
           workout_plan_id: refs.workout_plan_id ?? null,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           plan_data: data as any,
         },
         { onConflict: "user_id,week_start" },

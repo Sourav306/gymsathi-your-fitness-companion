@@ -272,7 +272,7 @@ function ChatOnboarding() {
 
   const submit = (rawValue: string) => {
     if (!step) return;
-    let v: any = rawValue.trim();
+    let v: string | number = rawValue.trim();
     if (!v && step.optional) v = "";
     if (!v && !step.optional) {
       toast.error("Please enter a value");
@@ -307,7 +307,7 @@ function ChatOnboarding() {
   const finish = async () => {
     setBusy(true);
     try {
-      const merged: any = { ...profile, ...answers, onboarding_completed: true };
+      const merged: Partial<UserProfile> = { ...profile, ...answers, onboarding_completed: true };
       // fill required defaults if user pre-existed without them
       const defaults: Partial<UserProfile> = {
         injuries: "",
@@ -320,14 +320,14 @@ function ChatOnboarding() {
         meals_per_day: 4,
         target_protein: null,
       };
-      const final: any = { ...defaults, ...merged };
+      const final: Partial<UserProfile> = { ...defaults, ...merged };
       const parsed = UserProfileSchema.parse(final);
       await save(parsed);
       toast.success("Profile saved!");
       navigate({ to: "/" });
-    } catch (e: any) {
+    } catch (e) {
       console.error(e);
-      toast.error(e?.message || "Could not save profile");
+      toast.error((e as Error)?.message || "Could not save profile");
     } finally {
       setBusy(false);
     }

@@ -45,6 +45,23 @@ function Page() {
   const [swap, setSwap] = useState<{ dayIdx: number; exIdx: number } | null>(null);
   const saved = useSavedWorkoutPlans(user?.id);
 
+  // Must be before early returns — hooks cannot be called conditionally
+  const swapMeta = useMemo(() => {
+    if (!plan || !swap || !profile) return { title: "", options: [] as SwapOption[] };
+    const ex = plan.days[swap.dayIdx].exercises[swap.exIdx];
+    const matched = matchExercise(ex);
+    const alts = suggestExerciseAlternatives(ex, profile, matched?.id);
+    return {
+      title: `Swap "${ex.name}"`,
+      options: alts.map((e) => ({
+        id: e.id,
+        title: e.name,
+        subtitle: `${e.muscle} · ${e.difficulty} · ${e.equipment}`,
+        meta: e.summary,
+      })),
+    };
+  }, [plan, swap, profile]);
+
   if (loading) return <LoadingState rows={3} />;
   if (!user)
     return <Redirect msg="Sign in to use the AI workout planner." to="/profile" cta="Sign in" />;
@@ -66,6 +83,7 @@ function Page() {
       const { error: saveErr } = await supabase.from("ai_workout_plans").insert({
         user_id: user.id,
         name: res.plan.name,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         plan: res.plan as any,
       });
       setSaving(false);
@@ -74,8 +92,8 @@ function Page() {
         toast.success("Plan saved");
         saved.refresh();
       }
-    } catch (e: any) {
-      setErr(e?.message || "Failed to generate plan");
+    } catch (e) {
+      setErr((e as Error)?.message || "Failed to generate plan");
     } finally {
       setBusy(false);
     }
@@ -126,6 +144,7 @@ function Page() {
     const { error } = await supabase.from("ai_workout_plans").insert({
       user_id: user.id,
       name: `${plan.name} (edited)`,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       plan: plan as any,
     });
     setSaving(false);
@@ -139,7 +158,11 @@ function Page() {
 
   const markDayDone = async (dayIdx: number) => {
     const next = new Set(doneDays);
-    next.has(dayIdx) ? next.delete(dayIdx) : next.add(dayIdx);
+    if (next.has(dayIdx)) {
+      next.delete(dayIdx);
+    } else {
+      next.add(dayIdx);
+    }
     setDoneDays(next);
     if (dayIdx === 0 && next.has(0)) {
       const { error } = await supabase
@@ -152,22 +175,6 @@ function Page() {
       else toast.success("Marked today complete");
     }
   };
-
-  const swapMeta = useMemo(() => {
-    if (!plan || !swap) return { title: "", options: [] as SwapOption[] };
-    const ex = plan.days[swap.dayIdx].exercises[swap.exIdx];
-    const matched = matchExercise(ex);
-    const alts = suggestExerciseAlternatives(ex, profile, matched?.id);
-    return {
-      title: `Swap "${ex.name}"`,
-      options: alts.map((e) => ({
-        id: e.id,
-        title: e.name,
-        subtitle: `${e.muscle} · ${e.difficulty} · ${e.equipment}`,
-        meta: e.summary,
-      })),
-    };
-  }, [plan, swap, profile]);
 
   return (
     <div className="space-y-6">
