@@ -107,6 +107,39 @@ export type Database = {
         }
         Relationships: []
       }
+      coach_chat_messages: {
+        Row: {
+          action_json: Json | null
+          content: string
+          created_at: string
+          id: string
+          intent: string | null
+          role: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          action_json?: Json | null
+          content: string
+          created_at?: string
+          id?: string
+          intent?: string | null
+          role: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          action_json?: Json | null
+          content?: string
+          created_at?: string
+          id?: string
+          intent?: string | null
+          role?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       daily_evaluations: {
         Row: {
           ai_feedback_message: string | null
