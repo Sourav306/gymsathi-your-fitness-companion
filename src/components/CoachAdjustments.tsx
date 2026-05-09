@@ -66,7 +66,7 @@ function InsightCard({
   };
 
   return (
-    <li className="rounded-2xl border border-primary/20 bg-accent/30 p-4">
+    <li className="glass-card hover-lift rounded-2xl border-primary/20 p-4">
       <div className="flex items-start gap-3">
         <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
           <Sparkles className="h-4 w-4" />
