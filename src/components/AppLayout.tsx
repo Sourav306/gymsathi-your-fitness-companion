@@ -93,11 +93,15 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 pb-32 pt-4 md:px-6 md:pt-8 md:pb-12">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 pb-32 pt-4 md:px-6 md:pt-8 md:pb-12">
+        <div key={location.pathname} className="anim-fade-up">
+          {children}
+        </div>
+      </main>
 
       {/* Mobile bottom nav with floating AI Coach */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 glass-strong border-t md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         aria-label="Primary"
       >
@@ -116,10 +120,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             to="/coach"
             aria-label="AI Coach"
             className={cn(
-              "absolute left-1/2 -translate-x-1/2 -top-6 grid h-16 w-16 place-items-center rounded-full shadow-lg ring-4 ring-background transition",
-              coachActive
-                ? "bg-primary text-primary-foreground scale-105"
-                : "bg-primary text-primary-foreground hover:scale-105",
+              "absolute left-1/2 -translate-x-1/2 -top-6 grid h-16 w-16 place-items-center rounded-full ring-4 ring-background press glow-pulse text-primary-foreground",
+              "bg-gradient-to-br from-[oklch(0.62_0.18_255)] to-[oklch(0.6_0.2_295)]",
+              coachActive && "scale-105",
             )}
           >
             <Sparkles className="h-7 w-7" />
