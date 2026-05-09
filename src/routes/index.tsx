@@ -322,7 +322,7 @@ function Home() {
       </section>
 
       {/* Today's workout & meals from weekly plan */}
-      {todayPlan && (
+      {showSecondary && todayPlan && (
         <section>
           <h2 className="mb-3 font-display text-lg font-bold">From your weekly plan</h2>
           <div className="grid gap-3 sm:grid-cols-2">
