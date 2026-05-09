@@ -52,12 +52,34 @@ const CAT_ICON: Record<string, ComponentType<{ className?: string }>> = {
 function Home() {
   const { user } = useAuth();
   const { profile } = useProfile();
-  const { logs, todayLog } = useProgress();
+  const { logs, todayLog } = useProgress(14);
   const tasksHook = useDailyTasks();
-  const { evaluation, busy: evalBusy, analyze } = useDailyEvaluation();
+  const { evaluation, busy: evalBusy, analyze } = useDailyEvaluation({
+    tasks: tasksHook.tasks,
+    todayLog,
+  });
+
+  // Defer non-critical sections (streak, weekly plan) until after first paint
+  const [showSecondary, setShowSecondary] = useState(false);
+  useEffect(() => {
+    const w = typeof window !== "undefined" ? (window as Window & { requestIdleCallback?: (cb: () => void) => number }) : null;
+    const ric = w?.requestIdleCallback;
+    if (ric) {
+      const id = ric(() => setShowSecondary(true));
+      return () => {
+        const cancel = (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback;
+        if (cancel) cancel(id);
+      };
+    }
+    const t = setTimeout(() => setShowSecondary(true), 200);
+    return () => clearTimeout(t);
+  }, []);
 
   const weekStartISO = useMemo(() => fmtISO(startOfWeek()), []);
-  const weekly = useWeeklyPlan(user?.id, user ? weekStartISO : undefined);
+  const weekly = useWeeklyPlan(
+    showSecondary ? user?.id : undefined,
+    showSecondary && user ? weekStartISO : undefined,
+  );
   const todayIdx = todayWeekdayIndex();
   const todayPlan = weekly.row?.plan_data?.days?.[todayIdx];
 
