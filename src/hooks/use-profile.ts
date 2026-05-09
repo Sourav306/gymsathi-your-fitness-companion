@@ -32,6 +32,16 @@ export function useProfile() {
         meal_prep_days: data.meal_prep_days ?? null,
         meals_per_day: data.meals_per_day ?? null,
         target_protein: data.target_protein ?? null,
+        name: (data as any).name ?? null,
+        workout_days_per_week: (data as any).workout_days_per_week ?? null,
+        workout_time_min: (data as any).workout_time_min ?? null,
+        liked_foods: (data as any).liked_foods ?? null,
+        water_goal_liters: (data as any).water_goal_liters != null ? Number((data as any).water_goal_liters) : null,
+        step_goal: (data as any).step_goal ?? null,
+        sleep_goal_hours: (data as any).sleep_goal_hours != null ? Number((data as any).sleep_goal_hours) : null,
+        budget_level: ((data as any).budget_level as any) ?? null,
+        meal_prep_style: ((data as any).meal_prep_style as any) ?? null,
+        onboarding_completed: (data as any).onboarding_completed ?? false,
       });
     } else {
       setProfile(null);
@@ -43,7 +53,7 @@ export function useProfile() {
 
   const save = useCallback(async (p: UserProfile) => {
     if (!user) throw new Error("Not signed in");
-    const row = { user_id: user.id, ...p };
+    const row: any = { user_id: user.id, ...p };
     const { error } = await supabase.from("user_profiles").upsert(row, { onConflict: "user_id" });
     if (error) throw error;
     await load();
