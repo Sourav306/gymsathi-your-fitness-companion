@@ -207,9 +207,7 @@ export function generateAdaptiveInsights(snap: AdaptiveSnapshot): InsightDraft[]
 
   // 5. Meal logging missed repeatedly
   const mealLogTasks = weekTasks.filter(
-    (t) =>
-      t.category === "nutrition" &&
-      /log\s+(breakfast|lunch|dinner)/i.test(t.title),
+    (t) => t.category === "nutrition" && /log\s+(breakfast|lunch|dinner)/i.test(t.title),
   );
   const mealLogMissed = mealLogTasks.filter((t) => !t.is_completed).length;
   if (mealLogMissed >= 4) {
