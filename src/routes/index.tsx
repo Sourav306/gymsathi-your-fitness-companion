@@ -528,8 +528,13 @@ function Metric({
   unit: string;
 }) {
   const pct = Math.min(100, Math.round((Number(value) / target) * 100)) || 0;
+  const [animPct, setAnimPct] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setAnimPct(pct), 60);
+    return () => clearTimeout(t);
+  }, [pct]);
   return (
-    <div className="rounded-2xl border border-border bg-card p-3">
+    <div className="glass-card rounded-2xl p-3 hover-lift">
       <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
         <Icon className="h-3 w-3 text-primary" /> {label}
       </div>
@@ -542,10 +547,10 @@ function Metric({
           </span>
         )}
       </div>
-      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary/60">
         <div
-          className="h-full rounded-full bg-primary transition-all"
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-full bg-gradient-to-r from-primary to-primary-glow transition-[width] duration-700 ease-out"
+          style={{ width: `${animPct}%` }}
         />
       </div>
     </div>
