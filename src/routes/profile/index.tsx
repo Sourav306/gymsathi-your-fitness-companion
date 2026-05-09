@@ -129,3 +129,13 @@ function Input({ label, value, onChange, type = "text", placeholder, required }:
     </label>
   );
 }
+
+function Row({ to, icon: Icon, label, last }: { to: "/onboarding" | "/progress" | "/favorites" | "/plans" | "/meal-plans"; icon: any; label: string; last?: boolean }) {
+  return (
+    <Link to={to} className={`flex items-center gap-3 px-4 py-3.5 active:bg-secondary ${last ? "" : "border-b border-border"}`}>
+      <span className="grid h-9 w-9 place-items-center rounded-xl bg-accent text-accent-foreground"><Icon className="h-4 w-4" /></span>
+      <span className="flex-1 text-sm font-medium">{label}</span>
+      <ChevronRight className="h-4 w-4 text-muted-foreground" />
+    </Link>
+  );
+}
