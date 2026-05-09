@@ -378,7 +378,7 @@ function Home() {
             Edit
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 anim-stagger">
           <Metric
             icon={Beef}
             label="Protein"
