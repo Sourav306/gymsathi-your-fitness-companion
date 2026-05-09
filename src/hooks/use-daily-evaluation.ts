@@ -123,7 +123,7 @@ export function useDailyEvaluation(input: DailyEvaluationInput) {
         data: {
           date: today(),
           tasksToday: tasks.map(stripTask),
-          tasksYesterday: (yTasks || []).map(stripTask),
+          tasksYesterday: ((yTasks || []) as DailyTask[]).map(stripTask),
           tasksLast7: last7,
           metrics: {
             proteinTarget: targets.protein,
