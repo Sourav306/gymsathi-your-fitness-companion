@@ -1,5 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
-import { CoachInputSchema, MealPlanSchema, WorkoutPlanSchema, type MealPlan, type WorkoutPlan, type CoachInput } from "./schemas";
+import {
+  CoachInputSchema,
+  MealPlanSchema,
+  WorkoutPlanSchema,
+  type MealPlan,
+  type WorkoutPlan,
+  type CoachInput,
+} from "./schemas";
 import { mockMealPlan, mockWorkoutPlan } from "./mock";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { attachSupabaseAuth } from "@/integrations/supabase/client-auth-middleware";
@@ -40,8 +47,12 @@ function progressContext(rp: CoachInput["recentProgress"]): string {
     `Days logged in last 7: ${rp.daysLogged}`,
     rp.avgProtein != null ? `Avg protein: ${rp.avgProtein}g` : null,
     rp.avgCalories != null ? `Avg calories: ${rp.avgCalories} kcal` : null,
-    rp.workoutCompletionRate != null ? `Workout completion: ${Math.round(rp.workoutCompletionRate * 100)}%` : null,
-    rp.mealCompletionRate != null ? `Meal plan adherence: ${Math.round(rp.mealCompletionRate * 100)}%` : null,
+    rp.workoutCompletionRate != null
+      ? `Workout completion: ${Math.round(rp.workoutCompletionRate * 100)}%`
+      : null,
+    rp.mealCompletionRate != null
+      ? `Meal plan adherence: ${Math.round(rp.mealCompletionRate * 100)}%`
+      : null,
     rp.latestWeightKg != null ? `Latest weight: ${rp.latestWeightKg}kg` : null,
     rp.weightTrend !== "unknown" ? `Weight trend: ${rp.weightTrend}` : null,
   ].filter(Boolean);

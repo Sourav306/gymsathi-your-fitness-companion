@@ -11,9 +11,24 @@ import { cn } from "@/lib/utils";
 
 const NAV = {
   home: { to: "/", label: "Home", icon: Home, match: ["/"] as string[] },
-  workout: { to: "/exercises", label: "Workout", icon: Dumbbell, match: ["/exercises", "/plans", "/workout", "/weekly-planner", "/ai-workout"] },
-  nutrition: { to: "/recipes", label: "Nutrition", icon: Utensils, match: ["/recipes", "/meal-plans", "/calculator", "/nutrition", "/ai-meal"] },
-  profile: { to: "/profile", label: "Profile", icon: User, match: ["/profile", "/favorites", "/onboarding", "/progress"] },
+  workout: {
+    to: "/exercises",
+    label: "Workout",
+    icon: Dumbbell,
+    match: ["/exercises", "/plans", "/workout", "/weekly-planner", "/ai-workout"],
+  },
+  nutrition: {
+    to: "/recipes",
+    label: "Nutrition",
+    icon: Utensils,
+    match: ["/recipes", "/meal-plans", "/calculator", "/nutrition", "/ai-meal"],
+  },
+  profile: {
+    to: "/profile",
+    label: "Profile",
+    icon: User,
+    match: ["/profile", "/favorites", "/onboarding", "/progress"],
+  },
 } as const;
 
 function isActive(pathname: string, key: keyof typeof NAV) {
@@ -42,20 +57,35 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
               const it = NAV[k];
               const active = isActive(location.pathname, k);
               return (
-                <Link key={k} to={it.to}
-                  className={cn("rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                    active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-secondary hover:text-foreground")}>
+                <Link
+                  key={k}
+                  to={it.to}
+                  className={cn(
+                    "rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    active
+                      ? "bg-accent text-accent-foreground"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground",
+                  )}
+                >
                   {it.label}
                 </Link>
               );
             })}
-            <Link to="/coach"
-              className={cn("ml-2 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold shadow-sm transition",
-                coachActive ? "bg-primary text-primary-foreground" : "bg-primary/90 text-primary-foreground hover:bg-primary")}>
+            <Link
+              to="/coach"
+              className={cn(
+                "ml-2 inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold shadow-sm transition",
+                coachActive
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-primary/90 text-primary-foreground hover:bg-primary",
+              )}
+            >
               <Sparkles className="h-4 w-4" /> AI Coach
             </Link>
-            <Link to="/progress"
-              className="ml-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground">
+            <Link
+              to="/progress"
+              className="ml-1 rounded-lg px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
+            >
               <Activity className="inline h-4 w-4" />
             </Link>
           </nav>
@@ -86,7 +116,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             aria-label="AI Coach"
             className={cn(
               "absolute left-1/2 -translate-x-1/2 -top-6 grid h-16 w-16 place-items-center rounded-full shadow-lg ring-4 ring-background transition",
-              coachActive ? "bg-primary text-primary-foreground scale-105" : "bg-primary text-primary-foreground hover:scale-105"
+              coachActive
+                ? "bg-primary text-primary-foreground scale-105"
+                : "bg-primary text-primary-foreground hover:scale-105",
             )}
           >
             <Sparkles className="h-7 w-7" />
@@ -101,14 +133,20 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   );
 }
 
-function NavTab({ item, active }: { item: { to: string; label: string; icon: any }; active: boolean }) {
+function NavTab({
+  item,
+  active,
+}: {
+  item: { to: string; label: string; icon: any };
+  active: boolean;
+}) {
   const Icon = item.icon;
   return (
     <Link
       to={item.to}
       className={cn(
         "flex min-h-14 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium transition-colors",
-        active ? "text-primary" : "text-muted-foreground"
+        active ? "text-primary" : "text-muted-foreground",
       )}
     >
       <Icon className={cn("h-5 w-5", active && "stroke-[2.5]")} />

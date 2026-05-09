@@ -1,15 +1,15 @@
 import type { MealPlan, WorkoutPlan, Meal } from "@/lib/ai/schemas";
 
 export type WeeklyDay = {
-  date: string;          // YYYY-MM-DD
-  weekday: string;       // Monday..Sunday
+  date: string; // YYYY-MM-DD
+  weekday: string; // Monday..Sunday
   meals: Meal[];
   workout: WorkoutPlan["days"][number] | null;
 };
 
 export type WeeklyPlanData = {
-  weekStart: string;     // Monday YYYY-MM-DD
-  days: WeeklyDay[];     // length 7, Mon..Sun
+  weekStart: string; // Monday YYYY-MM-DD
+  days: WeeklyDay[]; // length 7, Mon..Sun
   grocery: MealPlan["grocery"];
   storage: string;
   budgetTips: string[];
@@ -17,7 +17,7 @@ export type WeeklyPlanData = {
   workoutPlanName?: string;
 };
 
-const WEEKDAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const WEEKDAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 export function fmtISO(d: Date): string {
   return d.toISOString().slice(0, 10);
@@ -60,7 +60,8 @@ export function buildWeekFromPlans(
     const d = new Date(weekStart);
     d.setDate(d.getDate() + i);
     const meals = meal && meal.days.length ? meal.days[i % meal.days.length].meals : [];
-    const workoutDay = workout && workout.days.length ? workout.days[i % workout.days.length] : null;
+    const workoutDay =
+      workout && workout.days.length ? workout.days[i % workout.days.length] : null;
     days.push({
       date: fmtISO(d),
       weekday: WEEKDAYS[i],
