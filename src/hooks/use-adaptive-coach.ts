@@ -125,7 +125,7 @@ export function useAdaptiveCoach() {
           suggested_action: d.suggested_action,
           priority: d.priority,
           status: "active",
-          metadata: d.metadata as unknown as Record<string, unknown> | null,
+          metadata: (d.metadata ?? null) as never,
         }));
         const { error: insErr } = await supabase.from("adaptive_insights").insert(rows);
         if (insErr) throw insErr;
