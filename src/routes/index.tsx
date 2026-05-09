@@ -25,6 +25,8 @@ import { fmtISO, startOfWeek, todayWeekdayIndex } from "@/lib/weekly";
 import { calcTargets } from "@/lib/ai/targets";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { CoachAdjustments } from "@/components/CoachAdjustments";
+import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
 
 export const Route = createFileRoute("/")({
   head: () => ({
