@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Flame, Beef, Activity as ActivityIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { SectionTabs, NUTRITION_TABS } from "@/components/SectionTabs";
 
 export const Route = createFileRoute("/calculator/")({
   head: () => ({
@@ -45,9 +46,10 @@ function Calc() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl font-bold">Calorie & Protein Calculator</h1>
+        <h1 className="font-display text-3xl font-bold">Nutrition</h1>
         <p className="mt-1 text-sm text-muted-foreground">A simple estimate to set your daily targets.</p>
       </div>
+      <SectionTabs tabs={NUTRITION_TABS} ariaLabel="Nutrition sections" />
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-5 rounded-3xl border border-border bg-card p-6">

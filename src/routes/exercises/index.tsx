@@ -6,6 +6,7 @@ import { FavButton } from "@/components/FavButton";
 import { FilterChips } from "@/components/FilterChips";
 import { SearchInput } from "@/components/SearchInput";
 import { EmptyState } from "@/components/States";
+import { SectionTabs, WORKOUT_TABS } from "@/components/SectionTabs";
 
 export const Route = createFileRoute("/exercises/")({
   head: () => ({
@@ -41,9 +42,10 @@ function Library() {
   return (
     <div className="space-y-5">
       <div>
-        <h1 className="font-display text-3xl font-bold">Exercise Library</h1>
+        <h1 className="font-display text-3xl font-bold">Workout</h1>
         <p className="mt-1 text-sm text-muted-foreground">{EXERCISES.length} beginner-friendly moves with form videos.</p>
       </div>
+      <SectionTabs tabs={WORKOUT_TABS} ariaLabel="Workout sections" />
 
       <div className="sticky top-0 z-30 -mx-4 space-y-3 bg-background/90 px-4 pb-3 pt-1 backdrop-blur md:static md:mx-0 md:bg-transparent md:px-0 md:pt-0 md:backdrop-blur-none">
         <SearchInput value={q} onChange={setQ} placeholder="Search exercises…" />
