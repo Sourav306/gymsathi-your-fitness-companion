@@ -336,7 +336,6 @@ function Home() {
       {/* Adaptive coach insights */}
       {showSecondary && <CoachAdjustments compact coach={adaptive} />}
 
-
       {showSecondary && todayPlan && (
         <section>
           <h2 className="mb-3 font-display text-lg font-bold">From your weekly plan</h2>

@@ -57,7 +57,7 @@ export function useAdaptiveCoach() {
       .order("priority", { ascending: true })
       .order("created_at", { ascending: false });
     if (e) setError(e.message);
-    setInsights(((data || []) as unknown) as AdaptiveInsight[]);
+    setInsights((data || []) as unknown as AdaptiveInsight[]);
     setLoading(false);
   }, [user]);
 
@@ -93,8 +93,8 @@ export function useAdaptiveCoach() {
       const targets = profile ? calcTargets(profile) : { calories: 2000, protein: 100 };
       const drafts = generateAdaptiveInsights({
         profile,
-        weekTasks: ((tasksRes.data || []) as unknown) as InsightTaskRow[],
-        weekLogs: ((logsRes.data || []) as unknown) as InsightProgressRow[],
+        weekTasks: (tasksRes.data || []) as unknown as InsightTaskRow[],
+        weekLogs: (logsRes.data || []) as unknown as InsightProgressRow[],
         proteinTarget: targets.protein,
         waterTargetL: profile?.water_goal_liters ?? 3,
         hasWeeklyPlan: !!weekRes.data,
@@ -138,17 +138,11 @@ export function useAdaptiveCoach() {
     }
   }, [user, profile, load]);
 
-  const setStatus = useCallback(
-    async (id: string, status: InsightStatus) => {
-      const { error: e } = await supabase
-        .from("adaptive_insights")
-        .update({ status })
-        .eq("id", id);
-      if (e) throw e;
-      setInsights((prev) => prev.map((i) => (i.id === id ? { ...i, status } : i)));
-    },
-    [],
-  );
+  const setStatus = useCallback(async (id: string, status: InsightStatus) => {
+    const { error: e } = await supabase.from("adaptive_insights").update({ status }).eq("id", id);
+    if (e) throw e;
+    setInsights((prev) => prev.map((i) => (i.id === id ? { ...i, status } : i)));
+  }, []);
 
   const apply = useCallback(
     async (insight: AdaptiveInsight) => {
@@ -192,9 +186,7 @@ export function useAdaptiveCoach() {
     [setStatus],
   );
 
-  const active = insights.filter(
-    (i) => i.status === "active" && i.insight_date === today(),
-  );
+  const active = insights.filter((i) => i.status === "active" && i.insight_date === today());
 
   return { insights, active, loading, busy, error, refresh, apply, dismiss, reload: load };
 }

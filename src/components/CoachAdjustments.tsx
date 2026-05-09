@@ -8,13 +8,7 @@ import { cn } from "@/lib/utils";
 
 type Coach = ReturnType<typeof useAdaptiveCoach>;
 
-export function CoachAdjustments({
-  compact = false,
-  coach,
-}: {
-  compact?: boolean;
-  coach: Coach;
-}) {
+export function CoachAdjustments({ compact = false, coach }: { compact?: boolean; coach: Coach }) {
   const { active, busy, refresh, apply, dismiss } = coach;
 
   if (active.length === 0) return null;
