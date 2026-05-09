@@ -120,9 +120,9 @@
     pointer-events: none;
     z-index: 0;
     background:
-      radial-gradient(60ch 40ch at 12% -10%, oklch(0.55 0.2 260 / 0.18), transparent 60%),
-      radial-gradient(50ch 36ch at 110% 10%, oklch(0.6 0.2 300 / 0.16), transparent 60%),
-      radial-gradient(60ch 40ch at 80% 110%, oklch(0.7 0.16 50 / 0.1), transparent 65%);
+      radial-gradient(60ch 40ch at 8% -10%, oklch(0.55 0.18 40 / 0.18), transparent 60%),
+      radial-gradient(50ch 36ch at 110% 8%, oklch(0.5 0.16 30 / 0.14), transparent 60%),
+      radial-gradient(60ch 40ch at 90% 110%, oklch(0.45 0.05 60 / 0.18), transparent 65%);
   }
   body > * {
     position: relative;
