@@ -19,7 +19,7 @@ const ActionSchema = z.object({
   category: z
     .enum(["workout", "nutrition", "hydration", "steps", "sleep", "habit"])
     .optional(),
-  target_date: z.enum(["today", "tomorrow"]).optional().default("tomorrow"),
+  target_date: z.enum(["today", "tomorrow"]).optional(),
   target_value: z.number().nullable().optional(),
   unit: z.string().nullable().optional(),
   points: z.number().optional(),
