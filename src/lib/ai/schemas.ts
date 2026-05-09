@@ -19,6 +19,17 @@ export const UserProfileSchema = z.object({
   meal_prep_days: z.number().int().min(0).max(7).optional().nullable(),
   meals_per_day: z.number().int().min(2).max(6).optional().nullable(),
   target_protein: z.number().int().min(20).max(300).optional().nullable(),
+  // Phase 1 additions
+  name: z.string().max(60).optional().nullable(),
+  workout_days_per_week: z.number().int().min(0).max(7).optional().nullable(),
+  workout_time_min: z.number().int().min(10).max(180).optional().nullable(),
+  liked_foods: z.string().max(500).optional().nullable(),
+  water_goal_liters: z.number().min(0.5).max(8).optional().nullable(),
+  step_goal: z.number().int().min(1000).max(40000).optional().nullable(),
+  sleep_goal_hours: z.number().min(4).max(12).optional().nullable(),
+  budget_level: z.enum(["low", "medium", "high"]).optional().nullable(),
+  meal_prep_style: z.enum(["fresh_daily", "batch_2x_week", "batch_weekly", "mixed"]).optional().nullable(),
+  onboarding_completed: z.boolean().optional().nullable(),
 });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 
