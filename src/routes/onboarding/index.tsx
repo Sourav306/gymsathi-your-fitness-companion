@@ -55,6 +55,7 @@ function Onboarding() {
       <header>
         <h1 className="font-display text-3xl font-bold">Set up your AI Coach</h1>
         <p className="mt-1 text-sm text-muted-foreground">Tell us about you so we can build personalized meal and workout plans.</p>
+        <Link to="/onboarding-chat" className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary">💬 Prefer chat? Try the chat onboarding →</Link>
       </header>
 
       <form onSubmit={onSubmit} className="space-y-6 rounded-3xl border border-border bg-card p-5 md:p-6">
