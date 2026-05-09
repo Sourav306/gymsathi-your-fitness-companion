@@ -333,7 +333,10 @@ function Home() {
         )}
       </section>
 
-      {/* Today's workout & meals from weekly plan */}
+      {/* Adaptive coach insights */}
+      {showSecondary && <CoachAdjustments compact />}
+
+
       {showSecondary && todayPlan && (
         <section>
           <h2 className="mb-3 font-display text-lg font-bold">From your weekly plan</h2>
