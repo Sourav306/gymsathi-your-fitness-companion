@@ -54,7 +54,11 @@ function Home() {
   const { profile } = useProfile();
   const { logs, todayLog } = useProgress(14);
   const tasksHook = useDailyTasks();
-  const { evaluation, busy: evalBusy, analyze } = useDailyEvaluation({
+  const {
+    evaluation,
+    busy: evalBusy,
+    analyze,
+  } = useDailyEvaluation({
     tasks: tasksHook.tasks,
     todayLog,
   });
@@ -62,12 +66,16 @@ function Home() {
   // Defer non-critical sections (streak, weekly plan) until after first paint
   const [showSecondary, setShowSecondary] = useState(false);
   useEffect(() => {
-    const w = typeof window !== "undefined" ? (window as Window & { requestIdleCallback?: (cb: () => void) => number }) : null;
+    const w =
+      typeof window !== "undefined"
+        ? (window as Window & { requestIdleCallback?: (cb: () => void) => number })
+        : null;
     const ric = w?.requestIdleCallback;
     if (ric) {
       const id = ric(() => setShowSecondary(true));
       return () => {
-        const cancel = (window as Window & { cancelIdleCallback?: (id: number) => void }).cancelIdleCallback;
+        const cancel = (window as Window & { cancelIdleCallback?: (id: number) => void })
+          .cancelIdleCallback;
         if (cancel) cancel(id);
       };
     }
