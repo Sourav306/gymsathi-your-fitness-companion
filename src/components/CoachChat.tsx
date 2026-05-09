@@ -145,11 +145,13 @@ function MessageBubble({
 }) {
   const isUser = message.role === "user";
   return (
-    <div className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+    <div className={`flex anim-fade-up ${isUser ? "justify-end" : "justify-start"}`}>
       <div className={`max-w-[85%] space-y-2 ${isUser ? "items-end" : "items-start"}`}>
         <div
           className={`rounded-2xl px-3.5 py-2 text-sm ${
-            isUser ? "bg-primary text-primary-foreground" : "bg-secondary/60 text-foreground"
+            isUser
+              ? "bg-gradient-to-br from-primary to-primary-glow text-primary-foreground"
+              : "glass text-foreground"
           }`}
         >
           {message.content}
