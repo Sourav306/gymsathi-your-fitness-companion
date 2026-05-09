@@ -62,6 +62,72 @@ export type Database = {
         }
         Relationships: []
       }
+      daily_evaluations: {
+        Row: {
+          ai_feedback_message: string | null
+          calorie_status: string | null
+          compared_to_7_day_average: string | null
+          compared_to_yesterday: string | null
+          completion_score: number
+          created_at: string
+          evaluation_date: string
+          id: string
+          improvement_suggestions: Json | null
+          protein_status: string | null
+          sleep_status: string | null
+          steps_status: string | null
+          tasks_completed: number
+          tasks_missed: Json | null
+          tasks_total: number
+          updated_at: string
+          user_id: string
+          water_status: string | null
+          workout_status: string | null
+        }
+        Insert: {
+          ai_feedback_message?: string | null
+          calorie_status?: string | null
+          compared_to_7_day_average?: string | null
+          compared_to_yesterday?: string | null
+          completion_score?: number
+          created_at?: string
+          evaluation_date: string
+          id?: string
+          improvement_suggestions?: Json | null
+          protein_status?: string | null
+          sleep_status?: string | null
+          steps_status?: string | null
+          tasks_completed?: number
+          tasks_missed?: Json | null
+          tasks_total?: number
+          updated_at?: string
+          user_id: string
+          water_status?: string | null
+          workout_status?: string | null
+        }
+        Update: {
+          ai_feedback_message?: string | null
+          calorie_status?: string | null
+          compared_to_7_day_average?: string | null
+          compared_to_yesterday?: string | null
+          completion_score?: number
+          created_at?: string
+          evaluation_date?: string
+          id?: string
+          improvement_suggestions?: Json | null
+          protein_status?: string | null
+          sleep_status?: string | null
+          steps_status?: string | null
+          tasks_completed?: number
+          tasks_missed?: Json | null
+          tasks_total?: number
+          updated_at?: string
+          user_id?: string
+          water_status?: string | null
+          workout_status?: string | null
+        }
+        Relationships: []
+      }
       daily_recommendations: {
         Row: {
           created_at: string
@@ -82,6 +148,57 @@ export type Database = {
           for_date?: string
           id?: string
           recommendation?: Json
+          user_id?: string
+        }
+        Relationships: []
+      }
+      daily_tasks: {
+        Row: {
+          category: string
+          completed_value: number | null
+          created_at: string
+          description: string | null
+          id: string
+          is_completed: boolean
+          points: number
+          priority: number
+          target_value: number | null
+          task_date: string
+          title: string
+          unit: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          completed_value?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_completed?: boolean
+          points?: number
+          priority?: number
+          target_value?: number | null
+          task_date: string
+          title: string
+          unit?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          completed_value?: number | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_completed?: boolean
+          points?: number
+          priority?: number
+          target_value?: number | null
+          task_date?: string
+          title?: string
+          unit?: string | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -181,6 +298,7 @@ export type Database = {
           activity_level: string | null
           age: number | null
           allergies: string | null
+          budget_level: string | null
           cooking_time_min: number | null
           created_at: string
           cuisine_preference: string | null
@@ -193,18 +311,28 @@ export type Database = {
           height_cm: number | null
           id: string
           injuries: string | null
+          liked_foods: string | null
           meal_prep_days: number | null
+          meal_prep_style: string | null
           meals_per_day: number | null
+          name: string | null
+          onboarding_completed: boolean
+          sleep_goal_hours: number | null
+          step_goal: number | null
           target_protein: number | null
           updated_at: string
           user_id: string
+          water_goal_liters: number | null
           weekly_budget: number | null
           weight_kg: number | null
+          workout_days_per_week: number | null
+          workout_time_min: number | null
         }
         Insert: {
           activity_level?: string | null
           age?: number | null
           allergies?: string | null
+          budget_level?: string | null
           cooking_time_min?: number | null
           created_at?: string
           cuisine_preference?: string | null
@@ -217,18 +345,28 @@ export type Database = {
           height_cm?: number | null
           id?: string
           injuries?: string | null
+          liked_foods?: string | null
           meal_prep_days?: number | null
+          meal_prep_style?: string | null
           meals_per_day?: number | null
+          name?: string | null
+          onboarding_completed?: boolean
+          sleep_goal_hours?: number | null
+          step_goal?: number | null
           target_protein?: number | null
           updated_at?: string
           user_id: string
+          water_goal_liters?: number | null
           weekly_budget?: number | null
           weight_kg?: number | null
+          workout_days_per_week?: number | null
+          workout_time_min?: number | null
         }
         Update: {
           activity_level?: string | null
           age?: number | null
           allergies?: string | null
+          budget_level?: string | null
           cooking_time_min?: number | null
           created_at?: string
           cuisine_preference?: string | null
@@ -241,13 +379,22 @@ export type Database = {
           height_cm?: number | null
           id?: string
           injuries?: string | null
+          liked_foods?: string | null
           meal_prep_days?: number | null
+          meal_prep_style?: string | null
           meals_per_day?: number | null
+          name?: string | null
+          onboarding_completed?: boolean
+          sleep_goal_hours?: number | null
+          step_goal?: number | null
           target_protein?: number | null
           updated_at?: string
           user_id?: string
+          water_goal_liters?: number | null
           weekly_budget?: number | null
           weight_kg?: number | null
+          workout_days_per_week?: number | null
+          workout_time_min?: number | null
         }
         Relationships: []
       }
