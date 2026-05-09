@@ -334,7 +334,7 @@ function Home() {
       </section>
 
       {/* Adaptive coach insights */}
-      {showSecondary && <CoachAdjustments compact />}
+      {showSecondary && <CoachAdjustments compact coach={adaptive} />}
 
 
       {showSecondary && todayPlan && (
