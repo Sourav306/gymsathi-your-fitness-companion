@@ -149,11 +149,11 @@ function NavTab({
     <Link
       to={item.to}
       className={cn(
-        "flex min-h-14 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium transition-colors",
-        active ? "text-primary" : "text-muted-foreground",
+        "flex min-h-14 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium press transition-all duration-200",
+        active ? "text-primary scale-105" : "text-muted-foreground hover:text-foreground",
       )}
     >
-      <Icon className={cn("h-5 w-5", active && "stroke-[2.5]")} />
+      <Icon className={cn("h-5 w-5 transition-transform", active && "stroke-[2.5]")} />
       <span>{item.label}</span>
     </Link>
   );
