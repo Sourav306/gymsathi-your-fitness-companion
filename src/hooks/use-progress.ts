@@ -40,7 +40,7 @@ export function useProgress(limit: number = 60) {
     if (error) setError(error.message);
     setLogs((data || []) as ProgressLog[]);
     setLoading(false);
-  }, [user]);
+  }, [user, limit]);
 
   useEffect(() => {
     if (!authLoading) load();
