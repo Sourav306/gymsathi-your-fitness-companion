@@ -391,41 +391,43 @@ function Home() {
       </section>
 
       {/* Streak */}
-      <section className="rounded-2xl border border-border bg-card p-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-xl" aria-hidden>
-              🔥
-            </span>
-            <div>
-              <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Current Streak
-              </div>
-              <div className="font-display text-lg font-bold">
-                {streakDays} {streakDays === 1 ? "day" : "days"}
-              </div>
-            </div>
-          </div>
-          <Link
-            to="/weekly-planner"
-            className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
-          >
-            <Calendar className="h-3.5 w-3.5" /> Weekly plan
-          </Link>
-        </div>
-        <div className="mt-3 grid grid-cols-7 gap-1">
-          {weekChecks.map((done, i) => (
-            <div key={i} className="flex flex-col items-center gap-1">
-              <span className="text-[10px] text-muted-foreground">{WEEKDAYS[i]}</span>
-              <span
-                className={`grid h-6 w-6 place-items-center rounded-full text-[10px] ${done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-              >
-                {done ? "✓" : ""}
+      {showSecondary && (
+        <section className="rounded-2xl border border-border bg-card p-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="text-xl" aria-hidden>
+                🔥
               </span>
+              <div>
+                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  Current Streak
+                </div>
+                <div className="font-display text-lg font-bold">
+                  {streakDays} {streakDays === 1 ? "day" : "days"}
+                </div>
+              </div>
             </div>
-          ))}
-        </div>
-      </section>
+            <Link
+              to="/weekly-planner"
+              className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
+            >
+              <Calendar className="h-3.5 w-3.5" /> Weekly plan
+            </Link>
+          </div>
+          <div className="mt-3 grid grid-cols-7 gap-1">
+            {weekChecks.map((done, i) => (
+              <div key={i} className="flex flex-col items-center gap-1">
+                <span className="text-[10px] text-muted-foreground">{WEEKDAYS[i]}</span>
+                <span
+                  className={`grid h-6 w-6 place-items-center rounded-full text-[10px] ${done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
+                >
+                  {done ? "✓" : ""}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
