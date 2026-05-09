@@ -1,10 +1,27 @@
 import { RECIPES, type Recipe } from "@/data/recipes";
 import type { UserProfile, Meal } from "@/lib/ai/schemas";
 
-const STOP = new Set(["with","and","the","of","a","an","on","in","for","bowl","plate","style"]);
+const STOP = new Set([
+  "with",
+  "and",
+  "the",
+  "of",
+  "a",
+  "an",
+  "on",
+  "in",
+  "for",
+  "bowl",
+  "plate",
+  "style",
+]);
 
 function tokens(s: string): string[] {
-  return s.toLowerCase().replace(/[^a-z0-9\s]/g, " ").split(/\s+/).filter(t => t.length > 2 && !STOP.has(t));
+  return s
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((t) => t.length > 2 && !STOP.has(t));
 }
 
 function ingredientTokens(items: string[] = []): Set<string> {
@@ -18,7 +35,7 @@ export function matchRecipe(meal: Pick<Meal, "name" | "ingredients" | "type">): 
   if (!name) return null;
 
   // 1) exact name (loose)
-  const exact = RECIPES.find(r => r.name.toLowerCase() === name);
+  const exact = RECIPES.find((r) => r.name.toLowerCase() === name);
   if (exact) return exact;
 
   // 2) substring/token overlap on name
@@ -65,11 +82,17 @@ function dietAllows(profile: UserProfile, r: Recipe): boolean {
 }
 
 function avoidsAllergens(profile: UserProfile, r: Recipe): boolean {
-  const blockers = [profile.allergies, profile.disliked_foods].filter(Boolean).join(",").toLowerCase();
+  const blockers = [profile.allergies, profile.disliked_foods]
+    .filter(Boolean)
+    .join(",")
+    .toLowerCase();
   if (!blockers.trim()) return true;
   const ing = r.ingredients.join(" ").toLowerCase() + " " + r.name.toLowerCase();
-  const terms = blockers.split(/[,;]+/).map(s => s.trim()).filter(t => t.length > 2);
-  return !terms.some(t => ing.includes(t));
+  const terms = blockers
+    .split(/[,;]+/)
+    .map((s) => s.trim())
+    .filter((t) => t.length > 2);
+  return !terms.some((t) => ing.includes(t));
 }
 
 export function suggestRecipeAlternatives(
@@ -78,12 +101,14 @@ export function suggestRecipeAlternatives(
   excludeId?: string,
   count = 3,
 ): Recipe[] {
-  const pool = RECIPES.filter(r => r.id !== excludeId && dietAllows(profile, r) && avoidsAllergens(profile, r));
+  const pool = RECIPES.filter(
+    (r) => r.id !== excludeId && dietAllows(profile, r) && avoidsAllergens(profile, r),
+  );
   const cal = meal.calories || 400;
   const pro = meal.protein || 25;
   const isSnack = meal.type === "snack";
   const ranked = pool
-    .map(r => {
+    .map((r) => {
       const calD = Math.abs(r.calories - cal);
       const proD = Math.abs(r.protein - pro) * 8;
       const snackBias = isSnack ? Math.max(0, r.calories - 350) : 0;
@@ -91,6 +116,6 @@ export function suggestRecipeAlternatives(
     })
     .sort((a, b) => a.score - b.score)
     .slice(0, count)
-    .map(x => x.r);
+    .map((x) => x.r);
   return ranked;
 }

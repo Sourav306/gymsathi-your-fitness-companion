@@ -10,16 +10,20 @@ export const Route = createFileRoute("/exercises/$id")({
     return ex;
   },
   head: ({ loaderData }) => ({
-    meta: loaderData ? [
-      { title: `${loaderData.name} — GymSathi` },
-      { name: "description", content: loaderData.summary },
-    ] : [],
+    meta: loaderData
+      ? [
+          { title: `${loaderData.name} — GymSathi` },
+          { name: "description", content: loaderData.summary },
+        ]
+      : [],
   }),
   component: Detail,
   notFoundComponent: () => (
     <div className="py-16 text-center">
       <p className="text-muted-foreground">Exercise not found.</p>
-      <Link to="/exercises" className="mt-4 inline-block text-primary">Back to library</Link>
+      <Link to="/exercises" className="mt-4 inline-block text-primary">
+        Back to library
+      </Link>
     </div>
   ),
 });
@@ -28,7 +32,10 @@ function Detail() {
   const e = Route.useLoaderData();
   return (
     <div className="space-y-6">
-      <Link to="/exercises" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/exercises"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> All exercises
       </Link>
 
@@ -48,26 +55,42 @@ function Detail() {
 
       <div className="overflow-hidden rounded-2xl border border-border bg-black">
         <div className="aspect-video">
-          <iframe className="h-full w-full" src={`https://www.youtube.com/embed/${e.youtubeId}`}
-            title={e.name} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen />
+          <iframe
+            className="h-full w-full"
+            src={`https://www.youtube.com/embed/${e.youtubeId}`}
+            title={e.name}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card icon={CheckCircle2} title="How to do it" iconClass="text-primary">
           <ol className="list-decimal space-y-2 pl-5 text-sm">
-            {e.steps.map((s: string, i: number) => <li key={i}>{s}</li>)}
+            {e.steps.map((s: string, i: number) => (
+              <li key={i}>{s}</li>
+            ))}
           </ol>
         </Card>
         <Card icon={AlertTriangle} title="Common mistakes" iconClass="text-destructive">
           <ul className="space-y-2 text-sm">
-            {e.mistakes.map((m: string, i: number) => <li key={i} className="flex gap-2"><span className="text-destructive">•</span>{m}</li>)}
+            {e.mistakes.map((m: string, i: number) => (
+              <li key={i} className="flex gap-2">
+                <span className="text-destructive">•</span>
+                {m}
+              </li>
+            ))}
           </ul>
         </Card>
         <Card icon={Lightbulb} title="Beginner tips" iconClass="text-primary">
           <ul className="space-y-2 text-sm">
-            {e.tips.map((t: string, i: number) => <li key={i} className="flex gap-2"><span className="text-primary">✓</span>{t}</li>)}
+            {e.tips.map((t: string, i: number) => (
+              <li key={i} className="flex gap-2">
+                <span className="text-primary">✓</span>
+                {t}
+              </li>
+            ))}
           </ul>
         </Card>
       </div>
@@ -83,7 +106,17 @@ function Pill({ icon: Icon, label }: { icon?: typeof Dumbbell; label: string }) 
   );
 }
 
-function Card({ icon: Icon, title, children, iconClass }: { icon: typeof Dumbbell; title: string; children: React.ReactNode; iconClass?: string }) {
+function Card({
+  icon: Icon,
+  title,
+  children,
+  iconClass,
+}: {
+  icon: typeof Dumbbell;
+  title: string;
+  children: React.ReactNode;
+  iconClass?: string;
+}) {
   return (
     <div className="rounded-2xl border border-border bg-card p-5">
       <div className="mb-3 flex items-center gap-2">

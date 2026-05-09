@@ -1,9 +1,9 @@
-
 ## Phase 3 — Make AI Meal/Workout Plans Interactive
 
 Scope is additive only. No UI redesign, no new routes (one new shared modal component), no schema changes, no RLS changes, no new external APIs. All existing Phase 1/2/2.5 behavior preserved.
 
 ### Findings from inspection
+
 - `src/data/recipes.ts` exposes `RECIPES` with `id, name, type, protein, calories, time, ingredients[], tags[]`. There is **no** `/recipes/$id` route — recipes expand inline on `/recipes` via `openId` state. So "View Recipe" must deep-link `/recipes?open=<id>` and the recipes page will read it.
 - `src/data/exercises.ts` exposes `EXERCISES` with `id, name, muscle, difficulty, equipment`. A detail route already exists at `/exercises/$id`. "View Exercise" can link directly.
 - AI schemas (`src/lib/ai/schemas.ts`) already capture meal `name/type/ingredients/calories/protein` and exercise `name/muscle/sets/reps/rest/difficulty`. No schema change needed.
@@ -14,10 +14,10 @@ Scope is additive only. No UI redesign, no new routes (one new shared modal comp
 
 1. `src/lib/match/recipes.ts`
    - `matchRecipe(meal: { name; ingredients?; type? }): Recipe | null`
-     - 1) exact name (case/punct-insensitive)
-     - 2) substring/token overlap on name
-     - 3) ingredient overlap score (≥2 shared tokens)
-     - 4) tag/diet alignment as tiebreaker
+     - 1. exact name (case/punct-insensitive)
+     - 2. substring/token overlap on name
+     - 3. ingredient overlap score (≥2 shared tokens)
+     - 4. tag/diet alignment as tiebreaker
    - `suggestAlternatives(meal, profile, count=3): Recipe[]`
      - Filter by diet (`vegetarian` → Veg only; `vegan` → Veg AND no dairy/egg ingredients heuristic; `eggetarian` → Veg/Egg; `non_vegetarian` → all)
      - Exclude allergens / disliked tokens from `profile.allergies`/`disliked_foods`
@@ -26,7 +26,7 @@ Scope is additive only. No UI redesign, no new routes (one new shared modal comp
 
 2. `src/lib/match/exercises.ts`
    - `matchExercise(ex: { name; muscle?; }): Exercise | null`
-     - 1) exact name → 2) substring/token → 3) muscle group + difficulty fallback
+     - 1. exact name → 2) substring/token → 3) muscle group + difficulty fallback
    - `suggestExerciseAlternatives(ex, profile, count=3): Exercise[]`
      - Same muscle group preferred
      - Filter equipment by `gym_access` (`no_equipment` → Bodyweight only; `home` → Bodyweight/Dumbbells/Bands; `full_gym` → all)
@@ -62,21 +62,25 @@ Scope is additive only. No UI redesign, no new routes (one new shared modal comp
 8. Saved plan detail view — minimal: keep current "click saved plan → loads into top view" pattern (already shows day-by-day, grocery list, View Recipe/Exercise from edits 6/7). Add a small badge "Read-only until you swap or save" so users know swaps create a new saved version.
 
 ### Safety
+
 - All Supabase calls scoped by `user.id`; existing RLS handles auth (no change).
 - `progress_logs` upsert uses `onConflict: "user_id,log_date"` if a unique constraint exists; otherwise check-then-insert/update. (Will verify the existing constraint via the linter/SQL during implementation; if absent, fall back to select-then-insert/update — no migration in this phase.)
 - Mock AI fallback untouched; matcher returns `null` gracefully when no match — UI just hides the "View Recipe/Exercise" button.
 - Disclaimers on both pages preserved.
 
 ### Testing
+
 - `npm run build` + TS check, route check, mobile width 375px.
 - Manual: generate → match badges visible → swap meal/exercise → totals update → copy grocery → save changes → reload page → saved version present → mark workout/meal completed → `/progress` shows updated boolean for today.
 - Logged-out: `/ai-meal` and `/ai-workout` still redirect to `/profile`.
 
 ### Files changed (summary)
+
 - New: `src/lib/match/recipes.ts`, `src/lib/match/exercises.ts`, `src/lib/grocery.ts`, `src/components/SwapDrawer.tsx`
 - Edited: `src/routes/ai-meal/index.tsx`, `src/routes/ai-workout/index.tsx`, `src/routes/recipes/index.tsx`
 
 ### Out of scope (Phase 4 candidates)
+
 - Real recipe/exercise detail routes for recipes
 - Streaks, weekly adherence scoring
 - External nutrition/recipe APIs
