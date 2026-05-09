@@ -40,7 +40,7 @@ export function useDailyTasks(date?: string) {
       .eq("task_date", taskDate)
       .order("priority", { ascending: true });
     if (error) setError(error.message);
-    setTasks((data || []) as any);
+    setTasks((data || []) as DailyTask[]);
     setLoading(false);
   }, [user, taskDate]);
 
@@ -48,6 +48,14 @@ export function useDailyTasks(date?: string) {
 
   const generateTodayTasks = useCallback(async () => {
     if (!user) throw new Error("Not signed in");
+    // Guard against duplicates: the table has no UNIQUE constraint on (user_id, task_date)
+    const { data: existing } = await supabase
+      .from("daily_tasks")
+      .select("id")
+      .eq("user_id", user.id)
+      .eq("task_date", taskDate)
+      .limit(1);
+    if (existing && existing.length > 0) { await load(); return; }
     const defs = buildDefaultTasks(profile);
     const rows = defs.map((d) => ({ ...d, user_id: user.id, task_date: taskDate }));
     const { error } = await supabase.from("daily_tasks").insert(rows);
@@ -56,18 +64,18 @@ export function useDailyTasks(date?: string) {
   }, [user, profile, taskDate, load]);
 
   const toggleComplete = useCallback(async (id: string, isCompleted: boolean) => {
-    const t = tasks.find((x) => x.id === id);
+    const t = tasks.find((x: DailyTask) => x.id === id);
     const completed_value = isCompleted ? (t?.target_value ?? 1) : 0;
     const { error } = await supabase
       .from("daily_tasks")
       .update({ is_completed: isCompleted, completed_value })
       .eq("id", id);
     if (error) throw error;
-    setTasks((prev) => prev.map((x) => (x.id === id ? { ...x, is_completed: isCompleted, completed_value } : x)));
+    setTasks((prev: DailyTask[]) => prev.map((x: DailyTask) => (x.id === id ? { ...x, is_completed: isCompleted, completed_value } : x)));
   }, [tasks]);
 
   const updateProgress = useCallback(async (id: string, value: number) => {
-    const t = tasks.find((x) => x.id === id);
+    const t = tasks.find((x: DailyTask) => x.id === id);
     const target = t?.target_value ?? 0;
     const is_completed = target > 0 ? value >= target : value > 0;
     const { error } = await supabase
@@ -75,11 +83,11 @@ export function useDailyTasks(date?: string) {
       .update({ completed_value: value, is_completed })
       .eq("id", id);
     if (error) throw error;
-    setTasks((prev) => prev.map((x) => (x.id === id ? { ...x, completed_value: value, is_completed } : x)));
+    setTasks((prev: DailyTask[]) => prev.map((x: DailyTask) => (x.id === id ? { ...x, completed_value: value, is_completed } : x)));
   }, [tasks]);
 
   const tasksTotal = tasks.length;
-  const tasksCompleted = tasks.filter((t) => t.is_completed).length;
+  const tasksCompleted = tasks.filter((t: DailyTask) => t.is_completed).length;
   const completionPct = tasksTotal > 0 ? Math.round((tasksCompleted / tasksTotal) * 100) : 0;
 
   return {

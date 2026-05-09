@@ -55,7 +55,7 @@ export function useDailyEvaluation() {
       .eq("user_id", user.id)
       .eq("evaluation_date", today())
       .maybeSingle();
-    setEvaluation((data as any) || null);
+    setEvaluation((data as DailyEvaluation) || null);
     setLoading(false);
   }, [user]);
 
@@ -88,7 +88,7 @@ export function useDailyEvaluation() {
       });
       const last7 = Array.from(byDate.entries()).map(([date, v]) => ({ date, ...v }));
 
-      const targets = profile ? calcTargets(profile) : { calories: null as any, protein: null as any };
+      const targets: { calories: number | null; protein: number | null } = profile ? calcTargets(profile) : { calories: null, protein: null };
       const waterTarget = profile?.water_goal_liters ?? 3;
       const stepsTarget = profile?.step_goal ?? 8000;
 
