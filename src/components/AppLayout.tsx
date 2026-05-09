@@ -45,7 +45,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-background">
       {/* Desktop top nav */}
-      <header className="sticky top-0 z-40 hidden border-b border-border bg-background/80 backdrop-blur md:block">
+      <header className="sticky top-0 z-40 hidden glass-strong border-b md:block">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
