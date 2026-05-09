@@ -107,9 +107,7 @@ export function useCoachChat() {
 
     const last7logs = progress.logs.slice(0, 7);
     const proteinAvg = last7logs.length
-      ? Math.round(
-          last7logs.reduce((a, l) => a + (l.protein_consumed ?? 0), 0) / last7logs.length,
-        )
+      ? Math.round(last7logs.reduce((a, l) => a + (l.protein_consumed ?? 0), 0) / last7logs.length)
       : 0;
     const workoutsDone = last7logs.filter((l) => l.workout_completed).length;
     const recentSummary = `7d: ${last7logs.length} days logged, avg protein ${proteinAvg}g, workouts done ${workoutsDone}/${last7logs.length}`;
