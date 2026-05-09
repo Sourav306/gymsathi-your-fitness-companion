@@ -309,7 +309,7 @@ function Home() {
             </button>
           </div>
         ) : (
-          <ul className="space-y-2">
+          <ul className="space-y-2 anim-stagger">
             {tasksHook.tasks.map((t) => (
               <TaskRow key={t.id} task={t} onToggle={tasksHook.toggleComplete} />
             ))}
@@ -378,7 +378,7 @@ function Home() {
             Edit
           </Link>
         </div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 anim-stagger">
           <Metric
             icon={Beef}
             label="Protein"
@@ -471,25 +471,31 @@ function TaskRow({
         onClick={handle}
         disabled={pending}
         className={cn(
-          "flex w-full items-center gap-3 rounded-2xl border bg-card p-3 text-left transition active:scale-[0.99]",
-          task.is_completed ? "border-primary/40 bg-accent/30" : "border-border",
+          "flex w-full items-center gap-3 rounded-2xl border p-3 text-left press hover-lift",
+          task.is_completed
+            ? "border-primary/40 bg-gradient-to-r from-primary/15 to-primary-glow/10"
+            : "glass-card",
         )}
       >
         <span
           className={cn(
-            "grid h-9 w-9 shrink-0 place-items-center rounded-xl",
+            "grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-all duration-300",
             task.is_completed
-              ? "bg-primary text-primary-foreground"
+              ? "bg-gradient-to-br from-primary to-primary-glow text-primary-foreground scale-105"
               : "bg-secondary text-muted-foreground",
           )}
         >
-          {task.is_completed ? <CheckCircle2 className="h-5 w-5" /> : <Icon className="h-5 w-5" />}
+          {task.is_completed ? (
+            <CheckCircle2 className="h-5 w-5 anim-scale-in" />
+          ) : (
+            <Icon className="h-5 w-5" />
+          )}
         </span>
         <span className="min-w-0 flex-1">
           <span
             className={cn(
-              "block truncate text-sm font-semibold",
-              task.is_completed && "line-through opacity-70",
+              "block truncate text-sm font-semibold transition-all duration-300",
+              task.is_completed && "line-through opacity-60",
             )}
           >
             {task.title}
@@ -528,8 +534,13 @@ function Metric({
   unit: string;
 }) {
   const pct = Math.min(100, Math.round((Number(value) / target) * 100)) || 0;
+  const [animPct, setAnimPct] = useState(0);
+  useEffect(() => {
+    const t = setTimeout(() => setAnimPct(pct), 60);
+    return () => clearTimeout(t);
+  }, [pct]);
   return (
-    <div className="rounded-2xl border border-border bg-card p-3">
+    <div className="glass-card rounded-2xl p-3 hover-lift">
       <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
         <Icon className="h-3 w-3 text-primary" /> {label}
       </div>
@@ -542,10 +553,10 @@ function Metric({
           </span>
         )}
       </div>
-      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary">
+      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary/60">
         <div
-          className="h-full rounded-full bg-primary transition-all"
-          style={{ width: `${pct}%` }}
+          className="h-full rounded-full bg-gradient-to-r from-primary to-primary-glow transition-[width] duration-700 ease-out"
+          style={{ width: `${animPct}%` }}
         />
       </div>
     </div>
