@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { LogOut, User as UserIcon, Mail } from "lucide-react";
+import { LogOut, User as UserIcon, Mail, Heart, Dumbbell, Utensils, Activity, Settings, ChevronRight, Sparkles } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -23,22 +23,32 @@ function Profile() {
 
   if (user) {
     return (
-      <div className="mx-auto max-w-md space-y-5">
-        <div className="rounded-3xl border border-border bg-card p-8 text-center">
+      <div className="mx-auto max-w-md space-y-4">
+        <div className="rounded-3xl border border-border bg-card p-6 text-center shadow-[var(--shadow-soft)]">
           <div className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-primary text-primary-foreground">
             <UserIcon className="h-8 w-8" />
           </div>
-          <h1 className="mt-4 font-display text-2xl font-bold">{user.user_metadata?.display_name || user.email?.split("@")[0]}</h1>
-          <p className="mt-1 inline-flex items-center gap-1.5 text-sm text-muted-foreground">
-            <Mail className="h-3.5 w-3.5" /> {user.email}
+          <h1 className="mt-3 font-display text-xl font-bold">{user.user_metadata?.display_name || user.email?.split("@")[0]}</h1>
+          <p className="mt-0.5 inline-flex items-center gap-1.5 text-xs text-muted-foreground">
+            <Mail className="h-3 w-3" /> {user.email}
           </p>
-          <button
-            onClick={async () => { await supabase.auth.signOut(); toast.success("Signed out"); }}
-            className="mt-6 inline-flex items-center gap-2 rounded-xl border border-border px-5 py-2.5 text-sm font-medium hover:bg-secondary"
-          >
-            <LogOut className="h-4 w-4" /> Sign out
-          </button>
         </div>
+
+        <nav className="overflow-hidden rounded-2xl border border-border bg-card">
+          <Row to="/onboarding" icon={Sparkles} label="Personal info & goals" />
+          <Row to="/progress" icon={Activity} label="Progress & measurements" />
+          <Row to="/favorites" icon={Heart} label="Saved items" />
+          <Row to="/plans" icon={Dumbbell} label="Saved workouts" />
+          <Row to="/meal-plans" icon={Utensils} label="Saved meals" />
+          <Row to="/onboarding" icon={Settings} label="Settings" last />
+        </nav>
+
+        <button
+          onClick={async () => { await supabase.auth.signOut(); toast.success("Signed out"); }}
+          className="mt-2 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-border bg-card px-5 py-3 text-sm font-medium text-destructive hover:bg-secondary"
+        >
+          <LogOut className="h-4 w-4" /> Log out
+        </button>
       </div>
     );
   }
