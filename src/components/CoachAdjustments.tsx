@@ -28,7 +28,7 @@ export function CoachAdjustments({ compact = false, coach }: { compact?: boolean
           {busy ? "Updating…" : "Refresh"}
         </button>
       </div>
-      <ul className="space-y-2">
+      <ul className="space-y-2 anim-stagger">
         {items.map((i) => (
           <InsightCard key={i.id} insight={i} onApply={apply} onDismiss={dismiss} />
         ))}
