@@ -309,7 +309,7 @@ function Home() {
             </button>
           </div>
         ) : (
-          <ul className="space-y-2">
+          <ul className="space-y-2 anim-stagger">
             {tasksHook.tasks.map((t) => (
               <TaskRow key={t.id} task={t} onToggle={tasksHook.toggleComplete} />
             ))}
