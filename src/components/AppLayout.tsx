@@ -43,9 +43,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const coachActive = location.pathname.startsWith("/coach");
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="glass-shell">
       {/* Desktop top nav */}
-      <header className="sticky top-0 z-40 hidden border-b border-border bg-background/80 backdrop-blur md:block">
+      <header className="sticky top-0 z-40 hidden border-b md:block glass-nav">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
@@ -97,7 +97,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Mobile bottom nav with floating AI Coach */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 border-t border-border bg-background/95 backdrop-blur md:hidden"
+        className="fixed bottom-0 left-0 right-0 z-40 border-t md:hidden glass-nav"
         style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         aria-label="Primary"
       >
@@ -116,10 +116,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             to="/coach"
             aria-label="AI Coach"
             className={cn(
-              "absolute left-1/2 -translate-x-1/2 -top-6 grid h-16 w-16 place-items-center rounded-full shadow-lg ring-4 ring-background transition",
-              coachActive
-                ? "bg-primary text-primary-foreground scale-105"
-                : "bg-primary text-primary-foreground hover:scale-105",
+              "absolute left-1/2 -translate-x-1/2 -top-6 grid h-16 w-16 place-items-center rounded-full ring-2 ring-white/10 transition glass-button-primary",
+              coachActive ? "scale-105" : "hover:scale-105",
             )}
           >
             <Sparkles className="h-7 w-7" />

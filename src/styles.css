@@ -35,59 +35,74 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
+/* ─── Dark Glassmorphism Token Palette ─────────────────────── */
 :root {
   --radius: 0.875rem;
-  --background: oklch(0.99 0.003 150);
-  --foreground: oklch(0.18 0.01 150);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.01 150);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.01 150);
-  --primary: oklch(0.62 0.17 150);
-  --primary-foreground: oklch(0.99 0.003 150);
-  --primary-glow: oklch(0.78 0.18 150);
-  --secondary: oklch(0.96 0.005 150);
-  --secondary-foreground: oklch(0.2 0.01 150);
-  --muted: oklch(0.96 0.005 150);
-  --muted-foreground: oklch(0.5 0.01 150);
-  --accent: oklch(0.93 0.06 150);
-  --accent-foreground: oklch(0.25 0.05 150);
-  --destructive: oklch(0.6 0.22 25);
+
+  /* Surfaces — near-black charcoal base */
+  --background: oklch(0.09 0.006 265);
+  --foreground: oklch(0.96 0.004 255);
+  --card: oklch(0.14 0.008 265);
+  --card-foreground: oklch(0.96 0.004 255);
+  --popover: oklch(0.14 0.008 265);
+  --popover-foreground: oklch(0.96 0.004 255);
+
+  /* Warm orange primary — no green */
+  --primary: oklch(0.72 0.19 50);
+  --primary-foreground: oklch(0.09 0.006 265);
+  --primary-glow: oklch(0.83 0.17 52);
+
+  /* Neutral dark surfaces */
+  --secondary: oklch(0.18 0.007 265);
+  --secondary-foreground: oklch(0.96 0.004 255);
+  --muted: oklch(0.18 0.007 265);
+  --muted-foreground: oklch(0.57 0.007 265);
+  --accent: oklch(0.21 0.009 265);
+  --accent-foreground: oklch(0.96 0.004 255);
+
+  /* Status */
+  --destructive: oklch(0.60 0.22 25);
   --destructive-foreground: oklch(0.99 0 0);
-  --success: oklch(0.62 0.17 150);
-  --border: oklch(0.92 0.005 150);
-  --input: oklch(0.92 0.005 150);
-  --ring: oklch(0.62 0.17 150);
-  --gradient-hero: linear-gradient(135deg, oklch(0.62 0.17 150), oklch(0.78 0.18 150));
-  --gradient-card: linear-gradient(180deg, oklch(1 0 0), oklch(0.97 0.01 150));
-  --shadow-soft: 0 2px 8px -2px oklch(0.18 0.01 150 / 0.08);
-  --shadow-elegant: 0 12px 40px -12px oklch(0.62 0.17 150 / 0.35);
+  --success: oklch(0.72 0.19 50);
+
+  /* Chrome */
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.72 0.19 50);
+
+  /* Gradients & shadows */
+  --gradient-hero: linear-gradient(135deg, oklch(0.74 0.19 50), oklch(0.62 0.21 44));
+  --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+  --shadow-soft: 0 4px 20px rgba(0,0,0,0.40);
+  --shadow-elegant: 0 20px 60px rgba(0,0,0,0.50);
 }
 
+/* .dark mirrors :root — the entire theme is always dark */
 .dark {
-  --background: oklch(0.16 0.01 150);
-  --foreground: oklch(0.97 0.005 150);
-  --card: oklch(0.2 0.01 150);
-  --card-foreground: oklch(0.97 0.005 150);
-  --popover: oklch(0.2 0.01 150);
-  --popover-foreground: oklch(0.97 0.005 150);
-  --primary: oklch(0.72 0.17 150);
-  --primary-foreground: oklch(0.16 0.01 150);
-  --primary-glow: oklch(0.82 0.18 150);
-  --secondary: oklch(0.25 0.01 150);
-  --secondary-foreground: oklch(0.97 0.005 150);
-  --muted: oklch(0.25 0.01 150);
-  --muted-foreground: oklch(0.7 0.01 150);
-  --accent: oklch(0.3 0.06 150);
-  --accent-foreground: oklch(0.97 0.005 150);
-  --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: oklch(0.97 0 0);
-  --success: oklch(0.72 0.17 150);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.72 0.17 150);
+  --background: oklch(0.09 0.006 265);
+  --foreground: oklch(0.96 0.004 255);
+  --card: oklch(0.14 0.008 265);
+  --card-foreground: oklch(0.96 0.004 255);
+  --popover: oklch(0.14 0.008 265);
+  --popover-foreground: oklch(0.96 0.004 255);
+  --primary: oklch(0.72 0.19 50);
+  --primary-foreground: oklch(0.09 0.006 265);
+  --primary-glow: oklch(0.83 0.17 52);
+  --secondary: oklch(0.18 0.007 265);
+  --secondary-foreground: oklch(0.96 0.004 255);
+  --muted: oklch(0.18 0.007 265);
+  --muted-foreground: oklch(0.57 0.007 265);
+  --accent: oklch(0.21 0.009 265);
+  --accent-foreground: oklch(0.96 0.004 255);
+  --destructive: oklch(0.60 0.22 25);
+  --destructive-foreground: oklch(0.99 0 0);
+  --success: oklch(0.72 0.19 50);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 10%);
+  --ring: oklch(0.72 0.19 50);
 }
 
+/* ─── Base ────────────────────────────────────────────────── */
 @layer base {
   * {
     border-color: var(--color-border);
@@ -108,12 +123,241 @@
   }
 }
 
+/* ─── Keyframes ───────────────────────────────────────────── */
+@keyframes glassIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ─── Glass Utility System ────────────────────────────────── */
 @layer utilities {
+  /* Scrollbar */
   .no-scrollbar {
     scrollbar-width: none;
   }
-
   .no-scrollbar::-webkit-scrollbar {
     display: none;
+  }
+
+  /* ── Page shell — near-black with ambient radial glows ── */
+  .glass-shell {
+    min-height: 100vh;
+    background-color: oklch(0.09 0.006 265);
+    background-image:
+      radial-gradient(ellipse 72% 46% at 6% -3%, rgba(255,107,53,0.11) 0%, transparent 58%),
+      radial-gradient(ellipse 54% 36% at 94% 108%, rgba(88,68,220,0.07) 0%, transparent 55%);
+    background-attachment: fixed;
+  }
+
+  /* ── Standard glass card ── */
+  .glass-card {
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.10) 0%,
+      rgba(255,255,255,0.04) 100%
+    );
+    backdrop-filter: blur(22px) saturate(160%);
+    -webkit-backdrop-filter: blur(22px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.13);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.12),
+      0 20px 60px rgba(0,0,0,0.35),
+      0 4px 12px rgba(0,0,0,0.20);
+  }
+
+  /* ── Strong glass — AI feedback / featured cards ── */
+  .glass-card-strong {
+    background: linear-gradient(
+      135deg,
+      rgba(255,255,255,0.15) 0%,
+      rgba(255,255,255,0.06) 100%
+    );
+    backdrop-filter: blur(32px) saturate(180%);
+    -webkit-backdrop-filter: blur(32px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.18),
+      0 24px 80px rgba(0,0,0,0.45),
+      0 6px 20px rgba(0,0,0,0.25);
+  }
+
+  /* ── Navigation glass — top header & bottom bar ── */
+  .glass-nav {
+    background: rgba(10,10,14,0.82);
+    backdrop-filter: blur(28px) saturate(180%);
+    -webkit-backdrop-filter: blur(28px) saturate(180%);
+  }
+
+  /* ── Ghost glass button ── */
+  .glass-button {
+    background: rgba(255,255,255,0.07);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border: 1px solid rgba(255,255,255,0.13);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.09);
+    transition: background 0.15s ease;
+  }
+  .glass-button:hover:not(:disabled) {
+    background: rgba(255,255,255,0.12);
+  }
+  .glass-button:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  /* ── Primary CTA — warm orange ── */
+  .glass-button-primary {
+    background: linear-gradient(
+      135deg,
+      oklch(0.75 0.19 50) 0%,
+      oklch(0.62 0.21 44) 100%
+    );
+    color: oklch(0.09 0.006 265);
+    border: 1px solid rgba(255,140,80,0.30);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.24),
+      0 8px 24px rgba(220,90,20,0.38),
+      0 2px 6px rgba(0,0,0,0.30);
+    transition: box-shadow 0.15s ease, transform 0.12s ease;
+  }
+  .glass-button-primary:hover:not(:disabled) {
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.30),
+      0 12px 32px rgba(220,90,20,0.52),
+      0 4px 10px rgba(0,0,0,0.30);
+  }
+  .glass-button-primary:active:not(:disabled) {
+    transform: scale(0.97);
+  }
+  .glass-button-primary:disabled {
+    opacity: 0.50;
+    cursor: not-allowed;
+  }
+
+  /* ── Small pill / badge ── */
+  .glass-pill {
+    background: rgba(255,255,255,0.09);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 9999px;
+  }
+
+  /* ── Input field ── */
+  .glass-input {
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.92);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .glass-input:focus {
+    background: rgba(255,255,255,0.09);
+    border-color: oklch(0.72 0.19 50 / 0.60);
+    outline: none;
+    box-shadow: 0 0 0 3px oklch(0.72 0.19 50 / 0.18);
+  }
+  .glass-input::placeholder {
+    color: rgba(255,255,255,0.32);
+  }
+
+  /* ── Focus ring ── */
+  .glass-ring:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px oklch(0.72 0.19 50 / 0.50);
+  }
+
+  /* ── Inner shimmer highlight ── */
+  .glass-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .glass-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 20%,
+      rgba(255,255,255,0.06) 46%,
+      transparent 60%
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── Press / tap feedback ── */
+  .glass-press {
+    transition:
+      transform 0.12s cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 0.12s ease;
+    will-change: transform;
+  }
+  .glass-press:active {
+    transform: scale(0.97);
+  }
+
+  /* ── Entrance animation ── */
+  .glass-animate-in {
+    animation: glassIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+}
+
+/* ─── Backdrop-filter fallback (older Safari / Firefox) ─── */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass-card {
+    background: rgba(26, 26, 36, 0.96);
+    border: 1px solid rgba(255,255,255,0.10);
+    box-shadow: 0 4px 24px rgba(0,0,0,0.50);
+  }
+  .glass-card-strong {
+    background: rgba(30, 30, 42, 0.98);
+    border: 1px solid rgba(255,255,255,0.14);
+    box-shadow: 0 6px 32px rgba(0,0,0,0.55);
+  }
+  .glass-nav {
+    background: rgba(10, 10, 14, 0.98);
+    box-shadow: 0 -2px 16px rgba(0,0,0,0.40);
+  }
+  .glass-button {
+    background: rgba(38, 38, 52, 0.95);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .glass-pill {
+    background: rgba(34, 34, 48, 0.95);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+  .glass-input {
+    background: rgba(22, 22, 32, 0.95);
+    border: 1px solid rgba(255,255,255,0.10);
+  }
+}
+
+/* ─── Reduced motion ─────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .glass-animate-in {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .glass-press {
+    transition: none;
+  }
+  .glass-press:active {
+    transform: none;
+  }
+  .glass-button,
+  .glass-button-primary {
+    transition: none;
+  }
+  .glass-button-primary:active,
+  .glass-button:active {
+    transform: none;
   }
 }
