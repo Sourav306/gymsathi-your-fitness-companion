@@ -12,10 +12,7 @@ import {
 import { useWeeklyPlan } from "@/hooks/use-weekly-plan";
 import { useSavedMealPlans } from "@/hooks/use-saved-plans";
 import { fmtISO, startOfWeek } from "@/lib/weekly";
-import {
-  buildGroceryFromMealPlan,
-  buildGroceryFromWeekly,
-} from "@/lib/grocery-generate";
+import { buildGroceryFromMealPlan, buildGroceryFromWeekly } from "@/lib/grocery-generate";
 import { supabase } from "@/integrations/supabase/client";
 
 type Search = { listId?: string };
