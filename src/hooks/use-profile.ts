@@ -124,9 +124,7 @@ export function useProfile() {
       if (!user) throw new Error("Not signed in");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const row: any = { user_id: user.id, ...p };
-      const { error } = await supabase
-        .from("user_profiles")
-        .upsert(row, { onConflict: "user_id" });
+      const { error } = await supabase.from("user_profiles").upsert(row, { onConflict: "user_id" });
       if (error) throw error;
       await fetchProfile(user.id);
     },

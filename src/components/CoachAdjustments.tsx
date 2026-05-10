@@ -23,7 +23,7 @@ export function CoachAdjustments({ compact = false, coach }: { compact?: boolean
             refresh().catch((e) => toast.error((e as Error)?.message || "Refresh failed"));
           }}
           disabled={busy}
-          className="text-xs font-semibold text-primary disabled:opacity-50"
+          className="glass-press text-xs font-semibold text-primary disabled:opacity-50"
         >
           {busy ? "Updating…" : "Refresh"}
         </button>
@@ -68,7 +68,7 @@ function InsightCard({
   return (
     <li className="glass-card hover-lift rounded-2xl border-primary/20 p-4">
       <div className="flex items-start gap-3">
-        <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary">
+        <span className="glass-pill grid h-9 w-9 shrink-0 place-items-center text-primary">
           <Sparkles className="h-4 w-4" />
         </span>
         <div className="min-w-0 flex-1">
@@ -82,7 +82,7 @@ function InsightCard({
               onClick={() => handle("apply")}
               disabled={pending !== null}
               className={cn(
-                "inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-50",
+                "glass-button-primary glass-press inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold disabled:opacity-50",
               )}
             >
               {pending === "apply" ? (
@@ -95,7 +95,7 @@ function InsightCard({
             <button
               onClick={() => handle("dismiss")}
               disabled={pending !== null}
-              className="inline-flex items-center gap-1 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-semibold disabled:opacity-50"
+              className="glass-button glass-press inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-semibold disabled:opacity-50"
             >
               {pending === "dismiss" ? (
                 <Loader2 className="h-3 w-3 animate-spin" />
@@ -107,7 +107,7 @@ function InsightCard({
             {link && (
               <Link
                 to={link}
-                className="ml-auto inline-flex items-center gap-1 text-xs font-semibold text-primary"
+                className="glass-press ml-auto inline-flex items-center gap-1 text-xs font-semibold text-primary"
               >
                 Open <ArrowRight className="h-3 w-3" />
               </Link>
