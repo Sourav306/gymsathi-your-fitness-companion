@@ -14,6 +14,7 @@ import {
   Activity,
   Calendar,
   MessageSquare,
+  ShoppingBasket,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-profile";
@@ -369,6 +370,35 @@ function Home() {
               )}
             </Link>
           </div>
+        </section>
+      )}
+
+      {showSecondary && (
+        <section className="grid gap-2 sm:grid-cols-2">
+          <Link
+            to="/grocery-list"
+            className="glass-card glass-press flex items-center justify-between gap-3 rounded-2xl p-4"
+          >
+            <div className="flex items-center gap-2">
+              <ShoppingBasket className="h-5 w-5 text-primary" />
+              <div>
+                <div className="font-display text-sm font-bold">Grocery List</div>
+                <div className="text-xs text-muted-foreground">From your weekly plan</div>
+              </div>
+            </div>
+          </Link>
+          <Link
+            to="/meal-prep-calendar"
+            className="glass-card glass-press flex items-center justify-between gap-3 rounded-2xl p-4"
+          >
+            <div className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-primary" />
+              <div>
+                <div className="font-display text-sm font-bold">Meal Prep Calendar</div>
+                <div className="text-xs text-muted-foreground">Sun + Wed prep tasks</div>
+              </div>
+            </div>
+          </Link>
         </section>
       )}
 

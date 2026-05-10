@@ -547,6 +547,18 @@ function Page() {
                   >
                     <ClipboardCopy className="h-3 w-3" /> Copy Prep Plan
                   </button>
+                  <Link
+                    to="/grocery-list"
+                    className="inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-semibold text-primary-foreground hover:opacity-90"
+                  >
+                    <ShoppingBasket className="h-3 w-3" /> Save to Grocery List
+                  </Link>
+                  <Link
+                    to="/meal-prep-calendar"
+                    className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-xs hover:bg-secondary"
+                  >
+                    <Calendar className="h-3 w-3" /> Meal Prep Calendar
+                  </Link>
                 </div>
                 {data.grocery.length > 0 && (
                   <div className="grid gap-3 sm:grid-cols-2">

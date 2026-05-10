@@ -305,6 +305,143 @@ export type Database = {
         }
         Relationships: []
       }
+      grocery_items: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          is_checked: boolean
+          list_id: string
+          name: string
+          position: number
+          quantity: number | null
+          unit: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_checked?: boolean
+          list_id: string
+          name: string
+          position?: number
+          quantity?: number | null
+          unit?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          is_checked?: boolean
+          list_id?: string
+          name?: string
+          position?: number
+          quantity?: number | null
+          unit?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "grocery_items_list_id_fkey"
+            columns: ["list_id"]
+            isOneToOne: false
+            referencedRelation: "grocery_lists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      grocery_lists: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          notes: string | null
+          source: string
+          source_id: string | null
+          updated_at: string
+          user_id: string
+          week_start: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          source?: string
+          source_id?: string | null
+          updated_at?: string
+          user_id: string
+          week_start?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          source?: string
+          source_id?: string | null
+          updated_at?: string
+          user_id?: string
+          week_start?: string | null
+        }
+        Relationships: []
+      }
+      meal_prep_tasks: {
+        Row: {
+          created_at: string
+          duration_min: number | null
+          id: string
+          instructions: string | null
+          is_completed: boolean
+          position: number
+          reheating: string | null
+          source: string
+          source_id: string | null
+          storage: string | null
+          task_date: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_min?: number | null
+          id?: string
+          instructions?: string | null
+          is_completed?: boolean
+          position?: number
+          reheating?: string | null
+          source?: string
+          source_id?: string | null
+          storage?: string | null
+          task_date: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_min?: number | null
+          id?: string
+          instructions?: string | null
+          is_completed?: boolean
+          position?: number
+          reheating?: string | null
+          source?: string
+          source_id?: string | null
+          storage?: string | null
+          task_date?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
