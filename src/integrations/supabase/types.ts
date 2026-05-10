@@ -307,12 +307,16 @@ export type Database = {
       }
       grocery_items: {
         Row: {
+          already_have: boolean
           category: string
           created_at: string
+          estimated_cost: number | null
           id: string
           is_checked: boolean
+          linked_meal: string | null
           list_id: string
           name: string
+          note: string | null
           position: number
           quantity: number | null
           unit: string | null
@@ -320,12 +324,16 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          already_have?: boolean
           category?: string
           created_at?: string
+          estimated_cost?: number | null
           id?: string
           is_checked?: boolean
+          linked_meal?: string | null
           list_id: string
           name: string
+          note?: string | null
           position?: number
           quantity?: number | null
           unit?: string | null
@@ -333,12 +341,16 @@ export type Database = {
           user_id: string
         }
         Update: {
+          already_have?: boolean
           category?: string
           created_at?: string
+          estimated_cost?: number | null
           id?: string
           is_checked?: boolean
+          linked_meal?: string | null
           list_id?: string
           name?: string
+          note?: string | null
           position?: number
           quantity?: number | null
           unit?: string | null
