@@ -2,38 +2,75 @@ import { RECIPES, type Recipe } from "@/data/recipes";
 import type { UserProfile } from "@/lib/ai/schemas";
 
 const STOP = new Set([
-  "with", "and", "the", "of", "a", "an", "on", "in", "for", "to",
-  "bowl", "plate", "style", "fresh", "chopped", "sliced", "cup", "cups",
-  "tbsp", "tsp", "g", "kg", "ml", "l", "oz", "lb", "lbs", "cooked",
-  "raw", "small", "medium", "large", "boiled", "grilled", "lightly",
-  "optional", "or", "and/or", "salt", "pepper", "water", "ice",
+  "with",
+  "and",
+  "the",
+  "of",
+  "a",
+  "an",
+  "on",
+  "in",
+  "for",
+  "to",
+  "bowl",
+  "plate",
+  "style",
+  "fresh",
+  "chopped",
+  "sliced",
+  "cup",
+  "cups",
+  "tbsp",
+  "tsp",
+  "g",
+  "kg",
+  "ml",
+  "l",
+  "oz",
+  "lb",
+  "lbs",
+  "cooked",
+  "raw",
+  "small",
+  "medium",
+  "large",
+  "boiled",
+  "grilled",
+  "lightly",
+  "optional",
+  "or",
+  "and/or",
+  "salt",
+  "pepper",
+  "water",
+  "ice",
 ]);
 
 // Common ingredient aliases / canonical tokens to improve matching
 const ALIASES: Record<string, string> = {
-  "yoghurt": "yogurt",
-  "curd": "yogurt",
-  "dahi": "yogurt",
-  "scallion": "onion",
-  "scallions": "onion",
-  "spring": "onion",
-  "capsicum": "pepper",
-  "bellpepper": "pepper",
-  "garbanzo": "chickpea",
-  "garbanzos": "chickpea",
-  "rajma": "kidneybean",
-  "channa": "chickpea",
-  "chana": "chickpea",
-  "atta": "wheat",
-  "roti": "wheat",
-  "chapati": "wheat",
-  "paneer": "paneer",
-  "tofu": "tofu",
-  "soya": "soy",
-  "soy": "soy",
-  "whey": "whey",
-  "oats": "oat",
-  "rolled": "oat",
+  yoghurt: "yogurt",
+  curd: "yogurt",
+  dahi: "yogurt",
+  scallion: "onion",
+  scallions: "onion",
+  spring: "onion",
+  capsicum: "pepper",
+  bellpepper: "pepper",
+  garbanzo: "chickpea",
+  garbanzos: "chickpea",
+  rajma: "kidneybean",
+  channa: "chickpea",
+  chana: "chickpea",
+  atta: "wheat",
+  roti: "wheat",
+  chapati: "wheat",
+  paneer: "paneer",
+  tofu: "tofu",
+  soya: "soy",
+  soy: "soy",
+  whey: "whey",
+  oats: "oat",
+  rolled: "oat",
 };
 
 function tokenize(s: string): string[] {
@@ -52,9 +89,32 @@ function ingredientTokenSet(items: string[]): Set<string> {
 }
 
 // Hard exclusions for diet preferences
-const NON_VEG_TOKENS = ["chicken", "fish", "beef", "turkey", "mutton", "pork", "shrimp", "salmon", "tuna", "bacon", "ham"];
+const NON_VEG_TOKENS = [
+  "chicken",
+  "fish",
+  "beef",
+  "turkey",
+  "mutton",
+  "pork",
+  "shrimp",
+  "salmon",
+  "tuna",
+  "bacon",
+  "ham",
+];
 const ANIMAL_TOKENS = [...NON_VEG_TOKENS, "egg", "eggs"];
-const DAIRY_TOKENS = ["milk", "yogurt", "cheese", "paneer", "butter", "ghee", "cream", "whey", "cottage", "feta"];
+const DAIRY_TOKENS = [
+  "milk",
+  "yogurt",
+  "cheese",
+  "paneer",
+  "butter",
+  "ghee",
+  "cream",
+  "whey",
+  "cottage",
+  "feta",
+];
 
 function dietAllows(profile: UserProfile | null, r: Recipe): boolean {
   if (!profile) return true;
@@ -202,7 +262,9 @@ export function suggestSweetCravings(
 
   return matches.slice(0, limit).map((m) => {
     const txt = m.recipe.ingredients.join(" ").toLowerCase() + " " + m.recipe.name.toLowerCase();
-    const sweetnessHits = (txt.match(/\b(sugar|honey|maple|jaggery|chocolate|syrup|condensed)\b/g) || []).length;
+    const sweetnessHits = (
+      txt.match(/\b(sugar|honey|maple|jaggery|chocolate|syrup|condensed)\b/g) || []
+    ).length;
     const sugarLevel: "low" | "medium" | "high" =
       sweetnessHits >= 2 ? "high" : sweetnessHits === 1 ? "medium" : "low";
     const bestTime = m.recipe.tags?.includes("post-workout")

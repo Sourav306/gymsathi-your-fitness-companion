@@ -15,16 +15,10 @@ export const externalRecipeProvider = {
   available(): boolean {
     return false;
   },
-  async matchFromPantry(
-    _pantry: string[],
-    _profile: UserProfile | null,
-  ): Promise<PantryMatch[]> {
+  async matchFromPantry(_pantry: string[], _profile: UserProfile | null): Promise<PantryMatch[]> {
     return [];
   },
-  async sweetCravings(
-    _pantry: string[],
-    _profile: UserProfile | null,
-  ): Promise<PantryMatch[]> {
+  async sweetCravings(_pantry: string[], _profile: UserProfile | null): Promise<PantryMatch[]> {
     return [];
   },
 };

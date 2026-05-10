@@ -18,13 +18,7 @@ interface Props {
   onMoveToShopping: (id: string) => Promise<void>;
 }
 
-export function PantryAndSuggestions({
-  userId,
-  listId,
-  items,
-  onReload,
-  onMoveToShopping,
-}: Props) {
+export function PantryAndSuggestions({ userId, listId, items, onReload, onMoveToShopping }: Props) {
   const { profile } = useProfile();
   const pantryItems = useMemo(() => items.filter((i) => i.already_have), [items]);
   const pantryNames = useMemo(() => pantryItems.map((i) => i.name), [pantryItems]);
@@ -71,7 +65,11 @@ export function PantryAndSuggestions({
     if (!listId) return toast.error("Open a list first");
     const existing = new Set(items.map((i) => normalizeIngredient(i.name)));
     const fresh = Array.from(
-      new Set(missing.map((m) => m.replace(/^[\d./\s]+(g|kg|ml|l|oz|lb|lbs|cup|cups|tbsp|tsp)?\s+/i, "").trim())),
+      new Set(
+        missing.map((m) =>
+          m.replace(/^[\d./\s]+(g|kg|ml|l|oz|lb|lbs|cup|cups|tbsp|tsp)?\s+/i, "").trim(),
+        ),
+      ),
     ).filter((m) => m && !existing.has(normalizeIngredient(m)));
     if (!fresh.length) return toast.message("All ingredients are already on your list or pantry");
     const rows = fresh.map((name, i) => ({
@@ -177,7 +175,11 @@ export function PantryAndSuggestions({
           ) : (
             <div className="grid gap-3">
               {matches.map((m) => (
-                <RecipeCard key={m.recipe.id} m={m} onAddMissing={() => addMissingToList(m.missingIngredients)} />
+                <RecipeCard
+                  key={m.recipe.id}
+                  m={m}
+                  onAddMissing={() => addMissingToList(m.missingIngredients)}
+                />
               ))}
             </div>
           )}
@@ -241,9 +243,7 @@ function RecipeCard({
                     Ready to cook
                   </span>
                 )}
-                {sugarLevel && (
-                  <span className="capitalize">· sugar: {sugarLevel}</span>
-                )}
+                {sugarLevel && <span className="capitalize">· sugar: {sugarLevel}</span>}
                 {bestTime && <span>· best: {bestTime}</span>}
               </div>
             </div>
@@ -261,7 +261,10 @@ function RecipeCard({
               </div>
               <div className="mt-1 flex flex-wrap gap-1">
                 {m.matchedIngredients.slice(0, 6).map((i) => (
-                  <span key={i} className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] text-primary">
+                  <span
+                    key={i}
+                    className="rounded-full bg-primary/10 px-2 py-0.5 text-[11px] text-primary"
+                  >
                     {i}
                   </span>
                 ))}
@@ -293,7 +296,10 @@ function RecipeCard({
           {r.tags && r.tags.length > 0 && (
             <div className="mt-2 flex flex-wrap gap-1">
               {r.tags.slice(0, 5).map((t) => (
-                <span key={t} className="glass-pill rounded-full px-2 py-0.5 text-[10px] capitalize">
+                <span
+                  key={t}
+                  className="glass-pill rounded-full px-2 py-0.5 text-[10px] capitalize"
+                >
                   {t.replace(/-/g, " ")}
                 </span>
               ))}
@@ -315,7 +321,13 @@ function RecipeCard({
   );
 }
 
-function Stat({ icon: Icon, label }: { icon: React.ComponentType<{ className?: string }>; label: string }) {
+function Stat({
+  icon: Icon,
+  label,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+}) {
   return (
     <span className="glass-pill inline-flex items-center gap-1 rounded-full px-2 py-0.5">
       <Icon className="h-3 w-3" /> {label}
