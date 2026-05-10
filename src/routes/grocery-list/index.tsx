@@ -190,7 +190,13 @@ function Page() {
           name={detail.list.name}
           items={detail.items}
           onToggle={detail.toggle}
+          onAlready={detail.setAlreadyHave}
           onRemove={detail.remove}
+          onClearChecked={async () => {
+            const n = await detail.clearChecked();
+            if (n) toast.success(`Cleared ${n} checked item${n === 1 ? "" : "s"}`);
+            else toast.message("Nothing checked yet");
+          }}
           onAdd={async (cat, name) => {
             if (!user) return;
             const { error } = await supabase.from("grocery_items").insert({
