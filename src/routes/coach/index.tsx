@@ -97,6 +97,21 @@ function Coach() {
 
       <CoachChat />
 
+      <div className="flex flex-wrap gap-2">
+        <Link
+          to="/grocery-list"
+          className="glass-button glass-press inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold"
+        >
+          <ShoppingBasket className="h-3.5 w-3.5" /> Find meals from my groceries
+        </Link>
+        <Link
+          to="/grocery-list"
+          className="glass-button glass-press inline-flex items-center gap-1.5 rounded-full px-3 py-2 text-xs font-semibold"
+        >
+          <Lightbulb className="h-3.5 w-3.5" /> Suggest a high-protein sweet snack
+        </Link>
+      </div>
+
       <div className="grid gap-3 sm:grid-cols-2">
         <Stat
           icon={Target}
