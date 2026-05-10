@@ -19,6 +19,7 @@ import { useProgress } from "@/hooks/use-progress";
 import { calcTargets } from "@/lib/ai/targets";
 import { LoadingState, ErrorState } from "@/components/States";
 import { CoachAdjustments } from "@/components/CoachAdjustments";
+import { CoachChat } from "@/components/CoachChat";
 import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
 
 export const Route = createFileRoute("/coach/")({
@@ -93,6 +94,8 @@ function Coach() {
       {error && <ErrorState message={error} onRetry={refresh} />}
 
       <CoachAdjustments coach={adaptive} />
+
+      <CoachChat />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <Stat

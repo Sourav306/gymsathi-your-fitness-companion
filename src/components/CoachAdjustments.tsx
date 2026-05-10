@@ -28,7 +28,7 @@ export function CoachAdjustments({ compact = false, coach }: { compact?: boolean
           {busy ? "Updating…" : "Refresh"}
         </button>
       </div>
-      <ul className="space-y-2">
+      <ul className="space-y-2 anim-stagger">
         {items.map((i) => (
           <InsightCard key={i.id} insight={i} onApply={apply} onDismiss={dismiss} />
         ))}
@@ -66,7 +66,7 @@ function InsightCard({
   };
 
   return (
-    <li className="glass-card rounded-2xl p-4">
+    <li className="glass-card hover-lift rounded-2xl border-primary/20 p-4">
       <div className="flex items-start gap-3">
         <span className="glass-pill grid h-9 w-9 shrink-0 place-items-center text-primary">
           <Sparkles className="h-4 w-4" />
