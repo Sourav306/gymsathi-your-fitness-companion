@@ -111,7 +111,7 @@ function Coach() {
       </div>
 
       {/* Today's Progress */}
-      <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="glass-card rounded-2xl p-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             <Activity className="h-3.5 w-3.5" /> Today's progress
@@ -134,7 +134,7 @@ function Coach() {
       </div>
 
       {/* This Week */}
-      <div className="rounded-2xl border border-border bg-card p-5">
+      <div className="glass-card rounded-2xl p-5">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             <Calendar className="h-3.5 w-3.5" /> This week
@@ -229,7 +229,7 @@ function Coach() {
           </div>
           <div className="space-y-2">
             {history.map((h) => (
-              <div key={h.for_date} className="rounded-xl border border-border bg-card p-3 text-sm">
+              <div key={h.for_date} className="glass-card rounded-xl p-3 text-sm">
                 <div className="flex items-baseline justify-between gap-2">
                   <div className="font-semibold">
                     {new Date(h.for_date).toLocaleDateString(undefined, {
@@ -276,7 +276,7 @@ function Stat({
   value: string;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="glass-card rounded-2xl p-4">
       <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
         <Icon className="h-3.5 w-3.5" /> {label}
       </div>
@@ -310,7 +310,7 @@ function Card({
   cta?: ReactNode;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-5">
+    <div className="glass-card rounded-2xl p-5">
       <div className="grid h-10 w-10 place-items-center rounded-xl bg-accent text-accent-foreground">
         <Icon className="h-5 w-5" />
       </div>
@@ -336,7 +336,7 @@ function CTA({
   cta: string;
 }) {
   return (
-    <div className="mx-auto max-w-md rounded-3xl border border-border bg-card p-8 text-center">
+    <div className="glass-card-strong mx-auto max-w-md rounded-3xl p-8 text-center">
       <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
         <Sparkles className="h-6 w-6" />
       </div>
