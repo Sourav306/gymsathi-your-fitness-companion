@@ -33,6 +33,32 @@ export const UserProfileSchema = z.object({
     .optional()
     .nullable(),
   onboarding_completed: z.boolean().optional().nullable(),
+  // Phase 7.3 — Mira onboarding
+  dob: z.string().optional().nullable(),
+  phone: z.string().max(40).optional().nullable(),
+  dairy_ok: z.boolean().optional().nullable(),
+  eggs_ok: z.boolean().optional().nullable(),
+  spice_level: z.enum(["mild", "medium", "spicy"]).optional().nullable(),
+  sweet_cravings_pref: z.enum(["yes", "no", "sometimes"]).optional().nullable(),
+  preferred_cuisines: z.array(z.string()).optional().nullable(),
+  meal_prep_windows: z.string().max(200).optional().nullable(),
+  work_days: z.array(z.string()).optional().nullable(),
+  work_time_start: z.string().optional().nullable(),
+  work_time_end: z.string().optional().nullable(),
+  commute_min: z.number().int().min(0).max(300).optional().nullable(),
+  free_time: z.string().max(200).optional().nullable(),
+  workout_time_pref: z
+    .enum(["morning", "afternoon", "evening", "night", "flexible"])
+    .optional()
+    .nullable(),
+  reminders_enabled: z.boolean().optional().nullable(),
+  reminder_start: z.string().optional().nullable(),
+  reminder_end: z.string().optional().nullable(),
+  reminder_interval_min: z.number().int().min(15).max(360).optional().nullable(),
+  morning_exercise: z.boolean().optional().nullable(),
+  afternoon_exercise: z.boolean().optional().nullable(),
+  home_exercise_min: z.number().int().min(5).max(60).optional().nullable(),
+  equipment: z.array(z.string()).optional().nullable(),
 });
 export type UserProfile = z.infer<typeof UserProfileSchema>;
 
