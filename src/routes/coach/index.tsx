@@ -220,18 +220,12 @@ function Coach() {
           <div className="mt-3 font-display text-lg font-bold">Generate my workout plan</div>
           <div className="text-sm opacity-90">Built around your gym access</div>
         </Link>
-        <Link
-          to="/grocery-list"
-          className="glass-card glass-press rounded-2xl p-5"
-        >
+        <Link to="/grocery-list" className="glass-card glass-press rounded-2xl p-5">
           <ShoppingBasket className="h-6 w-6 text-primary" />
           <div className="mt-3 font-display text-lg font-bold">Grocery List</div>
           <div className="text-sm text-muted-foreground">Generate from your plan</div>
         </Link>
-        <Link
-          to="/meal-prep-calendar"
-          className="glass-card glass-press rounded-2xl p-5"
-        >
+        <Link to="/meal-prep-calendar" className="glass-card glass-press rounded-2xl p-5">
           <Calendar className="h-6 w-6 text-primary" />
           <div className="mt-3 font-display text-lg font-bold">Meal Prep Calendar</div>
           <div className="text-sm text-muted-foreground">Sunday + Wednesday prep</div>
