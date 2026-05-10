@@ -1,7 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ShoppingBasket, Trash2, Check, Plus, ChevronRight, Calendar } from "lucide-react";
+import {
+  ShoppingBasket,
+  Trash2,
+  Check,
+  Plus,
+  ChevronRight,
+  Calendar,
+  Share2,
+  Eraser,
+  Home,
+} from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
   useGroceryLists,
@@ -13,6 +23,7 @@ import { useWeeklyPlan } from "@/hooks/use-weekly-plan";
 import { useSavedMealPlans } from "@/hooks/use-saved-plans";
 import { fmtISO, startOfWeek } from "@/lib/weekly";
 import { buildGroceryFromMealPlan, buildGroceryFromWeekly } from "@/lib/grocery-generate";
+import { copyText } from "@/lib/grocery";
 import { supabase } from "@/integrations/supabase/client";
 
 type Search = { listId?: string };
@@ -179,7 +190,13 @@ function Page() {
           name={detail.list.name}
           items={detail.items}
           onToggle={detail.toggle}
+          onAlready={detail.setAlreadyHave}
           onRemove={detail.remove}
+          onClearChecked={async () => {
+            const n = await detail.clearChecked();
+            if (n) toast.success(`Cleared ${n} checked item${n === 1 ? "" : "s"}`);
+            else toast.message("Nothing checked yet");
+          }}
           onAdd={async (cat, name) => {
             if (!user) return;
             const { error } = await supabase.from("grocery_items").insert({
@@ -216,7 +233,9 @@ function ListView({
   name,
   items,
   onToggle,
+  onAlready,
   onRemove,
+  onClearChecked,
   onAdd,
   onDeleteList,
 }: {
@@ -224,71 +243,158 @@ function ListView({
   name: string;
   items: GroceryItem[];
   onToggle: (id: string, v: boolean) => Promise<void>;
+  onAlready: (id: string, v: boolean) => Promise<void>;
   onRemove: (id: string) => Promise<void>;
+  onClearChecked: () => Promise<void>;
   onAdd: (cat: string, name: string) => Promise<void>;
   onDeleteList: () => void;
 }) {
+  // Hide already-have items from the active shopping list (they're "done" for shopping purposes)
+  const active = useMemo(() => items.filter((i) => !i.already_have), [items]);
+  const haveCount = items.length - active.length;
+
   const grouped = useMemo(() => {
     const m = new Map<string, GroceryItem[]>();
-    for (const it of items) {
+    for (const it of active) {
       if (!m.has(it.category)) m.set(it.category, []);
       m.get(it.category)!.push(it);
     }
     return Array.from(m.entries());
-  }, [items]);
+  }, [active]);
 
-  const total = items.length;
-  const done = items.filter((i) => i.is_checked).length;
+  const total = active.length;
+  const done = active.filter((i) => i.is_checked).length;
+  const remaining = total - done;
   const [adding, setAdding] = useState(false);
   const [newName, setNewName] = useState("");
   const [newCat, setNewCat] = useState("Other");
+  const [showHave, setShowHave] = useState(false);
+
+  const buildShareText = () => {
+    const lines = [`Grocery — ${name}`, ""];
+    for (const [cat, list] of grouped) {
+      lines.push(`## ${cat}`);
+      for (const it of list)
+        lines.push(
+          `- [${it.is_checked ? "x" : " "}] ${it.name}${it.linked_meal ? ` (${it.linked_meal})` : ""}`,
+        );
+      lines.push("");
+    }
+    return lines.join("\n").trim();
+  };
+
+  const onShare = async () => {
+    const text = buildShareText();
+    const nav = typeof navigator !== "undefined" ? navigator : null;
+    if (nav && "share" in nav) {
+      try {
+        await (nav as Navigator).share({ title: name, text });
+        return;
+      } catch {
+        /* fall through to copy */
+      }
+    }
+    const ok = await copyText(text);
+    if (ok) toast.success("Grocery list copied to clipboard");
+    else toast.error("Could not share or copy");
+  };
 
   return (
     <section className="glass-card-strong rounded-3xl p-4">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <div className="font-display text-lg font-bold">{name}</div>
-          <div className="text-xs text-muted-foreground">
-            {done}/{total} checked
+        <div className="min-w-0">
+          <div className="truncate font-display text-lg font-bold">{name}</div>
+          <div className="mt-0.5 text-xs text-muted-foreground">
+            <span className="font-semibold text-foreground/80">{remaining}</span> left · {done}/
+            {total} checked
+            {haveCount > 0 && <> · {haveCount} already have</>}
           </div>
         </div>
         <button
           onClick={onDeleteList}
-          className="glass-press rounded-full p-2 text-muted-foreground hover:text-destructive"
+          className="glass-press grid h-9 w-9 place-items-center rounded-full text-muted-foreground hover:text-destructive"
           aria-label="Delete list"
         >
           <Trash2 className="h-4 w-4" />
         </button>
       </div>
 
+      {/* Action toolbar */}
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          onClick={onShare}
+          className="glass-button glass-press inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold"
+        >
+          <Share2 className="h-3.5 w-3.5" /> Copy / Share
+        </button>
+        <button
+          onClick={onClearChecked}
+          disabled={done === 0}
+          className="glass-button glass-press inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold disabled:opacity-50"
+        >
+          <Eraser className="h-3.5 w-3.5" /> Clear checked
+        </button>
+        {haveCount > 0 && (
+          <button
+            onClick={() => setShowHave((v) => !v)}
+            className="glass-pill glass-press inline-flex min-h-9 items-center gap-1.5 rounded-full px-3 text-xs font-semibold"
+          >
+            <Home className="h-3.5 w-3.5" />
+            {showHave ? "Hide" : "Show"} already-have ({haveCount})
+          </button>
+        )}
+      </div>
+
       <div className="mt-4 space-y-4">
+        {grouped.length === 0 && (
+          <div className="rounded-xl border border-dashed border-border/60 p-6 text-center text-sm text-muted-foreground">
+            All set! Nothing left to buy.
+          </div>
+        )}
         {grouped.map(([cat, list]) => (
           <div key={cat}>
             <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               {cat}
             </div>
-            <ul className="space-y-1">
+            <ul className="space-y-1.5">
               {list.map((it) => (
                 <li
                   key={it.id}
-                  className="glass-press flex items-center gap-3 rounded-xl px-3 py-2"
+                  className="glass-press flex items-center gap-3 rounded-xl px-3 py-2.5"
                 >
                   <button
                     onClick={() => onToggle(it.id, !it.is_checked)}
-                    className={`grid h-6 w-6 place-items-center rounded-md border ${it.is_checked ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}
+                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-md border transition ${it.is_checked ? "border-primary bg-primary text-primary-foreground" : "border-border"}`}
                     aria-label={it.is_checked ? "Uncheck" : "Check"}
                   >
-                    {it.is_checked && <Check className="h-3.5 w-3.5" />}
+                    {it.is_checked && <Check className="h-4 w-4" />}
                   </button>
-                  <span
-                    className={`flex-1 text-sm ${it.is_checked ? "text-muted-foreground line-through" : ""}`}
+                  <div className="min-w-0 flex-1">
+                    <div
+                      className={`truncate text-sm ${it.is_checked ? "text-muted-foreground line-through" : "text-foreground"}`}
+                    >
+                      {it.name}
+                    </div>
+                    {(it.linked_meal || it.note) && (
+                      <div className="mt-0.5 truncate text-[11px] text-muted-foreground">
+                        {it.linked_meal && <>for {it.linked_meal}</>}
+                        {it.linked_meal && it.note && " · "}
+                        {it.note}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => onAlready(it.id, true)}
+                    title="I already have this"
+                    aria-label="Mark as already have"
+                    className="glass-press grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:text-primary"
                   >
-                    {it.name}
-                  </span>
+                    <Home className="h-3.5 w-3.5" />
+                  </button>
                   <button
                     onClick={() => onRemove(it.id)}
-                    className="text-muted-foreground hover:text-destructive"
                     aria-label="Remove"
+                    className="glass-press grid h-9 w-9 shrink-0 place-items-center rounded-full text-muted-foreground hover:text-destructive"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                   </button>
@@ -297,6 +403,30 @@ function ListView({
             </ul>
           </div>
         ))}
+
+        {showHave && haveCount > 0 && (
+          <div className="rounded-xl border border-border/60 bg-card/40 p-3">
+            <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Already have
+            </div>
+            <ul className="space-y-1">
+              {items
+                .filter((i) => i.already_have)
+                .map((it) => (
+                  <li key={it.id} className="flex items-center gap-2 text-sm">
+                    <Home className="h-3 w-3 text-muted-foreground" />
+                    <span className="flex-1 truncate text-muted-foreground">{it.name}</span>
+                    <button
+                      onClick={() => onAlready(it.id, false)}
+                      className="text-[11px] font-semibold text-primary hover:underline"
+                    >
+                      Move back
+                    </button>
+                  </li>
+                ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       {adding ? (
@@ -314,23 +444,23 @@ function ListView({
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Item name"
-            className="flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm"
+            className="min-h-10 flex-1 rounded-xl border border-border bg-background px-3 py-2 text-sm"
             autoFocus
           />
           <input
             value={newCat}
             onChange={(e) => setNewCat(e.target.value)}
             placeholder="Category"
-            className="w-32 rounded-xl border border-border bg-background px-3 py-2 text-sm"
+            className="min-h-10 w-32 rounded-xl border border-border bg-background px-3 py-2 text-sm"
           />
-          <button className="glass-button-primary glass-press rounded-xl px-4 text-sm font-semibold">
+          <button className="glass-button-primary glass-press min-h-10 rounded-xl px-4 text-sm font-semibold">
             Add
           </button>
         </form>
       ) : (
         <button
           onClick={() => setAdding(true)}
-          className="glass-button glass-press mt-4 inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold"
+          className="glass-button glass-press mt-4 inline-flex min-h-10 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold"
         >
           <Plus className="h-3.5 w-3.5" /> Add item
         </button>
