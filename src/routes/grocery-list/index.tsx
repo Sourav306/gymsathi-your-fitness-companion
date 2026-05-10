@@ -76,7 +76,7 @@ function Page() {
 
   const generateFromMealPlan = async () => {
     if (!user) return toast.error("Sign in first");
-    const latest = savedMeals.plans[0];
+    const latest = savedMeals.items[0];
     if (!latest) return toast.error("No AI meal plan saved yet");
     setBusy(true);
     try {
