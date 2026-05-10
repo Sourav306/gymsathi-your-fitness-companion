@@ -72,13 +72,30 @@ function dietAllows(profile: UserProfile, r: Recipe): boolean {
   const diet = profile.diet_preference;
   if (diet === "vegetarian") return r.type === "Veg";
   if (diet === "vegan") {
+    if (r.diet_type === "vegan") return true;
     if (r.type !== "Veg") return false;
     const txt = r.ingredients.join(" ").toLowerCase();
-    if (/(milk|paneer|curd|yogurt|ghee|butter|cheese|egg|whey|honey)/.test(txt)) return false;
+    if (/(milk|paneer|curd|yogurt|ghee|butter|cheese|egg|whey|honey|cottage|feta)/.test(txt))
+      return false;
     return true;
   }
   if (diet === "eggetarian") return r.type !== "Non-Veg";
   return true; // non_vegetarian
+}
+
+const CUISINE_MAP: Record<string, string[]> = {
+  indian: ["indian", "punjabi"],
+  punjabi: ["punjabi", "indian"],
+  canadian_simple: ["canadian-grocery", "western-gym"],
+  mixed: [],
+};
+
+function cuisineBias(profile: UserProfile, r: Recipe): number {
+  const pref = profile.cuisine_preference;
+  if (!pref || pref === "mixed") return 0;
+  const allowed = CUISINE_MAP[pref] ?? [];
+  if (allowed.length === 0) return 0;
+  return r.cuisine && allowed.includes(r.cuisine) ? -60 : 40;
 }
 
 function avoidsAllergens(profile: UserProfile, r: Recipe): boolean {
