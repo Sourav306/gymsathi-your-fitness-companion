@@ -403,6 +403,45 @@ export type Database = {
         }
         Relationships: []
       }
+      invite_codes: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          current_uses: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          label: string | null
+          max_uses: number
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          current_uses?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          max_uses?: number
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          current_uses?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          label?: string | null
+          max_uses?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       meal_prep_tasks: {
         Row: {
           created_at: string
@@ -517,6 +556,33 @@ export type Database = {
           water_liters?: number | null
           weight_kg?: number | null
           workout_completed?: boolean
+        }
+        Relationships: []
+      }
+      tester_feedback: {
+        Row: {
+          created_at: string
+          feedback_text: string
+          id: string
+          page_name: string
+          screenshot_url: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          feedback_text: string
+          id?: string
+          page_name: string
+          screenshot_url?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          feedback_text?: string
+          id?: string
+          page_name?: string
+          screenshot_url?: string | null
+          user_id?: string
         }
         Relationships: []
       }
@@ -691,6 +757,27 @@ export type Database = {
         }
         Relationships: []
       }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
       weekly_plans: {
         Row: {
           created_at: string
@@ -729,9 +816,20 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      redeem_invite_code: {
+        Args: { _code: string; _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "admin" | "beta_tester" | "user"
       favorite_kind: "exercise" | "recipe" | "plan"
     }
     CompositeTypes: {
@@ -860,6 +958,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "beta_tester", "user"],
       favorite_kind: ["exercise", "recipe", "plan"],
     },
   },
