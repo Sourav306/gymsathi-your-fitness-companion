@@ -1,5 +1,16 @@
 export type Difficulty = "Beginner" | "Intermediate" | "Advanced";
 export type MuscleGroup = "Chest" | "Back" | "Legs" | "Shoulders" | "Arms" | "Core" | "Full Body";
+export type WorkoutLocation = "home" | "gym" | "both";
+export type EquipmentCategory =
+  | "bodyweight"
+  | "dumbbell"
+  | "barbell"
+  | "machine"
+  | "cable"
+  | "band"
+  | "kettlebell"
+  | "bench"
+  | "mixed";
 
 export interface Exercise {
   id: string;
@@ -7,6 +18,16 @@ export interface Exercise {
   muscle: MuscleGroup;
   difficulty: Difficulty;
   equipment: string;
+  workout_location: WorkoutLocation;
+  equipment_category: EquipmentCategory;
+  equipment_required: string[];
+  home_friendly: boolean;
+  gym_friendly: boolean;
+  morning_friendly: boolean;
+  afternoon_friendly: boolean;
+  beginner_safe: boolean;
+  video_source_name: string;
+  video_url: string;
   youtubeId: string;
   summary: string;
   steps: string[];
@@ -14,7 +35,83 @@ export interface Exercise {
   tips: string[];
 }
 
-export const EXERCISES: Exercise[] = [
+type BaseExercise = Omit<
+  Exercise,
+  | "workout_location"
+  | "equipment_category"
+  | "equipment_required"
+  | "home_friendly"
+  | "gym_friendly"
+  | "morning_friendly"
+  | "afternoon_friendly"
+  | "beginner_safe"
+  | "video_source_name"
+  | "video_url"
+>;
+
+function getEquipmentCategory(equipment: string): EquipmentCategory {
+  const eq = equipment.toLowerCase();
+  if (eq.includes("/") || eq.includes("+")) {
+    if (eq.includes("barbell")) return "barbell";
+    if (eq.includes("dumbbell") || eq.includes("db")) return "dumbbell";
+    if (eq.includes("cable")) return "cable";
+    if (eq.includes("machine")) return "machine";
+    if (eq.includes("bench")) return "bench";
+    return "mixed";
+  }
+  if (eq.includes("bodyweight")) return "bodyweight";
+  if (eq.includes("dumbbell") || eq.includes("db")) return "dumbbell";
+  if (eq.includes("barbell")) return "barbell";
+  if (eq.includes("machine")) return "machine";
+  if (eq.includes("cable")) return "cable";
+  if (eq.includes("band")) return "band";
+  if (eq.includes("kettlebell")) return "kettlebell";
+  if (eq.includes("bench")) return "bench";
+  return "mixed";
+}
+
+function getEquipmentRequired(equipment: string): string[] {
+  return equipment
+    .split(/\s*(?:\+|\/|,| or )\s*/i)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function enrichExercise(exercise: BaseExercise): Exercise {
+  const equipment = exercise.equipment.toLowerCase();
+  const equipment_category = getEquipmentCategory(exercise.equipment);
+  const home_friendly =
+    equipment.includes("bodyweight") ||
+    equipment.includes("dumbbell") ||
+    equipment.includes("db") ||
+    equipment.includes("band") ||
+    equipment.includes("kettlebell") ||
+    equipment === "bench";
+  const gym_friendly =
+    home_friendly ||
+    equipment.includes("machine") ||
+    equipment.includes("cable") ||
+    equipment.includes("barbell") ||
+    equipment.includes("rack") ||
+    equipment.includes("bench") ||
+    equipment.includes("pull-up");
+
+  return {
+    ...exercise,
+    workout_location: home_friendly && gym_friendly ? "both" : home_friendly ? "home" : "gym",
+    equipment_category,
+    equipment_required: getEquipmentRequired(exercise.equipment),
+    home_friendly,
+    gym_friendly,
+    morning_friendly: home_friendly && exercise.difficulty !== "Advanced",
+    afternoon_friendly: true,
+    beginner_safe: exercise.difficulty === "Beginner",
+    video_source_name: "YouTube",
+    video_url: `https://www.youtube.com/watch?v=${exercise.youtubeId}`,
+  };
+}
+
+const BASE_EXERCISES: BaseExercise[] = [
   // CHEST
   {
     id: "push-up",
@@ -671,6 +768,8 @@ export const EXERCISES: Exercise[] = [
     tips: ["Stay light on your feet", "Breathe steady"],
   },
 ];
+
+export const EXERCISES: Exercise[] = BASE_EXERCISES.map(enrichExercise);
 
 export const MUSCLES: MuscleGroup[] = [
   "Chest",

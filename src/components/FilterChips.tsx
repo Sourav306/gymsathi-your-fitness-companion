@@ -39,9 +39,10 @@ export function FilterChips<T extends string>({
             <button
               key={o.key}
               type="button"
+              aria-pressed={active}
               onClick={() => toggle(o.key)}
               className={cn(
-                "shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-sm font-medium transition active:scale-95",
+                "min-h-11 shrink-0 whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
                 active
                   ? "border-primary bg-primary text-primary-foreground shadow-sm"
                   : "border-border bg-card text-muted-foreground hover:text-foreground",
