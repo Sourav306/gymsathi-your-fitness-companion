@@ -25,6 +25,7 @@ import { fmtISO, startOfWeek } from "@/lib/weekly";
 import { buildGroceryFromMealPlan, buildGroceryFromWeekly } from "@/lib/grocery-generate";
 import { copyText } from "@/lib/grocery";
 import { supabase } from "@/integrations/supabase/client";
+import { PantryAndSuggestions } from "@/components/PantryAndSuggestions";
 
 type Search = { listId?: string };
 
@@ -210,6 +211,16 @@ function Page() {
             else detail.reload();
           }}
           onDeleteList={() => deleteList(detail.list!.id)}
+        />
+      )}
+
+      {user && detail.list && (
+        <PantryAndSuggestions
+          userId={user.id}
+          listId={detail.list.id}
+          items={detail.items}
+          onReload={detail.reload}
+          onMoveToShopping={(id) => detail.setAlreadyHave(id, false)}
         />
       )}
 
