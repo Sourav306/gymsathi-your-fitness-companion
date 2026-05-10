@@ -43,9 +43,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const coachActive = location.pathname.startsWith("/coach");
 
   return (
-    <div className="glass-shell">
+    <div className="min-h-screen bg-background">
       {/* Desktop top nav */}
-      <header className="sticky top-0 z-40 hidden border-b md:block glass-nav">
+      <header className="sticky top-0 z-40 hidden glass-strong border-b md:block">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <Link to="/" className="flex items-center gap-2">
             <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
@@ -93,20 +93,24 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto max-w-6xl px-4 pb-32 pt-4 md:px-6 md:pt-8 md:pb-12">{children}</main>
+      <main className="mx-auto max-w-6xl px-4 pb-32 pt-4 md:px-6 md:pt-8 md:pb-12">
+        <div key={location.pathname} className="anim-fade-up">
+          {children}
+        </div>
+      </main>
 
-      {/* Mobile bottom nav with floating AI Coach */}
+      {/* Mobile bottom nav — floating glass pill */}
       <nav
-        className="fixed bottom-0 left-0 right-0 z-40 border-t md:hidden glass-nav"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+        className="fixed bottom-3 left-1/2 -translate-x-1/2 z-40 md:hidden w-[calc(100%-1.25rem)] max-w-md rounded-[28px] glass-strong shadow-[var(--shadow-elegant)]"
+        style={{ marginBottom: "env(safe-area-inset-bottom)" }}
         aria-label="Primary"
       >
-        <div className="relative mx-auto grid max-w-md grid-cols-5 items-end px-2 pt-1">
+        <div className="relative grid grid-cols-5 items-end px-2 pt-1.5 pb-1">
           <NavTab item={NAV.home} active={isActive(location.pathname, "home")} />
           <NavTab item={NAV.workout} active={isActive(location.pathname, "workout")} />
 
           {/* spacer for floating button */}
-          <div aria-hidden className="h-14" />
+          <div aria-hidden className="h-12" />
 
           <NavTab item={NAV.nutrition} active={isActive(location.pathname, "nutrition")} />
           <NavTab item={NAV.profile} active={isActive(location.pathname, "profile")} />
@@ -116,16 +120,14 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             to="/coach"
             aria-label="AI Coach"
             className={cn(
-              "absolute left-1/2 -translate-x-1/2 -top-6 grid h-16 w-16 place-items-center rounded-full ring-2 ring-white/10 transition glass-button-primary",
-              coachActive ? "scale-105" : "hover:scale-105",
+              "absolute left-1/2 -translate-x-1/2 -top-7 grid h-14 w-14 place-items-center rounded-full ring-4 ring-background press glow-pulse text-primary-foreground",
+              "bg-gradient-to-br from-[oklch(0.74_0.21_50)] to-[oklch(0.62_0.22_28)]",
+              coachActive && "scale-105",
             )}
           >
-            <Sparkles className="h-7 w-7" />
+            <Sparkles className="h-6 w-6" />
             <span className="sr-only">AI Coach</span>
           </Link>
-          <span className="pointer-events-none absolute left-1/2 -translate-x-1/2 -bottom-0.5 text-[10px] font-semibold text-primary">
-            AI Coach
-          </span>
         </div>
       </nav>
     </div>
@@ -144,11 +146,11 @@ function NavTab({
     <Link
       to={item.to}
       className={cn(
-        "flex min-h-14 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium transition-colors",
-        active ? "text-primary" : "text-muted-foreground",
+        "flex min-h-14 flex-col items-center justify-center gap-0.5 py-1.5 text-[11px] font-medium press transition-all duration-200",
+        active ? "text-primary scale-105" : "text-muted-foreground hover:text-foreground",
       )}
     >
-      <Icon className={cn("h-5 w-5", active && "stroke-[2.5]")} />
+      <Icon className={cn("h-5 w-5 transition-transform", active && "stroke-[2.5]")} />
       <span>{item.label}</span>
     </Link>
   );
