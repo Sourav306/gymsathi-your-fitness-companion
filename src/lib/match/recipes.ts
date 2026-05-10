@@ -129,7 +129,7 @@ export function suggestRecipeAlternatives(
       const calD = Math.abs(r.calories - cal);
       const proD = Math.abs(r.protein - pro) * 8;
       const snackBias = isSnack ? Math.max(0, r.calories - 350) : 0;
-      return { r, score: calD + proD + snackBias };
+      return { r, score: calD + proD + snackBias + cuisineBias(profile, r) };
     })
     .sort((a, b) => a.score - b.score)
     .slice(0, count)
