@@ -523,105 +523,171 @@ export type Database = {
       user_profiles: {
         Row: {
           activity_level: string | null
+          afternoon_exercise: boolean | null
           age: number | null
           allergies: string | null
           budget_level: string | null
+          commute_min: number | null
           cooking_time_min: number | null
           created_at: string
           cuisine_preference: string | null
+          dairy_ok: boolean | null
           diet_preference: string | null
           disliked_foods: string | null
+          dob: string | null
+          eggs_ok: boolean | null
+          equipment: string[] | null
           experience: string | null
+          free_time: string | null
           gender: string | null
           goal: string | null
           gym_access: string | null
           height_cm: number | null
+          home_exercise_min: number | null
           id: string
           injuries: string | null
           liked_foods: string | null
           meal_prep_days: number | null
           meal_prep_style: string | null
+          meal_prep_windows: string | null
           meals_per_day: number | null
+          morning_exercise: boolean | null
           name: string | null
           onboarding_completed: boolean
+          phone: string | null
+          preferred_cuisines: string[] | null
+          reminder_end: string | null
+          reminder_interval_min: number | null
+          reminder_start: string | null
+          reminders_enabled: boolean | null
           sleep_goal_hours: number | null
+          spice_level: string | null
           step_goal: number | null
+          sweet_cravings_pref: string | null
           target_protein: number | null
           updated_at: string
           user_id: string
           water_goal_liters: number | null
           weekly_budget: number | null
           weight_kg: number | null
+          work_days: string[] | null
+          work_time_end: string | null
+          work_time_start: string | null
           workout_days_per_week: number | null
           workout_time_min: number | null
+          workout_time_pref: string | null
         }
         Insert: {
           activity_level?: string | null
+          afternoon_exercise?: boolean | null
           age?: number | null
           allergies?: string | null
           budget_level?: string | null
+          commute_min?: number | null
           cooking_time_min?: number | null
           created_at?: string
           cuisine_preference?: string | null
+          dairy_ok?: boolean | null
           diet_preference?: string | null
           disliked_foods?: string | null
+          dob?: string | null
+          eggs_ok?: boolean | null
+          equipment?: string[] | null
           experience?: string | null
+          free_time?: string | null
           gender?: string | null
           goal?: string | null
           gym_access?: string | null
           height_cm?: number | null
+          home_exercise_min?: number | null
           id?: string
           injuries?: string | null
           liked_foods?: string | null
           meal_prep_days?: number | null
           meal_prep_style?: string | null
+          meal_prep_windows?: string | null
           meals_per_day?: number | null
+          morning_exercise?: boolean | null
           name?: string | null
           onboarding_completed?: boolean
+          phone?: string | null
+          preferred_cuisines?: string[] | null
+          reminder_end?: string | null
+          reminder_interval_min?: number | null
+          reminder_start?: string | null
+          reminders_enabled?: boolean | null
           sleep_goal_hours?: number | null
+          spice_level?: string | null
           step_goal?: number | null
+          sweet_cravings_pref?: string | null
           target_protein?: number | null
           updated_at?: string
           user_id: string
           water_goal_liters?: number | null
           weekly_budget?: number | null
           weight_kg?: number | null
+          work_days?: string[] | null
+          work_time_end?: string | null
+          work_time_start?: string | null
           workout_days_per_week?: number | null
           workout_time_min?: number | null
+          workout_time_pref?: string | null
         }
         Update: {
           activity_level?: string | null
+          afternoon_exercise?: boolean | null
           age?: number | null
           allergies?: string | null
           budget_level?: string | null
+          commute_min?: number | null
           cooking_time_min?: number | null
           created_at?: string
           cuisine_preference?: string | null
+          dairy_ok?: boolean | null
           diet_preference?: string | null
           disliked_foods?: string | null
+          dob?: string | null
+          eggs_ok?: boolean | null
+          equipment?: string[] | null
           experience?: string | null
+          free_time?: string | null
           gender?: string | null
           goal?: string | null
           gym_access?: string | null
           height_cm?: number | null
+          home_exercise_min?: number | null
           id?: string
           injuries?: string | null
           liked_foods?: string | null
           meal_prep_days?: number | null
           meal_prep_style?: string | null
+          meal_prep_windows?: string | null
           meals_per_day?: number | null
+          morning_exercise?: boolean | null
           name?: string | null
           onboarding_completed?: boolean
+          phone?: string | null
+          preferred_cuisines?: string[] | null
+          reminder_end?: string | null
+          reminder_interval_min?: number | null
+          reminder_start?: string | null
+          reminders_enabled?: boolean | null
           sleep_goal_hours?: number | null
+          spice_level?: string | null
           step_goal?: number | null
+          sweet_cravings_pref?: string | null
           target_protein?: number | null
           updated_at?: string
           user_id?: string
           water_goal_liters?: number | null
           weekly_budget?: number | null
           weight_kg?: number | null
+          work_days?: string[] | null
+          work_time_end?: string | null
+          work_time_start?: string | null
           workout_days_per_week?: number | null
           workout_time_min?: number | null
+          workout_time_pref?: string | null
         }
         Relationships: []
       }
