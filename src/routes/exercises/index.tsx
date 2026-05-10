@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Dumbbell, ChevronDown, ChevronUp, Search } from "lucide-react";
 import { useMemo, useState } from "react";
-import { EXERCISES, type Exercise } from "@/data/exercises";
+import { EXERCISES } from "@/data/exercises";
 import { FavButton } from "@/components/FavButton";
 import { EmptyState } from "@/components/States";
 import { SectionTabs, WORKOUT_TABS } from "@/components/SectionTabs";
