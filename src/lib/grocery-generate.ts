@@ -54,22 +54,28 @@ function titleCase(s: string): string {
 /** Build grocery items from a MealPlan or WeeklyPlanData. Deterministic, no AI. */
 export function buildGroceryItems(source: {
   grocery?: MealPlan["grocery"];
-  meals?: string[]; // optional flat ingredient list
+  meals?: Array<{ ingredient: string; meal?: string }>;
 }): GroceryItemDraft[] {
   const map = new Map<string, GroceryItemDraft>();
   let pos = 0;
 
-  const add = (rawName: string, category?: string) => {
+  const add = (rawName: string, category?: string, mealName?: string) => {
     const n = normalize(rawName);
     if (!n) return;
-    const key = n;
-    if (map.has(key)) return;
-    map.set(key, {
+    const existing = map.get(n);
+    if (existing) {
+      if (mealName && !existing.linked_meal) existing.linked_meal = mealName;
+      return;
+    }
+    map.set(n, {
       category: category ?? categorize(n),
       name: titleCase(n),
       position: pos++,
       quantity: null,
       unit: null,
+      linked_meal: mealName ?? null,
+      estimated_cost: null,
+      note: null,
     });
   };
 
@@ -79,7 +85,7 @@ export function buildGroceryItems(source: {
     }
   }
   if (source.meals?.length) {
-    for (const ing of source.meals) add(ing);
+    for (const ing of source.meals) add(ing.ingredient, undefined, ing.meal);
   }
 
   // Sort by category then position
@@ -89,14 +95,18 @@ export function buildGroceryItems(source: {
 }
 
 export function buildGroceryFromWeekly(data: WeeklyPlanData): GroceryItemDraft[] {
-  const flat: string[] = [];
-  for (const d of data.days) for (const m of d.meals) flat.push(...(m.ingredients || []));
+  const flat: Array<{ ingredient: string; meal?: string }> = [];
+  for (const d of data.days)
+    for (const m of d.meals)
+      for (const ing of m.ingredients || []) flat.push({ ingredient: ing, meal: m.name });
   return buildGroceryItems({ grocery: data.grocery, meals: flat });
 }
 
 export function buildGroceryFromMealPlan(plan: MealPlan): GroceryItemDraft[] {
-  const flat: string[] = [];
-  for (const d of plan.days) for (const m of d.meals) flat.push(...(m.ingredients || []));
+  const flat: Array<{ ingredient: string; meal?: string }> = [];
+  for (const d of plan.days)
+    for (const m of d.meals)
+      for (const ing of m.ingredients || []) flat.push({ ingredient: ing, meal: m.name });
   return buildGroceryItems({ grocery: plan.grocery, meals: flat });
 }
 
