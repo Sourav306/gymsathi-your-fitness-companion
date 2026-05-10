@@ -357,7 +357,7 @@ function CTA({
 }: {
   title: string;
   body: string;
-  to: "/profile" | "/onboarding";
+  to: "/profile" | "/onboarding" | "/onboarding-chat";
   cta: string;
 }) {
   return (

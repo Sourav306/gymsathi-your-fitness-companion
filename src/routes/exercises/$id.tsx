@@ -1,7 +1,17 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, CheckCircle2, AlertTriangle, Lightbulb, Dumbbell } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  AlertTriangle,
+  Lightbulb,
+  Dumbbell,
+  Home,
+  Building2,
+} from "lucide-react";
 import { EXERCISES } from "@/data/exercises";
 import { FavButton } from "@/components/FavButton";
+import { EXERCISE_ALTERNATIVES } from "@/lib/workouts/exercise-alternatives";
+import { enrichExercise, EQUIPMENT_LABEL } from "@/lib/workouts/classify";
 
 export const Route = createFileRoute("/exercises/$id")({
   loader: ({ params }) => {
@@ -51,7 +61,10 @@ function Detail() {
       <div className="flex flex-wrap gap-2">
         <Pill icon={Dumbbell} label={e.equipment} />
         <Pill label={`Difficulty: ${e.difficulty}`} />
+        <Pill label={EQUIPMENT_LABEL[enrichExercise(e).equipment_category]} />
       </div>
+
+      <AlternativesCard id={e.id} />
 
       <div className="overflow-hidden rounded-2xl border border-border bg-black">
         <div className="aspect-video">
@@ -124,6 +137,45 @@ function Card({
         <h3 className="font-display text-lg font-semibold">{title}</h3>
       </div>
       {children}
+    </div>
+  );
+}
+
+function AlternativesCard({ id }: { id: string }) {
+  const alt = EXERCISE_ALTERNATIVES[id];
+  if (!alt || (!alt.homeAlternativeId && !alt.gymAlternativeId)) return null;
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      {alt.homeAlternativeId && (
+        <Link
+          to="/exercises/$id"
+          params={{ id: alt.homeAlternativeId }}
+          className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+        >
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+              <Home className="h-3.5 w-3.5" /> Home alternative
+            </div>
+            <div className="mt-0.5 text-sm font-semibold">{alt.homeAlternativeName}</div>
+          </div>
+          <span className="text-xs text-muted-foreground">View →</span>
+        </Link>
+      )}
+      {alt.gymAlternativeId && (
+        <Link
+          to="/exercises/$id"
+          params={{ id: alt.gymAlternativeId }}
+          className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+        >
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+              <Building2 className="h-3.5 w-3.5" /> Gym alternative
+            </div>
+            <div className="mt-0.5 text-sm font-semibold">{alt.gymAlternativeName}</div>
+          </div>
+          <span className="text-xs text-muted-foreground">View →</span>
+        </Link>
+      )}
     </div>
   );
 }
