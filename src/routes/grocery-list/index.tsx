@@ -275,7 +275,9 @@ function ListView({
     for (const [cat, list] of grouped) {
       lines.push(`## ${cat}`);
       for (const it of list)
-        lines.push(`- [${it.is_checked ? "x" : " "}] ${it.name}${it.linked_meal ? ` (${it.linked_meal})` : ""}`);
+        lines.push(
+          `- [${it.is_checked ? "x" : " "}] ${it.name}${it.linked_meal ? ` (${it.linked_meal})` : ""}`,
+        );
       lines.push("");
     }
     return lines.join("\n").trim();
@@ -303,8 +305,8 @@ function ListView({
         <div className="min-w-0">
           <div className="truncate font-display text-lg font-bold">{name}</div>
           <div className="mt-0.5 text-xs text-muted-foreground">
-            <span className="font-semibold text-foreground/80">{remaining}</span> left ·{" "}
-            {done}/{total} checked
+            <span className="font-semibold text-foreground/80">{remaining}</span> left · {done}/
+            {total} checked
             {haveCount > 0 && <> · {haveCount} already have</>}
           </div>
         </div>
