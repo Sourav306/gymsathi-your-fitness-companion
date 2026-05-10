@@ -611,13 +611,7 @@ const base: RawRecipe[] = [
       "Pan-grill 6–8 min per side.",
       "Plate over couscous with veg, feta, olives.",
     ],
-    extraTags: [
-      "chicken",
-      "mediterranean",
-      "halal-friendly",
-      "meal-prep",
-      "post-workout",
-    ],
+    extraTags: ["chicken", "mediterranean", "halal-friendly", "meal-prep", "post-workout"],
   },
   {
     id: "salmon-rice-bowl",
@@ -652,13 +646,7 @@ const base: RawRecipe[] = [
     calories: 380,
     time: 5,
     emoji: "🥣",
-    ingredients: [
-      "1.5 cups Greek yogurt",
-      "Honey",
-      "Mixed nuts",
-      "Berries",
-      "Chia seeds",
-    ],
+    ingredients: ["1.5 cups Greek yogurt", "Honey", "Mixed nuts", "Berries", "Chia seeds"],
     steps: ["Add yogurt to bowl.", "Top with fruit, nuts, chia.", "Drizzle honey."],
     extraTags: [
       "vegetarian",
@@ -750,14 +738,7 @@ const base: RawRecipe[] = [
       "Layer rice, beans, corn, salsa, lettuce, avocado.",
       "Squeeze lime.",
     ],
-    extraTags: [
-      "vegan",
-      "vegetarian",
-      "mexican-inspired",
-      "budget",
-      "dairy-free",
-      "meal-prep",
-    ],
+    extraTags: ["vegan", "vegetarian", "mexican-inspired", "budget", "dairy-free", "meal-prep"],
   },
 
   // ---------- Middle Eastern ----------
@@ -778,11 +759,7 @@ const base: RawRecipe[] = [
       "Cucumber, tomato, lettuce",
       "Lemon",
     ],
-    steps: [
-      "Spread hummus on wrap.",
-      "Layer chicken and veg.",
-      "Squeeze lemon, roll tightly.",
-    ],
+    steps: ["Spread hummus on wrap.", "Layer chicken and veg.", "Squeeze lemon, roll tightly."],
     extraTags: ["chicken", "middle-eastern", "halal-friendly", "quick"],
   },
   {
@@ -996,13 +973,7 @@ const base: RawRecipe[] = [
     calories: 280,
     time: 5,
     emoji: "🍓",
-    ingredients: [
-      "1 cup Greek yogurt",
-      "1/2 scoop whey",
-      "Berries",
-      "Honey",
-      "Granola",
-    ],
+    ingredients: ["1 cup Greek yogurt", "1/2 scoop whey", "Berries", "Honey", "Granola"],
     steps: [
       "Mix yogurt + whey + honey.",
       "Spread on tray, top with berries + granola.",
@@ -1027,11 +998,7 @@ const base: RawRecipe[] = [
       "1 apple, diced",
       "Cinnamon",
     ],
-    steps: [
-      "Cook oats with milk.",
-      "Stir in whey off heat.",
-      "Top with apple + cinnamon.",
-    ],
+    steps: ["Cook oats with milk.", "Stir in whey off heat.", "Top with apple + cinnamon."],
     extraTags: ["sweet", "vegetarian", "quick", "post-workout", "global"],
   },
   {
@@ -1072,19 +1039,8 @@ const base: RawRecipe[] = [
       "Olive oil, garlic, chili flakes",
       "Lemon",
     ],
-    steps: [
-      "Cook pasta + peas together.",
-      "Toss with tuna, oil, garlic, chili.",
-      "Squeeze lemon.",
-    ],
-    extraTags: [
-      "fish",
-      "student-budget",
-      "budget",
-      "canadian-grocery",
-      "quick",
-      "post-workout",
-    ],
+    steps: ["Cook pasta + peas together.", "Toss with tuna, oil, garlic, chili.", "Squeeze lemon."],
+    extraTags: ["fish", "student-budget", "budget", "canadian-grocery", "quick", "post-workout"],
   },
 ];
 
