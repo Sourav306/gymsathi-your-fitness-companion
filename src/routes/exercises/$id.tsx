@@ -1,5 +1,13 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, CheckCircle2, AlertTriangle, Lightbulb, Dumbbell, Home, Building2 } from "lucide-react";
+import {
+  ArrowLeft,
+  CheckCircle2,
+  AlertTriangle,
+  Lightbulb,
+  Dumbbell,
+  Home,
+  Building2,
+} from "lucide-react";
 import { EXERCISES } from "@/data/exercises";
 import { FavButton } from "@/components/FavButton";
 import { EXERCISE_ALTERNATIVES } from "@/lib/workouts/exercise-alternatives";

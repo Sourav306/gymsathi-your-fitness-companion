@@ -20,8 +20,7 @@ export const Route = createFileRoute("/exercises/")({
       { title: "Exercise Library — GymSathi" },
       {
         name: "description",
-        content:
-          "Personalized home and gym exercises with form videos, organized for your setup.",
+        content: "Personalized home and gym exercises with form videos, organized for your setup.",
       },
     ],
   }),
@@ -52,9 +51,7 @@ function Library() {
   const enriched = useMemo<EnrichedExercise[]>(() => EXERCISES.map(enrichExercise), []);
   const filtered = useMemo(
     () =>
-      q.trim()
-        ? enriched.filter((e) => e.name.toLowerCase().includes(q.toLowerCase()))
-        : enriched,
+      q.trim() ? enriched.filter((e) => e.name.toLowerCase().includes(q.toLowerCase())) : enriched,
     [enriched, q],
   );
 
@@ -160,14 +157,8 @@ function TabContent({
         <CategoryGroup title="Resistance Bands" cat="resistance_bands" items={home} />
         <CategoryGroup title="Kettlebell" cat="kettlebell" items={home} />
         <CategoryGroup title="Pull-Up Bar" cat="pull_up_bar" items={home} />
-        <Group
-          title="Core (home)"
-          items={home.filter((e) => e.muscle === "Core")}
-        />
-        <Group
-          title="Quick morning"
-          items={home.filter((e) => e.morning_friendly)}
-        />
+        <Group title="Core (home)" items={home.filter((e) => e.muscle === "Core")} />
+        <Group title="Quick morning" items={home.filter((e) => e.morning_friendly)} />
         <Group title="Gym exercises" items={gymOnly} defaultCollapsed />
       </div>
     );
@@ -227,9 +218,7 @@ function CategoryGroup({
   cat: EquipmentCategory;
   items: EnrichedExercise[];
 }) {
-  return (
-    <Group title={title} items={items.filter((e) => e.equipment_category === cat)} />
-  );
+  return <Group title={title} items={items.filter((e) => e.equipment_category === cat)} />;
 }
 
 function Group({
@@ -255,9 +244,7 @@ function Group({
       >
         <h2 className="font-display text-lg font-semibold">
           {title}{" "}
-          <span className="ml-1 text-xs font-normal text-muted-foreground">
-            {items.length}
-          </span>
+          <span className="ml-1 text-xs font-normal text-muted-foreground">{items.length}</span>
         </h2>
         {expanded ? (
           <ChevronUp className="h-4 w-4 text-muted-foreground" />
