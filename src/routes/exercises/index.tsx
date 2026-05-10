@@ -330,4 +330,3 @@ function ExerciseCard({ ex }: { ex: EnrichedExercise }) {
 
 // silence unused import lint
 void Search;
-void (Exercise as unknown);
