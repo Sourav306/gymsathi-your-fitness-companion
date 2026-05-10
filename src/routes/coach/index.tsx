@@ -23,7 +23,7 @@ import { CoachChat } from "@/components/CoachChat";
 import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
 
 export const Route = createFileRoute("/coach/")({
-  head: () => ({ meta: [{ title: "AI Coach — GymSathi" }] }),
+  head: () => ({ meta: [{ title: "Mira — GymSathi" }] }),
   component: Coach,
 });
 
@@ -51,7 +51,7 @@ function Coach() {
   if (!user)
     return (
       <CTA
-        title="Sign in to use AI Coach"
+        title="Sign in to chat with Mira"
         body="Create your free account to get personalized meal and workout plans."
         to="/profile"
         cta="Sign in"
@@ -60,9 +60,9 @@ function Coach() {
   if (!profile)
     return (
       <CTA
-        title="Let's set up your AI Coach"
+        title="Let Mira set up your plan"
         body="Answer a few quick questions and we'll build your personalized plan."
-        to="/onboarding"
+        to="/onboarding-chat"
         cta="Start onboarding"
       />
     );
@@ -74,7 +74,7 @@ function Coach() {
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <span className="inline-flex items-center gap-1.5 rounded-full bg-accent px-3 py-1 text-xs font-semibold text-accent-foreground">
-            <Sparkles className="h-3.5 w-3.5" /> AI Coach
+            <Sparkles className="h-3.5 w-3.5" /> Mira
           </span>
           <h1 className="mt-2 font-display text-3xl font-bold">Today's plan</h1>
           <p className="text-sm text-muted-foreground">
@@ -277,7 +277,7 @@ function Coach() {
       )}
 
       <Link
-        to="/onboarding"
+        to="/onboarding-chat"
         className="block text-center text-sm text-muted-foreground hover:text-foreground"
       >
         Edit my profile →

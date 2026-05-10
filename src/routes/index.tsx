@@ -32,7 +32,7 @@ import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Today — GymSathi AI Coach" },
+      { title: "Today — GymSathi with Mira" },
       {
         name: "description",
         content: "Your daily AI fitness coach: tasks, workouts, meals and performance feedback.",
@@ -171,7 +171,7 @@ function Home() {
           </div>
           <h2 className="mt-3 font-display text-lg font-bold">Sign in to start</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Create a free account to use the AI Coach, daily tasks and progress tracking.
+            Create a free account to chat with Mira, daily tasks and progress tracking.
           </p>
           <Link
             to="/profile"
@@ -207,7 +207,7 @@ function Home() {
           <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/20 backdrop-blur">
             <MessageSquare className="h-6 w-6" />
           </div>
-          <div className="mt-4 font-display text-lg font-bold">Chat with AI Coach</div>
+          <div className="mt-4 font-display text-lg font-bold">Chat with Mira</div>
           <p className="mt-1 text-sm opacity-90">
             A few quick questions and I'll build your full plan.
           </p>
@@ -278,7 +278,7 @@ function Home() {
             </span>
           </div>
           <div className="relative mt-4">
-            <div className="font-display text-lg font-bold">Your AI Coach</div>
+            <div className="font-display text-lg font-bold">Mira's recommendation</div>
             <p className="mt-1 max-w-[28ch] text-sm opacity-90">
               Open the coach for plans, the weekly planner and more.
             </p>
