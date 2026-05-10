@@ -29,6 +29,7 @@ export function useMealPrepTasks(userId: string | undefined, range?: { from: str
     const { data } = await q.order("task_date").order("position");
     setTasks((data as MealPrepTask[]) || []);
     setLoading(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId, range?.from, range?.to]);
 
   useEffect(() => {
