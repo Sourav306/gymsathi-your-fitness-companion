@@ -214,6 +214,16 @@ function Page() {
         />
       )}
 
+      {user && detail.list && (
+        <PantryAndSuggestions
+          userId={user.id}
+          listId={detail.list.id}
+          items={detail.items}
+          onReload={detail.reload}
+          onMoveToShopping={(id) => detail.setAlreadyHave(id, false)}
+        />
+      )}
+
       {!detail.list && lists.lists.length === 0 && !busy && (
         <div className="glass-card rounded-2xl p-6 text-center text-sm text-muted-foreground">
           No lists yet. Generate one above.
