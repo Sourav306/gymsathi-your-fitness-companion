@@ -164,7 +164,7 @@ function Home() {
             Your AI fitness coach for daily plans, tasks and feedback.
           </p>
         </header>
-        <div className="rounded-3xl border border-border bg-card p-6 text-center">
+        <div className="glass-card-strong rounded-3xl p-6 text-center">
           <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
             <Sparkles className="h-6 w-6" />
           </div>
@@ -239,7 +239,7 @@ function Home() {
 
       {/* AI message / Today score */}
       {evaluation?.ai_feedback_message ? (
-        <section className="rounded-3xl border border-primary/20 bg-accent/40 p-4">
+        <section className="glass-card-strong glass-animate-in rounded-3xl p-4">
           <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary">
             <Sparkles className="h-3.5 w-3.5" /> AI Coach feedback
           </div>
@@ -295,15 +295,15 @@ function Home() {
         </div>
 
         {tasksHook.loading ? (
-          <div className="rounded-2xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
+          <div className="glass-card rounded-2xl p-6 text-center text-sm text-muted-foreground">
             <Loader2 className="mx-auto h-5 w-5 animate-spin" />
           </div>
         ) : !hasTasks ? (
-          <div className="rounded-2xl border border-border bg-card p-5 text-center">
+          <div className="glass-card rounded-2xl p-5 text-center">
             <p className="text-sm text-muted-foreground">No tasks for today yet.</p>
             <button
               onClick={generate}
-              className="mt-3 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
+              className="glass-button-primary mt-3 inline-block rounded-xl px-5 py-2.5 text-sm font-semibold"
             >
               Generate today's tasks
             </button>
@@ -321,7 +321,7 @@ function Home() {
           <button
             onClick={onAnalyze}
             disabled={evalBusy}
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-foreground px-4 py-3 text-sm font-semibold text-background disabled:opacity-50"
+            className="glass-button-primary mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold"
           >
             {evalBusy ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -340,7 +340,10 @@ function Home() {
         <section>
           <h2 className="mb-3 font-display text-lg font-bold">From your weekly plan</h2>
           <div className="grid gap-3 sm:grid-cols-2">
-            <Link to="/weekly-planner" className="rounded-2xl border border-border bg-card p-4">
+            <Link
+              to="/weekly-planner"
+              className="glass-card rounded-2xl p-4 transition hover:brightness-110"
+            >
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <Dumbbell className="h-3.5 w-3.5" /> Today's workout
               </div>
@@ -353,7 +356,10 @@ function Home() {
                 </div>
               )}
             </Link>
-            <Link to="/weekly-planner" className="rounded-2xl border border-border bg-card p-4">
+            <Link
+              to="/weekly-planner"
+              className="glass-card rounded-2xl p-4 transition hover:brightness-110"
+            >
               <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 <Utensils className="h-3.5 w-3.5" /> Today's meals
               </div>
@@ -406,7 +412,7 @@ function Home() {
 
       {/* Streak */}
       {showSecondary && (
-        <section className="rounded-2xl border border-border bg-card p-4">
+        <section className="glass-card rounded-2xl p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xl" aria-hidden>
@@ -471,8 +477,8 @@ function TaskRow({
         onClick={handle}
         disabled={pending}
         className={cn(
-          "flex w-full items-center gap-3 rounded-2xl border bg-card p-3 text-left transition active:scale-[0.99]",
-          task.is_completed ? "border-primary/40 bg-accent/30" : "border-border",
+          "glass-card glass-press flex w-full items-center gap-3 rounded-2xl p-3 text-left",
+          task.is_completed ? "border-primary/30 bg-primary/5" : "",
         )}
       >
         <span
@@ -529,7 +535,7 @@ function Metric({
 }) {
   const pct = Math.min(100, Math.round((Number(value) / target) * 100)) || 0;
   return (
-    <div className="rounded-2xl border border-border bg-card p-3">
+    <div className="glass-card rounded-2xl p-3">
       <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
         <Icon className="h-3 w-3 text-primary" /> {label}
       </div>
