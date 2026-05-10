@@ -132,3 +132,42 @@ function Card({
     </div>
   );
 }
+
+function AlternativesCard({ id }: { id: string }) {
+  const alt = EXERCISE_ALTERNATIVES[id];
+  if (!alt || (!alt.homeAlternativeId && !alt.gymAlternativeId)) return null;
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      {alt.homeAlternativeId && (
+        <Link
+          to="/exercises/$id"
+          params={{ id: alt.homeAlternativeId }}
+          className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+        >
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+              <Home className="h-3.5 w-3.5" /> Home alternative
+            </div>
+            <div className="mt-0.5 text-sm font-semibold">{alt.homeAlternativeName}</div>
+          </div>
+          <span className="text-xs text-muted-foreground">View →</span>
+        </Link>
+      )}
+      {alt.gymAlternativeId && (
+        <Link
+          to="/exercises/$id"
+          params={{ id: alt.gymAlternativeId }}
+          className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 transition hover:-translate-y-0.5 hover:shadow-md"
+        >
+          <div>
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
+              <Building2 className="h-3.5 w-3.5" /> Gym alternative
+            </div>
+            <div className="mt-0.5 text-sm font-semibold">{alt.gymAlternativeName}</div>
+          </div>
+          <span className="text-xs text-muted-foreground">View →</span>
+        </Link>
+      )}
+    </div>
+  );
+}
