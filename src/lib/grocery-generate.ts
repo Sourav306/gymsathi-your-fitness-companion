@@ -6,6 +6,9 @@ export type GroceryItemDraft = {
   name: string;
   quantity?: number | null;
   unit?: string | null;
+  linked_meal?: string | null;
+  estimated_cost?: number | null;
+  note?: string | null;
   position: number;
 };
 
