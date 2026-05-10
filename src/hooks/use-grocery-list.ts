@@ -79,13 +79,10 @@ export function useGroceryList(listId: string | undefined) {
     reload();
   }, [reload]);
 
-  const toggle = useCallback(
-    async (id: string, checked: boolean) => {
-      setItems((prev) => prev.map((i) => (i.id === id ? { ...i, is_checked: checked } : i)));
-      await supabase.from("grocery_items").update({ is_checked: checked }).eq("id", id);
-    },
-    [],
-  );
+  const toggle = useCallback(async (id: string, checked: boolean) => {
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, is_checked: checked } : i)));
+    await supabase.from("grocery_items").update({ is_checked: checked }).eq("id", id);
+  }, []);
 
   const remove = useCallback(async (id: string) => {
     setItems((prev) => prev.filter((i) => i.id !== id));

@@ -23,9 +23,15 @@ const CATEGORY_RULES: Array<[RegExp, string]> = [
   [/(chicken|paneer|tofu|fish|egg|beef|mutton|soya|lentil|dal|chickpea|rajma|tempeh)/i, "Protein"],
   [/(milk|yogurt|curd|cheese|butter|ghee|cream)/i, "Dairy"],
   [/(rice|roti|chapati|bread|oats|quinoa|pasta|noodle|poha|atta|flour)/i, "Grains"],
-  [/(spinach|broccoli|tomato|onion|cucumber|carrot|pepper|capsicum|cabbage|cauliflower|beans|peas|lettuce|salad|vegetable|veg)/i, "Vegetables"],
+  [
+    /(spinach|broccoli|tomato|onion|cucumber|carrot|pepper|capsicum|cabbage|cauliflower|beans|peas|lettuce|salad|vegetable|veg)/i,
+    "Vegetables",
+  ],
   [/(banana|apple|berry|berries|orange|mango|grape|fruit|lemon|lime)/i, "Fruits"],
-  [/(oil|salt|pepper|masala|spice|garam|cumin|haldi|turmeric|chilli|garlic|ginger|sauce|vinegar)/i, "Pantry"],
+  [
+    /(oil|salt|pepper|masala|spice|garam|cumin|haldi|turmeric|chilli|garlic|ginger|sauce|vinegar)/i,
+    "Pantry",
+  ],
   [/(almond|peanut|cashew|nut|seed|protein powder|whey)/i, "Nuts & Supplements"],
 ];
 
@@ -118,7 +124,8 @@ export function buildPrepTasks(weekStartISO: string): PrepTaskDraft[] {
       title: "Wash & chop vegetables",
       instructions:
         "Rinse, pat dry, and chop hardy vegetables (carrot, capsicum, onion, cabbage). Keep leafy greens whole until use.",
-      storage: "Store chopped veg in glass containers lined with paper towel; refrigerate 3–4 days.",
+      storage:
+        "Store chopped veg in glass containers lined with paper towel; refrigerate 3–4 days.",
       reheating: "Use raw or stir-fry briefly to keep texture.",
       duration_min: 20,
       position: 1,

@@ -142,9 +142,7 @@ function Page() {
                             </div>
                           )}
                           {t.instructions && (
-                            <p className="mt-2 text-xs text-muted-foreground">
-                              {t.instructions}
-                            </p>
+                            <p className="mt-2 text-xs text-muted-foreground">{t.instructions}</p>
                           )}
                           {t.storage && (
                             <p className="mt-1.5 inline-flex items-start gap-1.5 text-[11px] text-muted-foreground">

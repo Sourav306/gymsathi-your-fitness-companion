@@ -17,10 +17,7 @@ export type MealPrepTask = {
   source_id: string | null;
 };
 
-export function useMealPrepTasks(
-  userId: string | undefined,
-  range?: { from: string; to: string },
-) {
+export function useMealPrepTasks(userId: string | undefined, range?: { from: string; to: string }) {
   const [tasks, setTasks] = useState<MealPrepTask[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -53,11 +50,7 @@ export function useMealPrepTasks(
       if (!userId || !drafts.length) return;
       // Remove any existing tasks for the same dates first to avoid duplicates
       const dates = Array.from(new Set(drafts.map((d) => d.task_date)));
-      await supabase
-        .from("meal_prep_tasks")
-        .delete()
-        .eq("user_id", userId)
-        .in("task_date", dates);
+      await supabase.from("meal_prep_tasks").delete().eq("user_id", userId).in("task_date", dates);
       const rows = drafts.map((d) => ({
         user_id: userId,
         task_date: d.task_date,
