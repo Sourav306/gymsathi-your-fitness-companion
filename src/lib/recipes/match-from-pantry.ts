@@ -119,7 +119,7 @@ export function matchRecipesFromPantry(
 
   const cookingTime = profile?.cooking_time_min ?? null;
   const cuisinePref = profile?.cuisine_preference;
-  const isLowBudget = profile?.budget_level === "low" || profile?.budget_level === "tight";
+  const isLowBudget = profile?.budget_level === "low";
 
   const results: PantryMatch[] = [];
 
