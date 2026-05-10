@@ -29,15 +29,18 @@ export interface ExerciseMeta {
 
 export type EnrichedExercise = Exercise & ExerciseMeta;
 
-const MORNING_HINT_RE = /(plank|crunch|stretch|mobility|push-up|squat|lunge|raise|curl|climb|bird|dog|cat|cobra)/i;
+const MORNING_HINT_RE =
+  /(plank|crunch|stretch|mobility|push-up|squat|lunge|raise|curl|climb|bird|dog|cat|cobra)/i;
 
 function classifyEquipment(eq: string): EquipmentCategory {
   const e = eq.toLowerCase();
   if (e.includes("cable")) return "cable";
   if (e.includes("kettlebell")) return "kettlebell";
   if (e.includes("band")) return "resistance_bands";
-  if (e.includes("pull-up") || e.includes("pullup") || e.includes("pull up bar")) return "pull_up_bar";
-  if (e.includes("machine") || e.includes("hyperextension") || e.includes("preacher")) return "machine";
+  if (e.includes("pull-up") || e.includes("pullup") || e.includes("pull up bar"))
+    return "pull_up_bar";
+  if (e.includes("machine") || e.includes("hyperextension") || e.includes("preacher"))
+    return "machine";
   if (e.includes("barbell")) return "barbell";
   if (e.includes("dumbbell") || e.includes("db")) return "dumbbells";
   if (e.includes("bench")) return "bench";
