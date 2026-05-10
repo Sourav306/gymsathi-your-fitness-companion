@@ -23,6 +23,10 @@ export type GroceryItem = {
   quantity: number | null;
   unit: string | null;
   is_checked: boolean;
+  already_have: boolean;
+  linked_meal: string | null;
+  estimated_cost: number | null;
+  note: string | null;
   position: number;
 };
 
@@ -84,12 +88,26 @@ export function useGroceryList(listId: string | undefined) {
     await supabase.from("grocery_items").update({ is_checked: checked }).eq("id", id);
   }, []);
 
+  const setAlreadyHave = useCallback(async (id: string, value: boolean) => {
+    setItems((prev) => prev.map((i) => (i.id === id ? { ...i, already_have: value } : i)));
+    await supabase.from("grocery_items").update({ already_have: value }).eq("id", id);
+  }, []);
+
   const remove = useCallback(async (id: string) => {
     setItems((prev) => prev.filter((i) => i.id !== id));
     await supabase.from("grocery_items").delete().eq("id", id);
   }, []);
 
-  return { list, items, loading, reload, toggle, remove };
+  const clearChecked = useCallback(async () => {
+    if (!listId) return 0;
+    const ids = items.filter((i) => i.is_checked).map((i) => i.id);
+    if (!ids.length) return 0;
+    setItems((prev) => prev.filter((i) => !ids.includes(i.id)));
+    await supabase.from("grocery_items").delete().in("id", ids);
+    return ids.length;
+  }, [items, listId]);
+
+  return { list, items, loading, reload, toggle, setAlreadyHave, remove, clearChecked };
 }
 
 export async function createGroceryListWithItems(opts: {
@@ -120,6 +138,9 @@ export async function createGroceryListWithItems(opts: {
       name: it.name,
       quantity: it.quantity ?? null,
       unit: it.unit ?? null,
+      linked_meal: it.linked_meal ?? null,
+      estimated_cost: it.estimated_cost ?? null,
+      note: it.note ?? null,
       position: it.position,
     }));
     const { error: e2 } = await supabase.from("grocery_items").insert(rows);
