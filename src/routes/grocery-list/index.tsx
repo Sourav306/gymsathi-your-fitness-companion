@@ -1,7 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
-import { ShoppingBasket, Trash2, Check, Plus, ChevronRight, Calendar } from "lucide-react";
+import {
+  ShoppingBasket,
+  Trash2,
+  Check,
+  Plus,
+  ChevronRight,
+  Calendar,
+  Share2,
+  Eraser,
+  Home,
+} from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import {
   useGroceryLists,
@@ -13,6 +23,7 @@ import { useWeeklyPlan } from "@/hooks/use-weekly-plan";
 import { useSavedMealPlans } from "@/hooks/use-saved-plans";
 import { fmtISO, startOfWeek } from "@/lib/weekly";
 import { buildGroceryFromMealPlan, buildGroceryFromWeekly } from "@/lib/grocery-generate";
+import { copyText } from "@/lib/grocery";
 import { supabase } from "@/integrations/supabase/client";
 
 type Search = { listId?: string };
