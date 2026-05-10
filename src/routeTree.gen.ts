@@ -17,7 +17,9 @@ import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as PlansIndexRouteImport } from './routes/plans/index'
 import { Route as OnboardingIndexRouteImport } from './routes/onboarding/index'
 import { Route as OnboardingChatIndexRouteImport } from './routes/onboarding-chat/index'
+import { Route as MealPrepCalendarIndexRouteImport } from './routes/meal-prep-calendar/index'
 import { Route as MealPlansIndexRouteImport } from './routes/meal-plans/index'
+import { Route as GroceryListIndexRouteImport } from './routes/grocery-list/index'
 import { Route as FavoritesIndexRouteImport } from './routes/favorites/index'
 import { Route as ExercisesIndexRouteImport } from './routes/exercises/index'
 import { Route as CoachIndexRouteImport } from './routes/coach/index'
@@ -66,9 +68,19 @@ const OnboardingChatIndexRoute = OnboardingChatIndexRouteImport.update({
   path: '/onboarding-chat/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MealPrepCalendarIndexRoute = MealPrepCalendarIndexRouteImport.update({
+  id: '/meal-prep-calendar/',
+  path: '/meal-prep-calendar/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MealPlansIndexRoute = MealPlansIndexRouteImport.update({
   id: '/meal-plans/',
   path: '/meal-plans/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GroceryListIndexRoute = GroceryListIndexRouteImport.update({
+  id: '/grocery-list/',
+  path: '/grocery-list/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FavoritesIndexRoute = FavoritesIndexRouteImport.update({
@@ -116,7 +128,9 @@ export interface FileRoutesByFullPath {
   '/coach/': typeof CoachIndexRoute
   '/exercises/': typeof ExercisesIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
+  '/grocery-list/': typeof GroceryListIndexRoute
   '/meal-plans/': typeof MealPlansIndexRoute
+  '/meal-prep-calendar/': typeof MealPrepCalendarIndexRoute
   '/onboarding-chat/': typeof OnboardingChatIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/plans/': typeof PlansIndexRoute
@@ -134,7 +148,9 @@ export interface FileRoutesByTo {
   '/coach': typeof CoachIndexRoute
   '/exercises': typeof ExercisesIndexRoute
   '/favorites': typeof FavoritesIndexRoute
+  '/grocery-list': typeof GroceryListIndexRoute
   '/meal-plans': typeof MealPlansIndexRoute
+  '/meal-prep-calendar': typeof MealPrepCalendarIndexRoute
   '/onboarding-chat': typeof OnboardingChatIndexRoute
   '/onboarding': typeof OnboardingIndexRoute
   '/plans': typeof PlansIndexRoute
@@ -153,7 +169,9 @@ export interface FileRoutesById {
   '/coach/': typeof CoachIndexRoute
   '/exercises/': typeof ExercisesIndexRoute
   '/favorites/': typeof FavoritesIndexRoute
+  '/grocery-list/': typeof GroceryListIndexRoute
   '/meal-plans/': typeof MealPlansIndexRoute
+  '/meal-prep-calendar/': typeof MealPrepCalendarIndexRoute
   '/onboarding-chat/': typeof OnboardingChatIndexRoute
   '/onboarding/': typeof OnboardingIndexRoute
   '/plans/': typeof PlansIndexRoute
@@ -173,7 +191,9 @@ export interface FileRouteTypes {
     | '/coach/'
     | '/exercises/'
     | '/favorites/'
+    | '/grocery-list/'
     | '/meal-plans/'
+    | '/meal-prep-calendar/'
     | '/onboarding-chat/'
     | '/onboarding/'
     | '/plans/'
@@ -191,7 +211,9 @@ export interface FileRouteTypes {
     | '/coach'
     | '/exercises'
     | '/favorites'
+    | '/grocery-list'
     | '/meal-plans'
+    | '/meal-prep-calendar'
     | '/onboarding-chat'
     | '/onboarding'
     | '/plans'
@@ -209,7 +231,9 @@ export interface FileRouteTypes {
     | '/coach/'
     | '/exercises/'
     | '/favorites/'
+    | '/grocery-list/'
     | '/meal-plans/'
+    | '/meal-prep-calendar/'
     | '/onboarding-chat/'
     | '/onboarding/'
     | '/plans/'
@@ -228,7 +252,9 @@ export interface RootRouteChildren {
   CoachIndexRoute: typeof CoachIndexRoute
   ExercisesIndexRoute: typeof ExercisesIndexRoute
   FavoritesIndexRoute: typeof FavoritesIndexRoute
+  GroceryListIndexRoute: typeof GroceryListIndexRoute
   MealPlansIndexRoute: typeof MealPlansIndexRoute
+  MealPrepCalendarIndexRoute: typeof MealPrepCalendarIndexRoute
   OnboardingChatIndexRoute: typeof OnboardingChatIndexRoute
   OnboardingIndexRoute: typeof OnboardingIndexRoute
   PlansIndexRoute: typeof PlansIndexRoute
@@ -296,11 +322,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OnboardingChatIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/meal-prep-calendar/': {
+      id: '/meal-prep-calendar/'
+      path: '/meal-prep-calendar'
+      fullPath: '/meal-prep-calendar/'
+      preLoaderRoute: typeof MealPrepCalendarIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/meal-plans/': {
       id: '/meal-plans/'
       path: '/meal-plans'
       fullPath: '/meal-plans/'
       preLoaderRoute: typeof MealPlansIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/grocery-list/': {
+      id: '/grocery-list/'
+      path: '/grocery-list'
+      fullPath: '/grocery-list/'
+      preLoaderRoute: typeof GroceryListIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/favorites/': {
@@ -364,7 +404,9 @@ const rootRouteChildren: RootRouteChildren = {
   CoachIndexRoute: CoachIndexRoute,
   ExercisesIndexRoute: ExercisesIndexRoute,
   FavoritesIndexRoute: FavoritesIndexRoute,
+  GroceryListIndexRoute: GroceryListIndexRoute,
   MealPlansIndexRoute: MealPlansIndexRoute,
+  MealPrepCalendarIndexRoute: MealPrepCalendarIndexRoute,
   OnboardingChatIndexRoute: OnboardingChatIndexRoute,
   OnboardingIndexRoute: OnboardingIndexRoute,
   PlansIndexRoute: PlansIndexRoute,
