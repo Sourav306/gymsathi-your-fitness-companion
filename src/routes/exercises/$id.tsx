@@ -53,7 +53,10 @@ function Detail() {
       <div className="flex flex-wrap gap-2">
         <Pill icon={Dumbbell} label={e.equipment} />
         <Pill label={`Difficulty: ${e.difficulty}`} />
+        <Pill label={EQUIPMENT_LABEL[enrichExercise(e).equipment_category]} />
       </div>
+
+      <AlternativesCard id={e.id} />
 
       <div className="overflow-hidden rounded-2xl border border-border bg-black">
         <div className="aspect-video">
