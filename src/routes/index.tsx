@@ -1,5 +1,6 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState, type ComponentType } from "react";
+import { ArrowRight, Target, BarChart3 } from "lucide-react";
 import {
   Sparkles,
   Dumbbell,
@@ -532,6 +533,130 @@ function Metric({
           style={{ width: `${animPct}%` }}
         />
       </div>
+    </div>
+  );
+}
+
+function RedirectToOnboarding() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    navigate({ to: "/onboarding", replace: true });
+  }, [navigate]);
+  return (
+    <div className="py-16 text-center text-muted-foreground">
+      <Loader2 className="mx-auto h-5 w-5 animate-spin" />
+    </div>
+  );
+}
+
+function Landing() {
+  const benefits = [
+    {
+      icon: Sparkles,
+      title: "AI Coach Mira",
+      desc: "Personalized guidance, daily plans and instant answers — built around your goals.",
+    },
+    {
+      icon: CheckCircle2,
+      title: "Daily tasks that adapt",
+      desc: "Workouts, hydration, sleep and habits — auto-generated for the day ahead.",
+    },
+    {
+      icon: Utensils,
+      title: "Smart meal plans",
+      desc: "Meals matched to your diet, budget and cuisine — with grocery lists ready.",
+    },
+    {
+      icon: BarChart3,
+      title: "Progress that proves it",
+      desc: "Track weight, protein, water and streaks. See real momentum, week over week.",
+    },
+  ];
+
+  return (
+    <div className="space-y-10 pb-8">
+      {/* Hero */}
+      <section className="relative overflow-hidden rounded-3xl border border-border bg-card p-7 shadow-[var(--shadow-soft)]">
+        <div
+          className="absolute -right-16 -top-16 h-64 w-64 rounded-full opacity-40 blur-3xl"
+          style={{
+            background:
+              "var(--gradient-hero, linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)/0.6)))",
+          }}
+          aria-hidden
+        />
+        <div
+          className="absolute -bottom-20 -left-10 h-56 w-56 rounded-full opacity-30 blur-3xl"
+          style={{ background: "hsl(var(--primary)/0.5)" }}
+          aria-hidden
+        />
+        <div className="relative">
+          <span className="inline-flex items-center gap-1.5 rounded-full glass px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary">
+            <Sparkles className="h-3 w-3" /> Meet Mira · Your AI fitness coach
+          </span>
+          <h1 className="mt-4 font-display text-3xl font-bold leading-tight sm:text-4xl">
+            Train smart. Eat right.
+            <br />
+            <span className="bg-gradient-to-r from-primary to-primary-glow bg-clip-text text-transparent">
+              Powered by AI.
+            </span>
+          </h1>
+          <p className="mt-3 max-w-[42ch] text-sm text-muted-foreground sm:text-base">
+            GymSathi builds a personalized fitness, nutrition and habit plan that adapts to you
+            every single day.
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Link
+              to="/profile"
+              search={{ mode: "signup" } as never}
+              className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary to-primary-glow px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] press"
+            >
+              Get Started Free <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              to="/profile"
+              className="inline-flex items-center gap-2 rounded-2xl border border-border bg-background px-5 py-3 text-sm font-semibold text-foreground hover:bg-secondary"
+            >
+              Sign in
+            </Link>
+          </div>
+          <p className="mt-3 text-[11px] text-muted-foreground">
+            Free to start · No credit card required
+          </p>
+        </div>
+      </section>
+
+      {/* Benefits */}
+      <section>
+        <h2 className="mb-4 px-1 font-display text-xl font-bold">Everything you need, in one app</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {benefits.map((b) => (
+            <div key={b.title} className="glass-card rounded-2xl p-4 hover-lift">
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary">
+                <b.icon className="h-5 w-5" />
+              </div>
+              <div className="mt-3 font-display text-base font-bold">{b.title}</div>
+              <p className="mt-1 text-sm text-muted-foreground">{b.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Secondary CTA */}
+      <section className="rounded-3xl border border-border bg-card p-6 text-center">
+        <Target className="mx-auto h-7 w-7 text-primary" />
+        <h3 className="mt-3 font-display text-lg font-bold">Your goals, your plan</h3>
+        <p className="mx-auto mt-1 max-w-[40ch] text-sm text-muted-foreground">
+          Tell Mira about you in 2 minutes — get a plan that fits your life today.
+        </p>
+        <Link
+          to="/profile"
+          search={{ mode: "signup" } as never}
+          className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground press"
+        >
+          Create your free account <ArrowRight className="h-4 w-4" />
+        </Link>
+      </section>
     </div>
   );
 }
