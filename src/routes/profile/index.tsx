@@ -1,5 +1,5 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState, type ComponentType } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState, type ComponentType } from "react";
 import {
   LogOut,
   User as UserIcon,
@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useProfile } from "@/hooks/use-profile";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { lovable } from "@/integrations/lovable";
@@ -24,11 +25,25 @@ export const Route = createFileRoute("/profile/")({
 
 function Profile() {
   const { user, loading } = useAuth();
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
+  const { profile, loading: profileLoading } = useProfile();
+  const navigate = useNavigate();
+  const initialMode: "signin" | "signup" =
+    typeof window !== "undefined" && window.location.hash === "#signup" ? "signup" : "signin";
+  const [mode, setMode] = useState<"signin" | "signup">(initialMode);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [busy, setBusy] = useState(false);
+  const [justSignedUp, setJustSignedUp] = useState(false);
+
+  // Redirect newly signed-up users into onboarding
+  useEffect(() => {
+    if (loading || profileLoading) return;
+    if (!user) return;
+    if (justSignedUp || !profile) {
+      navigate({ to: "/onboarding", replace: true });
+    }
+  }, [user, profile, loading, profileLoading, justSignedUp, navigate]);
 
   if (loading) return <div className="py-16 text-center text-muted-foreground">Loading…</div>;
 
@@ -78,12 +93,13 @@ function Profile() {
           email,
           password,
           options: {
-            emailRedirectTo: window.location.origin + "/profile",
+            emailRedirectTo: window.location.origin + "/onboarding",
             data: { display_name: name || email.split("@")[0] },
           },
         });
         if (error) throw error;
-        toast.success("Account created! Check your email to confirm.");
+        setJustSignedUp(true);
+        toast.success("Account created! Let's set up your profile.");
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
