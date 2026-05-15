@@ -28,6 +28,12 @@ const empty: UserProfile = {
   meal_prep_days: 2,
   meals_per_day: 4,
   target_protein: null,
+  name: null,
+  workout_days_per_week: 4,
+  water_goal_liters: 3,
+  step_goal: 8000,
+  reminders_enabled: false,
+  workout_time_pref: "morning",
 };
 
 function Onboarding() {
