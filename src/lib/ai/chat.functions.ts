@@ -40,7 +40,7 @@ export type CoachResponse = z.infer<typeof ResponseSchema>;
 
 const ChatMsgSchema = z.object({
   role: z.enum(["user", "assistant", "system"]),
-  content: z.string(),
+  content: z.string().max(4000),
 });
 
 const ContextSchema = z.object({
@@ -208,7 +208,7 @@ async function callGateway(systemPrompt: string, userPrompt: string): Promise<st
       }),
     });
     if (!res.ok) {
-      console.error("coach chat gateway error", res.status, await res.text());
+      console.error("coach chat gateway error", res.status);
       return null;
     }
     const data = await res.json();

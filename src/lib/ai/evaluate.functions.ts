@@ -182,7 +182,7 @@ Tone: friendly, honest, motivating, never shaming. Be concrete. Mention specific
       }),
     });
     if (!res.ok) {
-      console.error("evaluate gateway error", res.status, await res.text());
+      console.error("evaluate gateway error", res.status);
       return fallback;
     }
     const data = await res.json();

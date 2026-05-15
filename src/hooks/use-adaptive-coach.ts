@@ -76,12 +76,14 @@ export function useAdaptiveCoach() {
           .from("daily_tasks")
           .select("task_date,category,is_completed,title")
           .eq("user_id", user.id)
-          .gte("task_date", since),
+          .gte("task_date", since)
+          .limit(100),
         supabase
           .from("progress_logs")
           .select("log_date,protein_consumed,water_liters,workout_completed")
           .eq("user_id", user.id)
-          .gte("log_date", since),
+          .gte("log_date", since)
+          .limit(14),
         supabase
           .from("weekly_plans")
           .select("id")
@@ -125,7 +127,7 @@ export function useAdaptiveCoach() {
           suggested_action: d.suggested_action,
           priority: d.priority,
           status: "active",
-          metadata: (d.metadata ?? null) as never,
+          metadata: (d.metadata ?? null) as unknown as Record<string, unknown>,
         }));
         const { error: insErr } = await supabase.from("adaptive_insights").insert(rows);
         if (insErr) throw insErr;

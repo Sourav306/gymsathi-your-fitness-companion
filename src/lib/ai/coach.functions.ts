@@ -30,7 +30,7 @@ async function callGateway(systemPrompt: string, userPrompt: string): Promise<st
       }),
     });
     if (!res.ok) {
-      console.error("AI gateway error", res.status, await res.text());
+      console.error("AI gateway error", res.status);
       return null;
     }
     const data = await res.json();

@@ -66,15 +66,47 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   return brandedErrorResponse();
 }
 
+function addSecurityHeaders(response: Response): Response {
+  const headers = new Headers(response.headers);
+  headers.set("X-Frame-Options", "DENY");
+  headers.set("X-Content-Type-Options", "nosniff");
+  headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  if (!headers.has("Content-Security-Policy")) {
+    headers.set(
+      "Content-Security-Policy",
+      [
+        "default-src 'self'",
+        // TanStack Start injects inline hydration scripts — unsafe-inline is required
+        "script-src 'self' 'unsafe-inline'",
+        "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+        "font-src 'self' data: https://fonts.gstatic.com",
+        "img-src 'self' data: blob: https://storage.googleapis.com https://*.supabase.co",
+        "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://ai.gateway.lovable.dev",
+        // YouTube embeds on exercise detail pages
+        "frame-src https://www.youtube.com https://youtube.com",
+        "object-src 'none'",
+        "frame-ancestors 'none'",
+      ].join("; "),
+    );
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      const normalized = await normalizeCatastrophicSsrResponse(response);
+      return addSecurityHeaders(normalized);
     } catch (error) {
       console.error(error);
-      return brandedErrorResponse();
+      return addSecurityHeaders(brandedErrorResponse());
     }
   },
 };

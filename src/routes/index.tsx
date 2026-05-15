@@ -34,14 +34,24 @@ import { useProfile } from "@/hooks/use-profile";
 import { useProgress, type ProgressLog } from "@/hooks/use-progress";
 import { useDailyTasks, type DailyTask } from "@/hooks/use-daily-tasks";
 import { useDailyEvaluation } from "@/hooks/use-daily-evaluation";
-import { useWeeklyPlan } from "@/hooks/use-weekly-plan";
-import { fmtISO, startOfWeek, todayWeekdayIndex } from "@/lib/weekly";
 import { calcTargets } from "@/lib/ai/targets";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
 import { EXERCISES } from "@/data/exercises";
 import { PLANS } from "@/data/plans";
+
+// Computed once at module load — stable constants, no runtime cost
+const PLAN_COUNTS = {
+  total: PLANS.length,
+  beginner: PLANS.filter((p) => p.level === "Beginner").length,
+  intermediate: PLANS.filter((p) => p.level === "Intermediate").length,
+};
+const EXERCISE_COUNTS = {
+  total: EXERCISES.length,
+  beginner: EXERCISES.filter((e) => e.beginner_safe).length,
+  home: EXERCISES.filter((e) => e.home_friendly).length,
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -113,14 +123,6 @@ function Home() {
     const t = setTimeout(() => setShowSecondary(true), 200);
     return () => clearTimeout(t);
   }, []);
-
-  const weekStartISO = useMemo(() => fmtISO(startOfWeek()), []);
-  const weekly = useWeeklyPlan(
-    showSecondary ? user?.id : undefined,
-    showSecondary && user ? weekStartISO : undefined,
-  );
-  const todayIdx = todayWeekdayIndex();
-  const todayPlan = weekly.row?.plan_data?.days?.[todayIdx];
 
   const [greeting, setGreeting] = useState("Welcome");
   useEffect(() => {
@@ -298,20 +300,17 @@ function Home() {
         <StatCard
           icon={Dumbbell}
           label="Workout Plans"
-          value={PLANS.length}
-          sub1={{ label: "Beginner", value: PLANS.filter((p) => p.level === "Beginner").length }}
-          sub2={{
-            label: "Intermediate",
-            value: PLANS.filter((p) => p.level === "Intermediate").length,
-          }}
+          value={PLAN_COUNTS.total}
+          sub1={{ label: "Beginner", value: PLAN_COUNTS.beginner }}
+          sub2={{ label: "Intermediate", value: PLAN_COUNTS.intermediate }}
           to="/plans"
         />
         <StatCard
           icon={BookOpen}
           label="Total Exercises"
-          value={EXERCISES.length}
-          sub1={{ label: "Beginner", value: EXERCISES.filter((e) => e.beginner_safe).length }}
-          sub2={{ label: "Home-friendly", value: EXERCISES.filter((e) => e.home_friendly).length }}
+          value={EXERCISE_COUNTS.total}
+          sub1={{ label: "Beginner", value: EXERCISE_COUNTS.beginner }}
+          sub2={{ label: "Home-friendly", value: EXERCISE_COUNTS.home }}
           to="/exercises"
         />
         <StatCard
@@ -469,7 +468,7 @@ function Home() {
 
       {/* ── Bottom: Top Content + Fitness Overview ── */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <TopContentPanel todayPlan={todayPlan} />
+        <TopContentPanel />
         <FitnessOverviewPanel
           todayLog={todayLog}
           targets={targets}
@@ -627,8 +626,7 @@ function TaskRow({
 }
 
 // ── Top Plans / Exercises tab panel ────────────────────────────────────────
-function TopContentPanel({ todayPlan }: { todayPlan: unknown }) {
-  void todayPlan;
+function TopContentPanel() {
   const [tab, setTab] = useState<"plans" | "exercises">("plans");
 
   return (
