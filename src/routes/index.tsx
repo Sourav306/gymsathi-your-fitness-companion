@@ -9,16 +9,29 @@ import {
   Beef,
   Flame,
   CheckCircle2,
-  Circle,
   Loader2,
   Activity,
-  Calendar,
+  ArrowUpRight,
+  TrendingUp,
+  BookOpen,
+  ArrowRight,
   MessageSquare,
-  ShoppingBasket,
+  ChevronDown,
+  Target,
 } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
 import { useAuth } from "@/hooks/use-auth";
 import { useProfile } from "@/hooks/use-profile";
-import { useProgress } from "@/hooks/use-progress";
+import { useProgress, type ProgressLog } from "@/hooks/use-progress";
 import { useDailyTasks, type DailyTask } from "@/hooks/use-daily-tasks";
 import { useDailyEvaluation } from "@/hooks/use-daily-evaluation";
 import { useWeeklyPlan } from "@/hooks/use-weekly-plan";
@@ -26,8 +39,9 @@ import { fmtISO, startOfWeek, todayWeekdayIndex } from "@/lib/weekly";
 import { calcTargets } from "@/lib/ai/targets";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
-import { CoachAdjustments } from "@/components/CoachAdjustments";
 import { useAdaptiveCoach } from "@/hooks/use-adaptive-coach";
+import { EXERCISES } from "@/data/exercises";
+import { PLANS } from "@/data/plans";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -42,7 +56,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const WEEKDAYS = ["M", "T", "W", "T", "F", "S", "S"];
 const CAT_ICON: Record<string, ComponentType<{ className?: string }>> = {
   workout: Dumbbell,
   nutrition: Utensils,
@@ -51,6 +64,22 @@ const CAT_ICON: Record<string, ComponentType<{ className?: string }>> = {
   sleep: Activity,
   habit: CheckCircle2,
 };
+
+const CAT_COLOR: Record<string, string> = {
+  workout: "#f97316",
+  nutrition: "#22c55e",
+  hydration: "#06b6d4",
+  steps: "#3b82f6",
+  sleep: "#a78bfa",
+  habit: "#eab308",
+};
+
+const DONUT_COLORS = ["#f97316", "#22c55e", "#06b6d4", "#3b82f6", "#a78bfa", "#eab308"];
+
+function fmtChartDate(iso: string) {
+  const [, m, d] = iso.split("-");
+  return `${parseInt(m)}/${parseInt(d)}`;
+}
 
 function Home() {
   const { user } = useAuth();
@@ -66,7 +95,6 @@ function Home() {
     todayLog,
   });
 
-  // Defer non-critical sections (streak, weekly plan) until after first paint
   const [showSecondary, setShowSecondary] = useState(false);
   useEffect(() => {
     const w =
@@ -94,7 +122,6 @@ function Home() {
   const todayIdx = todayWeekdayIndex();
   const todayPlan = weekly.row?.plan_data?.days?.[todayIdx];
 
-  // Hydration-safe greeting (set after mount so server/client agree)
   const [greeting, setGreeting] = useState("Welcome");
   useEffect(() => {
     const h = new Date().getHours();
@@ -104,7 +131,6 @@ function Home() {
   const greetingName =
     profile?.name || user?.user_metadata?.display_name || user?.email?.split("@")[0] || "there";
 
-  // Streak
   const streakDays = useMemo(() => {
     const set = new Set(logs.filter((l) => l.workout_completed).map((l) => l.log_date));
     let n = 0;
@@ -153,7 +179,32 @@ function Home() {
     }
   };
 
-  // Not signed in CTA
+  // Area chart: last 14 days calorie + protein trend
+  const chartData = useMemo(() => {
+    const sorted = [...logs].sort((a, b) => a.log_date.localeCompare(b.log_date));
+    return sorted.map((l) => ({
+      date: fmtChartDate(l.log_date),
+      calories: l.calories_consumed ?? 0,
+      protein: l.protein_consumed ?? 0,
+    }));
+  }, [logs]);
+
+  // Donut: task completion by category
+  const donutData = useMemo(() => {
+    const cats = ["workout", "nutrition", "hydration", "steps", "sleep", "habit"] as const;
+    return cats
+      .map((cat) => {
+        const total = tasksHook.tasks.filter((t) => t.category === cat).length;
+        const done = tasksHook.tasks.filter((t) => t.category === cat && t.is_completed).length;
+        return { name: cat, value: Math.max(total, 0), done, total };
+      })
+      .filter((d) => d.total > 0);
+  }, [tasksHook.tasks]);
+
+  const workoutsThisWeek = weekChecks.filter(Boolean).length;
+  const hasTasks = tasksHook.tasks.length > 0;
+
+  // Not signed in
   if (!user) {
     return (
       <div className="space-y-6">
@@ -184,7 +235,7 @@ function Home() {
     );
   }
 
-  // Onboarding CTA
+  // Onboarding
   if (!profile) {
     return (
       <div className="space-y-6">
@@ -199,10 +250,7 @@ function Home() {
         <Link
           to="/onboarding-chat"
           className="block overflow-hidden rounded-3xl p-5 text-primary-foreground shadow-[var(--shadow-soft)]"
-          style={{
-            background:
-              "var(--gradient-hero, linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)/0.85)))",
-          }}
+          style={{ background: "var(--gradient-hero)" }}
         >
           <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/20 backdrop-blur">
             <MessageSquare className="h-6 w-6" />
@@ -222,253 +270,244 @@ function Home() {
     );
   }
 
-  const hasTasks = tasksHook.tasks.length > 0;
-
   return (
-    <div className="space-y-6">
-      {/* Greeting */}
-      <header className="px-1">
-        <h1 className="font-display text-2xl font-bold leading-tight">
-          {greeting}, {greetingName} <span aria-hidden>👋</span>
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          {hasTasks
-            ? `Today's score: ${tasksHook.completionPct}% · ${tasksHook.tasksCompleted} of ${tasksHook.tasksTotal} tasks`
-            : "Let's build today's plan."}
-        </p>
+    <div className="space-y-5">
+      {/* ── Header ── */}
+      <header className="flex items-center justify-between px-1">
+        <div>
+          <h1 className="font-display text-2xl font-bold leading-tight">Dashboard Overview</h1>
+          <p className="mt-0.5 text-sm text-muted-foreground">
+            {greeting}, {greetingName} ·{" "}
+            {new Date().toLocaleDateString("en-IN", {
+              weekday: "long",
+              day: "numeric",
+              month: "short",
+            })}
+          </p>
+        </div>
+        <Link
+          to="/coach"
+          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)]"
+        >
+          <Sparkles className="h-3.5 w-3.5" /> AI Coach
+        </Link>
       </header>
 
-      {/* AI message / Today score */}
-      {evaluation?.ai_feedback_message ? (
-        <section className="glass-card rounded-3xl p-4 anim-fade-up">
+      {/* ── Stat Cards ── */}
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <StatCard
+          icon={Dumbbell}
+          label="Workout Plans"
+          value={PLANS.length}
+          sub1={{ label: "Beginner", value: PLANS.filter((p) => p.level === "Beginner").length }}
+          sub2={{
+            label: "Intermediate",
+            value: PLANS.filter((p) => p.level === "Intermediate").length,
+          }}
+          to="/plans"
+        />
+        <StatCard
+          icon={BookOpen}
+          label="Total Exercises"
+          value={EXERCISES.length}
+          sub1={{ label: "Beginner", value: EXERCISES.filter((e) => e.beginner_safe).length }}
+          sub2={{ label: "Home-friendly", value: EXERCISES.filter((e) => e.home_friendly).length }}
+          to="/exercises"
+        />
+        <StatCard
+          icon={Flame}
+          label="Workout Streak"
+          value={streakDays}
+          sub1={{ label: "This week", value: workoutsThisWeek }}
+          sub2={{ label: "Total logged", value: logs.length }}
+          to="/progress"
+        />
+        <StatCard
+          icon={Target}
+          label="Today's Tasks"
+          value={tasksHook.tasksCompleted}
+          sub1={{ label: "Completed", value: tasksHook.tasksCompleted }}
+          sub2={{
+            label: "Remaining",
+            value: Math.max(0, tasksHook.tasksTotal - tasksHook.tasksCompleted),
+          }}
+          to="/progress"
+        />
+      </div>
+
+      {/* ── Middle: Chart + Tasks ── */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+        {/* Activity Trend */}
+        <div className="glass-card rounded-2xl p-4 lg:col-span-3">
+          <div className="mb-4 flex items-center justify-between">
+            <span className="text-sm font-semibold">Activity Trend</span>
+            <span className="rounded-full border border-border/50 bg-secondary/50 px-3 py-1 text-xs font-medium text-muted-foreground">
+              Last 14 Days
+            </span>
+          </div>
+
+          {chartData.length > 1 ? (
+            <>
+              <div className="h-44">
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={chartData} margin={{ top: 8, right: 4, bottom: 0, left: 0 }}>
+                    <defs>
+                      <linearGradient id="gCal" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#f97316" stopOpacity={0.35} />
+                        <stop offset="95%" stopColor="#f97316" stopOpacity={0} />
+                      </linearGradient>
+                      <linearGradient id="gPro" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#cbd5e1" stopOpacity={0.2} />
+                        <stop offset="95%" stopColor="#cbd5e1" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <XAxis
+                      dataKey="date"
+                      tick={{ fontSize: 10, fill: "var(--color-muted-foreground, #94a3b8)" }}
+                      axisLine={false}
+                      tickLine={false}
+                    />
+                    <Tooltip
+                      contentStyle={{
+                        background: "var(--color-card, #1e1e2e)",
+                        border: "1px solid var(--color-border, rgba(255,255,255,0.1))",
+                        borderRadius: "12px",
+                        fontSize: 12,
+                      }}
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="calories"
+                      stroke="#f97316"
+                      strokeWidth={2}
+                      fill="url(#gCal)"
+                      dot={false}
+                      name="Calories"
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="protein"
+                      stroke="#cbd5e1"
+                      strokeWidth={1.5}
+                      strokeOpacity={0.5}
+                      fill="url(#gPro)"
+                      dot={false}
+                      name="Protein (g)"
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="mt-3 flex items-center gap-4">
+                <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <span className="h-2 w-4 rounded-full bg-primary" /> Calories
+                </span>
+                <span className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                  <span className="h-2 w-4 rounded-full bg-foreground/25" /> Protein (g)
+                </span>
+              </div>
+            </>
+          ) : (
+            <div className="flex h-44 flex-col items-center justify-center gap-2">
+              <Activity className="h-8 w-8 text-muted-foreground/30" />
+              <p className="text-xs text-muted-foreground">
+                Log your progress to see the activity trend
+              </p>
+              <Link to="/progress" className="text-xs font-semibold text-primary">
+                Log today →
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Today's Tasks */}
+        <div className="glass-card rounded-2xl p-4 lg:col-span-2">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="text-sm font-semibold">Today's Tasks</span>
+            <span className="text-xs text-muted-foreground">
+              {tasksHook.tasksCompleted}/{tasksHook.tasksTotal}
+            </span>
+          </div>
+
+          {tasksHook.loading ? (
+            <div className="flex h-40 items-center justify-center">
+              <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            </div>
+          ) : !hasTasks ? (
+            <div className="flex h-40 flex-col items-center justify-center gap-3">
+              <p className="text-xs text-muted-foreground">No tasks for today yet.</p>
+              <button
+                onClick={generate}
+                className="rounded-xl bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground"
+              >
+                Generate tasks
+              </button>
+            </div>
+          ) : (
+            <ul className="space-y-2.5 overflow-y-auto" style={{ maxHeight: "230px" }}>
+              {tasksHook.tasks.map((t) => (
+                <TaskRow key={t.id} task={t} onToggle={tasksHook.toggleComplete} />
+              ))}
+            </ul>
+          )}
+
+          {hasTasks && (
+            <button
+              onClick={onAnalyze}
+              disabled={evalBusy}
+              className="mt-3 inline-flex w-full items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-primary to-primary-glow px-3 py-2 text-xs font-semibold text-primary-foreground disabled:opacity-50"
+            >
+              {evalBusy ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <Sparkles className="h-3.5 w-3.5" />
+              )}
+              {evalBusy ? "Analyzing…" : evaluation ? "Re-analyze my day" : "Analyze my day"}
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* ── Bottom: Top Content + Fitness Overview ── */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <TopContentPanel todayPlan={todayPlan} />
+        <FitnessOverviewPanel
+          todayLog={todayLog}
+          targets={targets}
+          waterGoal={waterGoal}
+          stepGoal={stepGoal}
+          donutData={donutData}
+          completionPct={tasksHook.completionPct}
+          tasksTotal={tasksHook.tasksTotal}
+          tasksCompleted={tasksHook.tasksCompleted}
+        />
+      </div>
+
+      {/* ── AI Feedback ── */}
+      {evaluation?.ai_feedback_message && (
+        <section className="glass-card rounded-2xl p-4 anim-fade-up">
           <div className="inline-flex items-center gap-1.5 rounded-full glass px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary">
             <Sparkles className="h-3 w-3" /> AI Feedback
           </div>
           <p className="mt-2.5 text-sm leading-snug text-foreground/90">
             {evaluation.ai_feedback_message}
           </p>
-          {Array.isArray(evaluation.improvement_suggestions) &&
-            evaluation.improvement_suggestions.length > 0 && (
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">
-                {evaluation.improvement_suggestions.slice(0, 3).map((s: string, i: number) => (
-                  <li key={i}>{s}</li>
-                ))}
-              </ul>
-            )}
-          <div className="mt-2 text-[11px] text-muted-foreground">
-            {evaluation.compared_to_yesterday} · {evaluation.compared_to_7_day_average}
-          </div>
-        </section>
-      ) : (
-        <Link
-          to="/coach"
-          className="relative block overflow-hidden rounded-3xl p-5 text-primary-foreground shadow-[var(--shadow-soft)] transition active:scale-[0.99]"
-          style={{
-            background:
-              "var(--gradient-hero, linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)/0.85)))",
-          }}
-        >
-          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-          <div className="relative flex items-start justify-between gap-3">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/20 backdrop-blur">
-              <Sparkles className="h-6 w-6" />
+          {evaluation.compared_to_yesterday && (
+            <div className="mt-2 text-[11px] text-muted-foreground">
+              {evaluation.compared_to_yesterday} · {evaluation.compared_to_7_day_average}
             </div>
-            <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-bold tracking-wide backdrop-blur">
-              BETA
-            </span>
-          </div>
-          <div className="relative mt-4">
-            <div className="font-display text-lg font-bold">Mira's recommendation</div>
-            <p className="mt-1 max-w-[28ch] text-sm opacity-90">
-              Open the coach for plans, the weekly planner and more.
-            </p>
-          </div>
-        </Link>
-      )}
-
-      {/* Today's tasks */}
-      <section>
-        <div className="mb-3 flex items-end justify-between">
-          <h2 className="font-display text-lg font-bold">Today's tasks</h2>
-          {hasTasks && (
-            <span className="text-xs text-muted-foreground">
-              {tasksHook.tasksCompleted}/{tasksHook.tasksTotal}
-            </span>
           )}
-        </div>
+        </section>
+      )}
 
-        {tasksHook.loading ? (
-          <div className="rounded-2xl border border-border bg-card p-6 text-center text-sm text-muted-foreground">
-            <Loader2 className="mx-auto h-5 w-5 animate-spin" />
-          </div>
-        ) : !hasTasks ? (
-          <div className="rounded-2xl border border-border bg-card p-5 text-center">
-            <p className="text-sm text-muted-foreground">No tasks for today yet.</p>
-            <button
-              onClick={generate}
-              className="mt-3 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
-            >
-              Generate today's tasks
-            </button>
-          </div>
-        ) : (
-          <ul className="space-y-2 anim-stagger">
-            {tasksHook.tasks.map((t) => (
-              <TaskRow key={t.id} task={t} onToggle={tasksHook.toggleComplete} />
-            ))}
-          </ul>
-        )}
-
-        {/* Analyze button */}
-        {hasTasks && (
-          <button
-            onClick={onAnalyze}
-            disabled={evalBusy}
-            className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-primary to-primary-glow px-4 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] press disabled:opacity-50"
-          >
-            {evalBusy ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Sparkles className="h-4 w-4" />
-            )}
-            {evalBusy ? "Analyzing your day…" : evaluation ? "Re-analyze my day" : "Analyze my day"}
-          </button>
-        )}
-      </section>
-
-      {/* Adaptive coach insights */}
-      {showSecondary && <CoachAdjustments compact coach={adaptive} />}
-
-      {showSecondary && todayPlan && (
+      {/* ── Adaptive Coach Suggestions ── */}
+      {showSecondary && adaptive.insights.length > 0 && (
         <section>
-          <h2 className="mb-3 font-display text-lg font-bold">From your weekly plan</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Link to="/weekly-planner" className="rounded-2xl border border-border bg-card p-4">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <Dumbbell className="h-3.5 w-3.5" /> Today's workout
-              </div>
-              <div className="mt-1 font-display font-bold">
-                {todayPlan.workout?.focus || "Rest day"}
-              </div>
-              {todayPlan.workout && (
-                <div className="text-xs text-muted-foreground">
-                  ~{todayPlan.workout.durationMin} min
-                </div>
-              )}
-            </Link>
-            <Link to="/weekly-planner" className="rounded-2xl border border-border bg-card p-4">
-              <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                <Utensils className="h-3.5 w-3.5" /> Today's meals
-              </div>
-              <div className="mt-1 font-display font-bold">
-                {todayPlan.meals?.length || 0} meals
-              </div>
-              {todayPlan.meals?.[0] && (
-                <div className="truncate text-xs text-muted-foreground">
-                  {todayPlan.meals[0].name}
-                </div>
-              )}
-            </Link>
-          </div>
-        </section>
-      )}
-
-      {showSecondary && (
-        <section className="grid gap-2 sm:grid-cols-2">
-          <Link
-            to="/grocery-list"
-            className="glass-card glass-press flex items-center justify-between gap-3 rounded-2xl p-4"
-          >
-            <div className="flex items-center gap-2">
-              <ShoppingBasket className="h-5 w-5 text-primary" />
-              <div>
-                <div className="font-display text-sm font-bold">Grocery List</div>
-                <div className="text-xs text-muted-foreground">From your weekly plan</div>
-              </div>
-            </div>
-          </Link>
-          <Link
-            to="/meal-prep-calendar"
-            className="glass-card glass-press flex items-center justify-between gap-3 rounded-2xl p-4"
-          >
-            <div className="flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-primary" />
-              <div>
-                <div className="font-display text-sm font-bold">Meal Prep Calendar</div>
-                <div className="text-xs text-muted-foreground">Sun + Wed prep tasks</div>
-              </div>
-            </div>
-          </Link>
-        </section>
-      )}
-
-      {/* Daily progress metrics */}
-      <section>
-        <div className="mb-3 flex items-end justify-between">
-          <h2 className="font-display text-lg font-bold">Daily Progress</h2>
-          <Link to="/progress" className="text-xs font-semibold text-primary">
-            Edit
-          </Link>
-        </div>
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 anim-stagger">
-          <Metric
-            icon={Beef}
-            label="Protein"
-            value={todayLog?.protein_consumed ?? 0}
-            target={targets.protein}
-            unit="g"
-          />
-          <Metric
-            icon={Flame}
-            label="Calories"
-            value={todayLog?.calories_consumed ?? 0}
-            target={targets.calories}
-            unit=""
-          />
-          <Metric
-            icon={Droplet}
-            label="Water"
-            value={Number(todayLog?.water_liters ?? 0)}
-            target={waterGoal}
-            unit="L"
-          />
-          <Metric icon={Footprints} label="Steps" value={0} target={stepGoal} unit="" />
-        </div>
-      </section>
-
-      {/* Streak */}
-      {showSecondary && (
-        <section className="rounded-2xl border border-border bg-card p-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-xl" aria-hidden>
-                🔥
-              </span>
-              <div>
-                <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                  Current Streak
-                </div>
-                <div className="font-display text-lg font-bold">
-                  {streakDays} {streakDays === 1 ? "day" : "days"}
-                </div>
-              </div>
-            </div>
-            <Link
-              to="/weekly-planner"
-              className="inline-flex items-center gap-1 text-xs font-semibold text-primary"
-            >
-              <Calendar className="h-3.5 w-3.5" /> Weekly plan
-            </Link>
-          </div>
-          <div className="mt-3 grid grid-cols-7 gap-1">
-            {weekChecks.map((done, i) => (
-              <div key={i} className="flex flex-col items-center gap-1">
-                <span className="text-[10px] text-muted-foreground">{WEEKDAYS[i]}</span>
-                <span
-                  className={`grid h-6 w-6 place-items-center rounded-full text-[10px] ${done ? "bg-primary text-primary-foreground" : "bg-secondary text-muted-foreground"}`}
-                >
-                  {done ? "✓" : ""}
-                </span>
+          <h2 className="mb-3 font-display text-base font-bold">Coach Suggestions</h2>
+          <div className="space-y-2">
+            {adaptive.insights.slice(0, 2).map((ins) => (
+              <div key={ins.id} className="glass-card rounded-2xl p-3">
+                <div className="text-xs font-semibold text-primary">{ins.title}</div>
+                <div className="mt-0.5 text-xs text-muted-foreground">{ins.reason}</div>
               </div>
             ))}
           </div>
@@ -478,6 +517,52 @@ function Home() {
   );
 }
 
+// ── Sedela-style stat card ──────────────────────────────────────────────────
+function StatCard({
+  icon: Icon,
+  label,
+  value,
+  sub1,
+  sub2,
+  to,
+}: {
+  icon: ComponentType<{ className?: string }>;
+  label: string;
+  value: number;
+  sub1: { label: string; value: number };
+  sub2: { label: string; value: number };
+  to: string;
+}) {
+  return (
+    <div className="glass-card rounded-2xl p-4 hover-lift">
+      <div className="flex items-start justify-between">
+        <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary/15 text-primary">
+          <Icon className="h-5 w-5" />
+        </div>
+        <Link to={to}>
+          <ArrowUpRight className="h-4 w-4 text-muted-foreground transition-colors hover:text-primary" />
+        </Link>
+      </div>
+      <div className="mt-3">
+        <div className="text-[11px] font-medium text-muted-foreground">{label}</div>
+        <div className="mt-0.5 font-display text-2xl font-bold">{value}</div>
+      </div>
+      <div className="mt-3 flex items-center gap-3 border-t border-border/40 pt-3">
+        <div>
+          <div className="text-[10px] text-muted-foreground">{sub1.label}</div>
+          <div className="text-xs font-semibold">{sub1.value}</div>
+        </div>
+        <div className="h-5 w-px bg-border/50" />
+        <div>
+          <div className="text-[10px] text-muted-foreground">{sub2.label}</div>
+          <div className="text-xs font-semibold">{sub2.value}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Task row — Sedela withdrawal-list style ─────────────────────────────────
 function TaskRow({
   task,
   onToggle,
@@ -486,7 +571,9 @@ function TaskRow({
   onToggle: (id: string, v: boolean) => Promise<void>;
 }) {
   const Icon = CAT_ICON[task.category] || CheckCircle2;
+  const color = CAT_COLOR[task.category] || "#f97316";
   const [pending, setPending] = useState(false);
+
   const handle = async () => {
     setPending(true);
     try {
@@ -497,62 +584,258 @@ function TaskRow({
       setPending(false);
     }
   };
+
   return (
-    <li>
+    <li className="flex items-center gap-2.5">
+      <div
+        className="grid h-8 w-8 shrink-0 place-items-center rounded-full"
+        style={{ background: `${color}20`, color }}
+      >
+        <Icon className="h-4 w-4" />
+      </div>
+      <div className="min-w-0 flex-1">
+        <div
+          className={cn(
+            "truncate text-xs font-semibold",
+            task.is_completed && "line-through opacity-50",
+          )}
+        >
+          {task.title}
+        </div>
+        <div className="text-[10px] capitalize text-muted-foreground">{task.category}</div>
+      </div>
       <button
         onClick={handle}
         disabled={pending}
         className={cn(
-          "flex w-full items-center gap-3 rounded-2xl border p-3 text-left press hover-lift",
+          "grid h-7 w-7 shrink-0 place-items-center rounded-full transition-all",
           task.is_completed
-            ? "border-primary/40 bg-gradient-to-r from-primary/15 to-primary-glow/10"
-            : "glass-card",
+            ? "bg-primary text-primary-foreground"
+            : "border border-border/60 bg-secondary text-muted-foreground hover:border-primary hover:text-primary",
         )}
       >
-        <span
-          className={cn(
-            "grid h-9 w-9 shrink-0 place-items-center rounded-xl transition-all duration-300",
-            task.is_completed
-              ? "bg-gradient-to-br from-primary to-primary-glow text-primary-foreground scale-105"
-              : "bg-secondary text-muted-foreground",
-          )}
-        >
-          {task.is_completed ? (
-            <CheckCircle2 className="h-5 w-5 anim-scale-in" />
-          ) : (
-            <Icon className="h-5 w-5" />
-          )}
-        </span>
-        <span className="min-w-0 flex-1">
-          <span
-            className={cn(
-              "block truncate text-sm font-semibold transition-all duration-300",
-              task.is_completed && "line-through opacity-60",
-            )}
-          >
-            {task.title}
-          </span>
-          {task.target_value != null && task.unit && (
-            <span className="block text-[11px] text-muted-foreground">
-              Target: {task.target_value}
-              {task.unit}
-            </span>
-          )}
-        </span>
-        <span className="text-[10px] font-semibold uppercase text-muted-foreground">
-          {task.category}
-        </span>
         {pending ? (
-          <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
-        ) : task.is_completed ? null : (
-          <Circle className="h-4 w-4 text-muted-foreground" />
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
+        ) : task.is_completed ? (
+          <CheckCircle2 className="h-3.5 w-3.5" />
+        ) : (
+          <ArrowRight className="h-3.5 w-3.5" />
         )}
       </button>
     </li>
   );
 }
 
-function Metric({
+// ── Top Plans / Exercises tab panel ────────────────────────────────────────
+function TopContentPanel({ todayPlan }: { todayPlan: unknown }) {
+  void todayPlan;
+  const [tab, setTab] = useState<"plans" | "exercises">("plans");
+
+  return (
+    <div className="glass-card rounded-2xl p-4">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex gap-0.5 rounded-xl border border-border/50 bg-secondary/30 p-0.5">
+          {(["plans", "exercises"] as const).map((t) => (
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={cn(
+                "rounded-lg px-3 py-1.5 text-xs font-semibold capitalize transition-all",
+                tab === t ? "bg-card text-foreground shadow-sm" : "text-muted-foreground",
+              )}
+            >
+              {t === "plans" ? "Top Plans" : "Exercises"}
+            </button>
+          ))}
+        </div>
+        <Link to={tab === "plans" ? "/plans" : "/exercises"}>
+          <div className="grid h-7 w-7 place-items-center rounded-lg border border-border/50 bg-secondary/40">
+            <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground" />
+          </div>
+        </Link>
+      </div>
+
+      <ul className="space-y-2">
+        {tab === "plans"
+          ? PLANS.slice(0, 4).map((plan) => (
+              <li key={plan.id}>
+                <Link
+                  to="/plans"
+                  className="flex items-center gap-3 rounded-xl border border-border/30 bg-secondary/20 px-3 py-2.5 transition hover:border-primary/30 hover:bg-primary/5"
+                >
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
+                    <Dumbbell className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-xs font-semibold">{plan.name}</div>
+                    <div className="text-[10px] text-muted-foreground">
+                      {plan.daysPerWeek} days/week · {plan.weeks} wks
+                    </div>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-border/40 bg-secondary/40 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                    {plan.level}
+                  </span>
+                </Link>
+              </li>
+            ))
+          : EXERCISES.slice(0, 4).map((ex) => (
+              <li key={ex.id}>
+                <Link
+                  to="/exercises/$id"
+                  params={{ id: ex.id }}
+                  className="flex items-center gap-3 rounded-xl border border-border/30 bg-secondary/20 px-3 py-2.5 transition hover:border-primary/30 hover:bg-primary/5"
+                >
+                  <div className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-primary/15 text-primary">
+                    <TrendingUp className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-xs font-semibold">{ex.name}</div>
+                    <div className="text-[10px] text-muted-foreground">
+                      {ex.muscle} · {ex.difficulty}
+                    </div>
+                  </div>
+                  <span className="shrink-0 rounded-full border border-border/40 bg-secondary/40 px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
+                    {ex.equipment_category}
+                  </span>
+                </Link>
+              </li>
+            ))}
+      </ul>
+    </div>
+  );
+}
+
+// ── Fitness Overview donut + metrics ───────────────────────────────────────
+function FitnessOverviewPanel({
+  todayLog,
+  targets,
+  waterGoal,
+  stepGoal,
+  donutData,
+  completionPct,
+  tasksTotal,
+  tasksCompleted,
+}: {
+  todayLog: ProgressLog | null;
+  targets: { calories: number; protein: number };
+  waterGoal: number;
+  stepGoal: number;
+  donutData: Array<{ name: string; value: number; done: number; total: number }>;
+  completionPct: number;
+  tasksTotal: number;
+  tasksCompleted: number;
+}) {
+  const isEmpty = donutData.length === 0;
+  const chartData = isEmpty ? [{ name: "none", value: 1 }] : donutData;
+
+  return (
+    <div className="glass-card rounded-2xl p-4">
+      <div className="mb-3 flex items-center justify-between">
+        <span className="text-sm font-semibold">Fitness Overview</span>
+        <div className="flex items-center gap-2">
+          <div className="grid h-7 w-7 place-items-center rounded-lg border border-border/50 bg-secondary/40">
+            <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground" />
+          </div>
+          <Link
+            to="/progress"
+            className="flex items-center gap-1 rounded-full border border-border/50 bg-secondary/40 px-3 py-1 text-xs font-medium text-muted-foreground"
+          >
+            7 Days <ChevronDown className="h-3 w-3" />
+          </Link>
+        </div>
+      </div>
+
+      <div className="flex items-start gap-4">
+        {/* Metrics */}
+        <div className="flex-1 space-y-3">
+          <MetricRow
+            icon={Beef}
+            label="Protein"
+            value={todayLog?.protein_consumed ?? 0}
+            target={targets.protein}
+            unit="g"
+          />
+          <MetricRow
+            icon={Flame}
+            label="Calories"
+            value={todayLog?.calories_consumed ?? 0}
+            target={targets.calories}
+            unit="kcal"
+          />
+          <MetricRow
+            icon={Droplet}
+            label="Water"
+            value={Number(todayLog?.water_liters ?? 0)}
+            target={waterGoal}
+            unit="L"
+          />
+          <MetricRow icon={Footprints} label="Steps" value={0} target={stepGoal} unit="" />
+        </div>
+
+        {/* Donut + legend */}
+        <div className="flex flex-col items-center gap-2">
+          <div className="relative h-28 w-28">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={chartData}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={34}
+                  outerRadius={50}
+                  paddingAngle={2}
+                  dataKey="value"
+                  startAngle={90}
+                  endAngle={-270}
+                >
+                  {chartData.map((_, i) => (
+                    <Cell
+                      key={i}
+                      fill={
+                        isEmpty ? "var(--color-secondary)" : DONUT_COLORS[i % DONUT_COLORS.length]
+                      }
+                      opacity={isEmpty ? 0.3 : 0.9}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-center">
+              <span className="font-display text-lg font-bold text-primary">{completionPct}%</span>
+            </div>
+          </div>
+
+          <div className="space-y-1">
+            {donutData.slice(0, 4).map((d, i) => (
+              <div key={d.name} className="flex items-center gap-1.5">
+                <span
+                  className="h-2 w-2 shrink-0 rounded-full"
+                  style={{ background: DONUT_COLORS[i] }}
+                />
+                <span className="text-[10px] capitalize text-muted-foreground">{d.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Pending tasks pill — mirrors Sedela's "Total Pending" */}
+      <div className="mt-3 flex items-center gap-2.5 rounded-xl border border-border/40 bg-secondary/30 px-3 py-2">
+        <div className="grid h-7 w-7 place-items-center rounded-lg bg-primary/20 text-primary">
+          <Target className="h-4 w-4" />
+        </div>
+        <div>
+          <div className="text-[10px] text-muted-foreground">Pending Tasks</div>
+          <div className="font-display text-sm font-bold">
+            {Math.max(0, tasksTotal - tasksCompleted)}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MetricRow({
   icon: Icon,
   label,
   value,
@@ -565,31 +848,24 @@ function Metric({
   target: number;
   unit: string;
 }) {
-  const pct = Math.min(100, Math.round((Number(value) / target) * 100)) || 0;
-  const [animPct, setAnimPct] = useState(0);
-  useEffect(() => {
-    const t = setTimeout(() => setAnimPct(pct), 60);
-    return () => clearTimeout(t);
-  }, [pct]);
+  const pct = target > 0 ? Math.min(100, Math.round((value / target) * 100)) : 0;
   return (
-    <div className="glass-card rounded-2xl p-3 hover-lift">
-      <div className="flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-        <Icon className="h-3 w-3 text-primary" /> {label}
-      </div>
-      <div className="mt-1 font-display text-base font-bold">
-        {value || 0}
-        {unit && (
-          <span className="text-xs font-medium text-muted-foreground">
-            /{target}
-            {unit}
+    <div className="flex items-center gap-2">
+      <Icon className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+      <div className="min-w-0 flex-1">
+        <div className="flex items-baseline justify-between gap-1">
+          <span className="text-[10px] text-muted-foreground">{label}</span>
+          <span className="text-[10px] font-semibold">
+            {value}
+            {unit && ` ${unit}`}
           </span>
-        )}
-      </div>
-      <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-secondary/60">
-        <div
-          className="h-full rounded-full bg-gradient-to-r from-primary to-primary-glow transition-[width] duration-700 ease-out"
-          style={{ width: `${animPct}%` }}
-        />
+        </div>
+        <div className="mt-0.5 h-1 w-full overflow-hidden rounded-full bg-secondary/60">
+          <div
+            className="h-full rounded-full bg-gradient-to-r from-primary to-primary-glow transition-[width] duration-700"
+            style={{ width: `${pct}%` }}
+          />
+        </div>
       </div>
     </div>
   );
