@@ -651,7 +651,7 @@ function Landing() {
         </p>
         <Link
           to="/profile"
-          search={{ mode: "signup" } as never}
+          hash="signup"
           className="mt-4 inline-flex items-center gap-2 rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground press"
         >
           Create your free account <ArrowRight className="h-4 w-4" />
