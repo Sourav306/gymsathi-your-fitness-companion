@@ -608,7 +608,7 @@ function Landing() {
           <div className="mt-6 flex flex-wrap items-center gap-3">
             <Link
               to="/profile"
-              search={{ mode: "signup" } as never}
+              hash="signup"
               className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-primary to-primary-glow px-5 py-3 text-sm font-semibold text-primary-foreground shadow-[var(--shadow-glow)] press"
             >
               Get Started Free <ArrowRight className="h-4 w-4" />
