@@ -281,9 +281,7 @@ function Onboarding() {
             <Select
               label="Preferred workout time"
               value={form.workout_time_pref || "morning"}
-              onChange={(v) =>
-                set("workout_time_pref", v as UserProfile["workout_time_pref"])
-              }
+              onChange={(v) => set("workout_time_pref", v as UserProfile["workout_time_pref"])}
               options={[
                 ["morning", "Morning"],
                 ["afternoon", "Afternoon"],

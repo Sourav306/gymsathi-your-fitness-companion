@@ -628,7 +628,9 @@ function Landing() {
 
       {/* Benefits */}
       <section>
-        <h2 className="mb-4 px-1 font-display text-xl font-bold">Everything you need, in one app</h2>
+        <h2 className="mb-4 px-1 font-display text-xl font-bold">
+          Everything you need, in one app
+        </h2>
         <div className="grid gap-3 sm:grid-cols-2">
           {benefits.map((b) => (
             <div key={b.title} className="glass-card rounded-2xl p-4 hover-lift">
