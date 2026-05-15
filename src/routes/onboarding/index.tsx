@@ -70,10 +70,10 @@ function Onboarding() {
     e.preventDefault();
     setBusy(true);
     try {
-      const parsed = UserProfileSchema.parse(form);
+      const parsed = UserProfileSchema.parse({ ...form, onboarding_completed: true });
       await save(parsed);
       toast.success("Profile saved!");
-      navigate({ to: "/coach" });
+      navigate({ to: "/" });
     } catch (err) {
       toast.error((err as Error)?.message || "Please check your inputs");
     } finally {
@@ -248,6 +248,85 @@ function Onboarding() {
               onChange={(v) => set("target_protein", v || null)}
             />
           </div>
+        </Section>
+
+        <Section title="Your name">
+          <Text
+            label="What should Mira call you?"
+            value={form.name || ""}
+            onChange={(v) => set("name", v || null)}
+            placeholder="Your name"
+          />
+        </Section>
+
+        <Section title="Daily goals">
+          <div className="grid grid-cols-2 gap-3">
+            <Num
+              label="Workout days / week"
+              value={form.workout_days_per_week ?? 4}
+              onChange={(v) => set("workout_days_per_week", v || null)}
+            />
+            <Num
+              label="Water goal (L)"
+              value={form.water_goal_liters ?? 3}
+              onChange={(v) => set("water_goal_liters", v || null)}
+              step={0.5}
+            />
+            <Num
+              label="Step goal"
+              value={form.step_goal ?? 8000}
+              onChange={(v) => set("step_goal", v || null)}
+              step={500}
+            />
+            <Select
+              label="Preferred workout time"
+              value={form.workout_time_pref || "morning"}
+              onChange={(v) =>
+                set("workout_time_pref", v as UserProfile["workout_time_pref"])
+              }
+              options={[
+                ["morning", "Morning"],
+                ["afternoon", "Afternoon"],
+                ["evening", "Evening"],
+                ["night", "Night"],
+                ["flexible", "Flexible"],
+              ]}
+            />
+          </div>
+        </Section>
+
+        <Section title="Reminders">
+          <label className="flex items-center justify-between rounded-xl border border-border bg-background px-3 py-3">
+            <span className="text-sm">Send me daily reminders</span>
+            <input
+              type="checkbox"
+              checked={!!form.reminders_enabled}
+              onChange={(e) => set("reminders_enabled", e.target.checked)}
+              className="h-5 w-5 accent-primary"
+            />
+          </label>
+          {form.reminders_enabled && (
+            <div className="grid grid-cols-2 gap-3">
+              <label className="block">
+                <span className="text-xs font-medium text-muted-foreground">Start time</span>
+                <input
+                  type="time"
+                  value={form.reminder_start || "08:00"}
+                  onChange={(e) => set("reminder_start", e.target.value)}
+                  className="mt-1 h-11 w-full rounded-xl border border-border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </label>
+              <label className="block">
+                <span className="text-xs font-medium text-muted-foreground">End time</span>
+                <input
+                  type="time"
+                  value={form.reminder_end || "21:00"}
+                  onChange={(e) => set("reminder_end", e.target.value)}
+                  className="mt-1 h-11 w-full rounded-xl border border-border bg-background px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </label>
+            </div>
+          )}
         </Section>
 
         <button
