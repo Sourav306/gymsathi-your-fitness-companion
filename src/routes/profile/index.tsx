@@ -115,7 +115,7 @@ function Profile() {
   const handleGoogle = async () => {
     try {
       const result = await lovable.auth.signInWithOAuth("google", {
-        redirect_uri: window.location.origin + "/profile",
+        redirect_uri: window.location.origin + "/",
       });
       if (result.error) toast.error("Google sign-in failed");
     } catch {
