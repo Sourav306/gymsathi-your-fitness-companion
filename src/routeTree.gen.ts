@@ -27,6 +27,7 @@ import { Route as CalculatorIndexRouteImport } from './routes/calculator/index'
 import { Route as AiWorkoutIndexRouteImport } from './routes/ai-workout/index'
 import { Route as AiMealIndexRouteImport } from './routes/ai-meal/index'
 import { Route as ExercisesIdRouteImport } from './routes/exercises/$id'
+import { Route as AdminTestersRouteImport } from './routes/admin/testers'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -118,9 +119,15 @@ const ExercisesIdRoute = ExercisesIdRouteImport.update({
   path: '/exercises/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminTestersRoute = AdminTestersRouteImport.update({
+  id: '/admin/testers',
+  path: '/admin/testers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin/testers': typeof AdminTestersRoute
   '/exercises/$id': typeof ExercisesIdRoute
   '/ai-meal/': typeof AiMealIndexRoute
   '/ai-workout/': typeof AiWorkoutIndexRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin/testers': typeof AdminTestersRoute
   '/exercises/$id': typeof ExercisesIdRoute
   '/ai-meal': typeof AiMealIndexRoute
   '/ai-workout': typeof AiWorkoutIndexRoute
@@ -162,6 +170,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin/testers': typeof AdminTestersRoute
   '/exercises/$id': typeof ExercisesIdRoute
   '/ai-meal/': typeof AiMealIndexRoute
   '/ai-workout/': typeof AiWorkoutIndexRoute
@@ -184,6 +193,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin/testers'
     | '/exercises/$id'
     | '/ai-meal/'
     | '/ai-workout/'
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/admin/testers'
     | '/exercises/$id'
     | '/ai-meal'
     | '/ai-workout'
@@ -224,6 +235,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin/testers'
     | '/exercises/$id'
     | '/ai-meal/'
     | '/ai-workout/'
@@ -245,6 +257,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminTestersRoute: typeof AdminTestersRoute
   ExercisesIdRoute: typeof ExercisesIdRoute
   AiMealIndexRoute: typeof AiMealIndexRoute
   AiWorkoutIndexRoute: typeof AiWorkoutIndexRoute
@@ -392,11 +405,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExercisesIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/testers': {
+      id: '/admin/testers'
+      path: '/admin/testers'
+      fullPath: '/admin/testers'
+      preLoaderRoute: typeof AdminTestersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminTestersRoute: AdminTestersRoute,
   ExercisesIdRoute: ExercisesIdRoute,
   AiMealIndexRoute: AiMealIndexRoute,
   AiWorkoutIndexRoute: AiWorkoutIndexRoute,
