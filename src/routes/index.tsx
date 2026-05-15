@@ -153,73 +153,14 @@ function Home() {
     }
   };
 
-  // Not signed in CTA
+  // Landing page for visitors
   if (!user) {
-    return (
-      <div className="space-y-6">
-        <header className="px-1">
-          <h1 className="font-display text-2xl font-bold leading-tight">
-            {greeting} <span aria-hidden>👋</span>
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Your AI fitness coach for daily plans, tasks and feedback.
-          </p>
-        </header>
-        <div className="rounded-3xl border border-border bg-card p-6 text-center">
-          <div className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-primary text-primary-foreground">
-            <Sparkles className="h-6 w-6" />
-          </div>
-          <h2 className="mt-3 font-display text-lg font-bold">Sign in to start</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Create a free account to chat with Mira, daily tasks and progress tracking.
-          </p>
-          <Link
-            to="/profile"
-            className="mt-4 inline-block rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
-          >
-            Sign in
-          </Link>
-        </div>
-      </div>
-    );
+    return <Landing />;
   }
 
-  // Onboarding CTA
+  // Signed in but no profile yet → onboarding
   if (!profile) {
-    return (
-      <div className="space-y-6">
-        <header className="px-1">
-          <h1 className="font-display text-2xl font-bold leading-tight">
-            {greeting}, {greetingName} <span aria-hidden>👋</span>
-          </h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Let me set up your personalized coach.
-          </p>
-        </header>
-        <Link
-          to="/onboarding-chat"
-          className="block overflow-hidden rounded-3xl p-5 text-primary-foreground shadow-[var(--shadow-soft)]"
-          style={{
-            background:
-              "var(--gradient-hero, linear-gradient(135deg, hsl(var(--primary)), hsl(var(--primary)/0.85)))",
-          }}
-        >
-          <div className="grid h-11 w-11 place-items-center rounded-2xl bg-white/20 backdrop-blur">
-            <MessageSquare className="h-6 w-6" />
-          </div>
-          <div className="mt-4 font-display text-lg font-bold">Chat with Mira</div>
-          <p className="mt-1 text-sm opacity-90">
-            A few quick questions and I'll build your full plan.
-          </p>
-          <div className="mt-4 inline-flex items-center gap-2 rounded-xl bg-background px-4 py-2.5 text-sm font-semibold text-foreground shadow">
-            Start onboarding
-          </div>
-        </Link>
-        <Link to="/onboarding" className="block text-center text-xs text-muted-foreground">
-          Prefer a form? Use the form view →
-        </Link>
-      </div>
-    );
+    return <RedirectToOnboarding />;
   }
 
   const hasTasks = tasksHook.tasks.length > 0;
